@@ -1,0 +1,3 @@
+package main
+
+trait ScreenContainer extends StandardScreenComponent with BattleScreenComponent with StartingScreenComponent
