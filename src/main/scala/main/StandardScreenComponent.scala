@@ -1,6 +1,6 @@
 package main
 
-import entities.HumanComponent
+import entities.{CharacterComponent}
 import sgl._
 import sgl.scene.SceneComponent
 import sgl.util.LoggingProvider
@@ -15,4 +15,4 @@ trait StandardScreenComponent
   with AudioProvider
   with SceneComponent
   with LoggingProvider
-  with HumanComponent
+  with CharacterComponent

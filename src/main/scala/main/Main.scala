@@ -1,9 +1,10 @@
 package main
 
-import entities.{EntitiesContainer, HumanComponent}
+import entities.{EntitiesContainer}
 import sgl._
 import sgl.awt._
 import scene._
+import sprites.SpriteHandler32
 import util._
 
 trait AbstractApp {
@@ -25,9 +26,10 @@ object Main
     with VerboseStdErrLoggingProvider
     with ScreenContainer
     with EntitiesContainer
+with SpriteHandler32
 {
 
-  override val Fps = Some(60)
+  override val Fps = Some(30)
 
   override val frameDimension = Some((800, 600))
 }

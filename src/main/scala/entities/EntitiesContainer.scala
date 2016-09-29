@@ -1,3 +1,3 @@
 package entities
 
-trait EntitiesContainer extends HumanComponent
+trait EntitiesContainer extends CharacterComponent

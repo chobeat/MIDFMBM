@@ -1,18 +1,20 @@
 package main
 
-import entities.HumanComponent
+import entities.{West, East, North}
 import sgl._
 import geometry._
 import scene._
 import util._
 
 trait BattleScreenComponent {
-  this: StandardScreenComponent=>
+  this: StandardScreenComponent =>
   class BattleScreen extends GameScreen {
 
     private implicit val Tag = Logger.Tag("main")
-
-    val human = new Human(20, 20, 20)
+    val humans = List(new Character(300, 200, 1),
+                      new Character(150, 200, 1, East),
+                      new Character(200, 240, 1, East),
+                      new Character(200, 200, 1, West))
 
     private val hud = new BattleHud
 
@@ -29,7 +31,7 @@ trait BattleScreenComponent {
     }
 
     private var accumulatedDelta = 0l
-    private val FixedDelta = 5l
+    private val FixedDelta = 10l
     override def update(dt: Long): Unit = {
       processInputs()
 
@@ -42,7 +44,7 @@ trait BattleScreenComponent {
     }
     def fixedUpdate(dt: Long): Unit = {
       hud.sceneGraph.update(dt)
-      human.update
+      humans.map(_.render(getScreenCanvas))
     }
   }
 
