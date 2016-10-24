@@ -1,24 +1,22 @@
 package org.anacletogames
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.scenes.scene2d.Stage.TouchFocus
+
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.{
   InputEvent,
-  Event,
-  EventListener,
   Stage
 }
 import com.badlogic.gdx.scenes.scene2d.ui.{Skin, TextButton, Table}
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.utils.{
-  ClickListener,
-  TextureRegionDrawable
+  ClickListener
 }
+import com.badlogic.gdx.physics.box2d._
 import org.anacletogames.Simulation.WithNextStep
 import org.anacletogames.actions.GameAction
-import org.anacletogames.entities.Entity
+import org.anacletogames.entities.{RectEntity, Entity}
 
+import com.badlogic.gdx.physics.box2d._
 object Simulation {
   type WithNextStep = { def nextStep(): GameAction }
   type Drawable = { def draw(): Unit }
@@ -28,13 +26,15 @@ class Simulation {
   var toBeComputed: List[WithNextStep] = List()
 
   var x = 1
-  var myChar = new Entity(50, 50)
+  var myChar = new RectEntity(50,50,1,25,25)
+  var myChar2 = new RectEntity(250,250,1,25,25)
 
-  toBeComputed = toBeComputed :+ myChar
-
+  toBeComputed = toBeComputed :+ myChar :+ myChar2
+  val world= new World(new Vector2(0, -10), true)
   var battleStage = new Stage()
   Gdx.input.setInputProcessor(battleStage);
   battleStage.addActor(myChar.actor)
+  battleStage.addActor(myChar2.actor)
   val battleMenu = new Table()
   battleMenu.setFillParent(true);
 

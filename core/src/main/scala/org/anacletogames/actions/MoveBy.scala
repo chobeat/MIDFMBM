@@ -5,11 +5,7 @@ import org.anacletogames.entities.Entity
 
 case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
   def executeStep: Unit = {
-    val destX=entity.actor.getX+x
-    val destY=entity.actor.getY+y
-
-
-    actor.moveBy(x, y)
+    entity.actor.moveBy(x, y)
   }
 }
 
@@ -32,7 +28,7 @@ case class MoveTo(entity: Entity, destX: Float, destY: Float)
 
     val movY = movCalc(currY, destY)
 
-    MoveBy(entity.actor, movX, movY).executeStep()
+    MoveBy(entity, movX, movY).executeStep
   }
 }
 
