@@ -1,6 +1,8 @@
 package org.anacletogames.entities
 
-class RectEntity(x: Float, y: Float, speed:Float=1, sizeX:Int,sizeY:Int) extends Entity(x,y,speed){
+import org.anacletogames.Entity
 
-  actor.setBounds(x,y,sizeX,sizeY)
+class RectEntity(x: Float, y: Float, speed:Float=1) extends Entity(x,y,speed){
+
+  this.setBounds(x,y,sprite.getWidth,sprite.getHeight)
 }

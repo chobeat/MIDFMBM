@@ -1,40 +1,34 @@
 package org.anacletogames
 
 import com.badlogic.gdx.Gdx
-
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.{
-  InputEvent,
-  Stage
-}
-import com.badlogic.gdx.scenes.scene2d.ui.{Skin, TextButton, Table}
-import com.badlogic.gdx.scenes.scene2d.utils.{
-  ClickListener
-}
-import com.badlogic.gdx.physics.box2d._
-import org.anacletogames.Simulation.WithNextStep
+import com.badlogic.gdx.math.{Rectangle, Vector2}
+import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage}
+import com.badlogic.gdx.scenes.scene2d.ui.{Skin, Table, TextButton}
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import org.anacletogames.actions.GameAction
-import org.anacletogames.entities.{RectEntity, Entity}
-
+import org.anacletogames.entities.RectEntity
 import com.badlogic.gdx.physics.box2d._
+
+import scala.collection.JavaConversions._
 object Simulation {
-  type WithNextStep = { def nextStep(): GameAction }
   type Drawable = { def draw(): Unit }
 }
 
 class Simulation {
-  var toBeComputed: List[WithNextStep] = List()
+  var toBeComputed: List[Entity] = List()
+  var toBeCollided: List[Entity] = List()
 
   var x = 1
-  var myChar = new RectEntity(50,50,1,25,25)
-  var myChar2 = new RectEntity(250,250,1,25,25)
+  var myChar = new RectEntity(250,250,1)
+  var myChar2 = new RectEntity(10,10,1)
+
 
   toBeComputed = toBeComputed :+ myChar :+ myChar2
-  val world= new World(new Vector2(0, -10), true)
+  toBeCollided = toBeCollided :+ myChar :+ myChar2
   var battleStage = new Stage()
   Gdx.input.setInputProcessor(battleStage);
-  battleStage.addActor(myChar.actor)
-  battleStage.addActor(myChar2.actor)
+  battleStage.addActor(myChar)
+  battleStage.addActor(myChar2)
   val battleMenu = new Table()
   battleMenu.setFillParent(true);
 
@@ -44,7 +38,7 @@ class Simulation {
                            y: Float,
                            pointer: Int,
                            button: Int): Boolean = {
-      myChar.actor.setPosition(0,0)
+      myChar.setPosition(0,0)
       true
     }
   }
@@ -71,10 +65,11 @@ val table= new Table()
   }
 
   def nextStep() = {
-    val actions = toBeComputed.map(_.nextStep())
+    val actions = toBeComputed.map(_.nextStep(toBeCollided))
     actions.foreach(_.executeStep)
   }
   def draw() = {
+
     battleStage.draw()
   }
 

@@ -1,11 +1,11 @@
 package org.anacletogames.actions
 
 import com.badlogic.gdx.scenes.scene2d.Actor
-import org.anacletogames.entities.Entity
+import org.anacletogames.Entity
 
 case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
   def executeStep: Unit = {
-    entity.actor.moveBy(x, y)
+    entity.moveBy(x, y)
   }
 }
 
@@ -13,8 +13,15 @@ case class MoveTo(entity: Entity, destX: Float, destY: Float)
     extends GameAction {
   def executeStep: Unit = {
 
-    val currX = entity.actor.getX
-    val currY = entity.actor.getY
+    val (movX,movY)=MoveUtil.projectStep(entity,destX,destY)
+    MoveBy(entity, movX, movY).executeStep
+  }
+}
+
+object MoveUtil{
+  def projectStep(entity: Entity,destX:Float,destY:Float)= {
+    val currX = entity.getX
+    val currY = entity.getY
 
     val movCalc: PartialFunction[(Float, Float), Float] = {
       case (a, b) if a == b => 0
@@ -28,19 +35,24 @@ case class MoveTo(entity: Entity, destX: Float, destY: Float)
 
     val movY = movCalc(currY, destY)
 
-    MoveBy(entity, movX, movY).executeStep
+    (movX,movY)
   }
 }
 
 case class RelocateTo(entity: Entity, x: Float, y: Float) extends GameAction {
   def executeStep: Unit = {
-    entity.actor.setX(x)
-    entity.actor.setY(y)
+    entity.setX(x)
+    entity.setY(y)
   }
 }
 
 case class MultiAction(actions: GameAction*) extends GameAction {
   def executeStep: Unit = {
     actions.foreach(_.executeStep)
+  }
+}
+
+case object NoAction extends GameAction {
+  def executeStep: Unit = {
   }
 }
