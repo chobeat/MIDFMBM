@@ -15,7 +15,7 @@ abstract class Entity(x: Float, y: Float, val speed: Float) extends Actor {
 
   def stageCoord = localToStageCoordinates(new Vector2(this.getX, this.getY))
 
-  def stageBounds: Rectangle = sprite.getBoundingRectangle.setPosition(this.getX,this.getY)
+  def stageBounds: Rectangle = sprite.getBoundingRectangle.setPosition(this.getX, this.getY)
 
 
   def overlaps(other: Rectangle) = other.overlaps(this.stageBounds)
@@ -23,46 +23,35 @@ abstract class Entity(x: Float, y: Float, val speed: Float) extends Actor {
 
   def nextStep(entities: List[Entity]): GameAction = {
 
-    val destX=100F
-    val destY=100F
-    val (nextStepX,nextStepY)=MoveUtil.projectStep(this,destX,destY)  
+    val destX = 100F
+    val destY = 100F
+    val (nextStepX, nextStepY) = MoveUtil.projectStep(this, destX, destY)
     if (entities.exists(entity => (!entity.equals(this)) && entity.overlaps(this.stageBounds.setPosition(
-       getX+nextStepX,getY+nextStepY)
+      getX + nextStepX, getY + nextStepY)
     )))
-      NoAction
+     NoAction
     else
       MoveTo(this, destX, destY)
 
   }
 
-  val pixmap = new Pixmap(128, 128, Pixmap.Format.RGBA8888)
-
-  //Fill it red
-  //Draw a circle about the middle
-  pixmap.setColor(Color.YELLOW)
-  pixmap.drawCircle(pixmap.getWidth/2-1,pixmap.getHeight/2-1,pixmap.getWidth/2-1)
-
-  val sprite = new Sprite(new Texture(pixmap))
-
-
-
-  pixmap.dispose()
+  def sprite:Sprite
 
   override def draw(batch: Batch, parentAlpha: Float): Unit = {
     batch.draw(sprite, getX, getY, sprite.getWidth, sprite
-        .getHeight)
+      .getHeight)
 
-    val bounds=stageBounds
+    val bounds = stageBounds
 
     val pixmapBound = new Pixmap(bounds.getWidth.toInt, bounds.getHeight.toInt, Pixmap.Format.RGBA8888)
 
     //Fill it red
     //Draw a circle about the middle
     pixmapBound.setColor(Color.RED)
-    pixmapBound.drawRectangle(0,0,pixmapBound.getWidth,pixmapBound.getHeight)
+    pixmapBound.drawRectangle(0, 0, pixmapBound.getWidth, pixmapBound.getHeight)
 
     val spriteBound = new Sprite(new Texture(pixmapBound))
-      batch.draw(spriteBound,bounds.getX,bounds.getY,bounds.getWidth,bounds.getHeight)
+    batch.draw(spriteBound, bounds.getX, bounds.getY, bounds.getWidth, bounds.getHeight)
   }
 
 }

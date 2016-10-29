@@ -2,6 +2,7 @@ package org.anacletogames.actions
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.Entity
+import org.anacletogames.entities.MeleeAttack
 
 case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
   def executeStep: Unit = {
@@ -9,6 +10,13 @@ case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
   }
 }
 
+/*case class Attack(attacker:Entity, targetX:Float,targetY:Float) extends GameAction{
+  def executeStep:Unit={
+    val attackActor=new MeleeAttack(targetX,targetY)
+    attacker.getParent.addActor(attackActor)
+  }
+}
+*/
 case class MoveTo(entity: Entity, destX: Float, destY: Float)
     extends GameAction {
   def executeStep: Unit = {
