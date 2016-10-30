@@ -18,7 +18,7 @@ class TestMapRender extends ApplicationAdapter with InputProcessor with InputDef
   var tiledMapRenderer:OrthogonalTiledMapRenderer=null
 
   override def create(): Unit = {
-    map=  MapGenerator.generateRandomMap(40,40)
+    map=  MapGenerator.generateRandomMap(32,32)
     w = Gdx.graphics.getWidth()
     h = Gdx.graphics.getHeight()
     tiledMapRenderer= new OrthogonalTiledMapRenderer(map)
@@ -39,14 +39,15 @@ class TestMapRender extends ApplicationAdapter with InputProcessor with InputDef
 
 
   override def keyUp(keycode:Int):Boolean= {
+    val movSize=16
     if(keycode == Input.Keys.LEFT)
-      camera.translate(-32,0)
+      camera.translate(movSize,0)
     if(keycode == Input.Keys.RIGHT)
-      camera.translate(32,0)
+      camera.translate(-movSize,0)
     if(keycode == Input.Keys.UP)
-      camera.translate(0,-32)
+      camera.translate(0,-movSize)
     if(keycode == Input.Keys.DOWN)
-      camera.translate(0,32)
+      camera.translate(0,movSize)
     if(keycode == Input.Keys.NUM_1)
       map.getLayers().get(0).setVisible(!map.getLayers().get(0).isVisible())
     if(keycode == Input.Keys.NUM_2)
