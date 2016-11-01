@@ -7,8 +7,8 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TiledMapTileSet}
-import org.anacletogames.maps.assets.{TestMapLoader, Tile9Region}
-import org.anacletogames.maps.objects.MapGeneratorSquareHole
+import org.anacletogames.maps.assets.{GrassTile, HoleTile, TestMapLoader, Tile9Region}
+import org.anacletogames.maps.objects.{ MapGeneratorLineElement, MapGeneratorRectElement}
 
 import scala.collection.JavaConversions._
 import scala.util.Random
@@ -69,9 +69,16 @@ object LayerGenerator {
     val holeTiles = TestMapLoader.holeTiles
 
 
-    val res=for {_ <- 0 to 55
-    element= new MapGeneratorSquareHole()
+    for {_ <- 0 to 5
+    element= new MapGeneratorRectElement with HoleTile
     } yield element.placeOnLayer(layer)
+
+    for {_ <- 0 to 5
+         element= new MapGeneratorRectElement(6) with GrassTile
+    } yield element.placeOnLayer(layer)
+
+    val grassRiver= new MapGeneratorLineElement(List(layer)) with GrassTile
+    grassRiver.placeOnLayer(layer)
 
     layer
   }
