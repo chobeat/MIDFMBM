@@ -3,9 +3,10 @@ package org.anacletogames.maps.objects
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TiledMapTileSet}
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.maps.assets.Tile9Region
-
+import org.anacletogames.maps._
 import scala.collection.JavaConversions._
 import scala.util.Random
+import Directions._
 
 abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
                                        maxSize: Int = 3)
@@ -20,8 +21,8 @@ abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
     require(randomness <= 100 && randomness > 0)
 
     def isOccupied(p: GridPoint2) =
-      !layers.exists(l => {
-      l.getCell(p.x, p.y) != null
+      layers.exists(l => {
+        l.getCell(p.x, p.y) != null
       })
 
     def isValid(p: GridPoint2) = {
@@ -35,16 +36,27 @@ abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
 
       def nextStep(curr: GridPoint2, goOff: Boolean): Option[GridPoint2] = {
 
+        val directions=Set(N, W, S, E)
         val availableDestionations: Set[GridPoint2] =
-          Directions.directions.map {
+          directions.map {
             case (x, y) => new GridPoint2(x + curr.x, y + curr.y)
-          }.filter(isValid)
-            .filter(isOccupied)
-            .filter(x => !visited.contains(x))
-        if (availableDestionations.isEmpty)
+          }.filter(x => isValid(x) && !isOccupied(x) && !visited.contains(x))
+        val closestDestinations = availableDestionations.foldLeft(
+          List.empty[(GridPoint2, Double)])((closerDirections, direction) => {
+          val distanceFromArrival = direction.dst(arrival)
+          closerDirections match {
+            case Nil => List((direction, distanceFromArrival))
+            case (_, dist) :: tail if dist > distanceFromArrival =>
+              List((direction, distanceFromArrival))
+            case list @ (_, dist) :: tail if dist == distanceFromArrival =>
+              (direction, distanceFromArrival) :: list
+            case list => list
+          }
+        })
+        if (closestDestinations.isEmpty)
           None
         else
-          Some(Random.shuffle(availableDestionations.toList).head)
+          Some(Random.shuffle(closestDestinations).head._1)
       }
 
       visited match {
@@ -74,7 +86,7 @@ abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
   val path = generateRandomPath(new GridPoint2(1, 1), new GridPoint2(3, 3), 30)
 
   override lazy val parts: List[MapGeneratorElementPart] = path.map(
-    p => MapGeneratorElementPart(p.x, p.y, tiles.CenterCell)
+    p => MapGeneratorElementPart(p, tiles.CenterCell)
   )
 
 }
@@ -89,6 +101,8 @@ object Directions {
   val NW = (-1, 1)
   val SE = (1, -1)
 
-  val directions = Set(N, W, S, E, SW, SE, NW, NE)
+  val directions = Set(N, W, S, E
+    //,SW, SE, NW, NE
+  )
 
 }

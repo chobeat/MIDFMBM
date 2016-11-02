@@ -1,6 +1,7 @@
 package org.anacletogames.maps.objects
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+import com.badlogic.gdx.math.GridPoint2
 
 import scala.util.Random
 
@@ -14,14 +15,18 @@ abstract class MapGeneratorElement{
   val parts:List[MapGeneratorElementPart]
 
   def canBePlaced(x: Int, y: Int,layer: TiledMapTileLayer): Boolean =
-    !parts.exists{case MapGeneratorElementPart(xt,yt,_)=>layer.getCell(xt+x,yt+y) != null}
+    !parts.exists{case MapGeneratorElementPart(p,_)=>layer.getCell(p.x+x,p.y+y) != null}
 
-  def placeOnLayer(layer: TiledMapTileLayer): Unit = {
-    getRandomValidCoordinates(layer).foreach{case (x,y)=>
-    parts.foreach { case MapGeneratorElementPart(xt, yt, t) => layer.setCell(x + xt, y + yt, t) }
+  def placeRandomOnLayer(layer: TiledMapTileLayer): Unit = {
+    getRandomValidCoordinates(layer).foreach{case randomPos:GridPoint2=>
+    parts.foreach { case MapGeneratorElementPart(p, t) => layer.setCell(randomPos.x + p.x, randomPos.y + p.y, t) }
     }
   }
-  def getRandomValidCoordinates(layer:TiledMapTileLayer, retry:Int = 0):Option[(Int,Int)]= {
+
+  def placeOnLayerAbs(layer:TiledMapTileLayer,position: GridPoint2)={
+    parts.foreach{case MapGeneratorElementPart(p, t)=>layer.setCell(p.x,p.y,t)}
+  }
+  def getRandomValidCoordinates(layer:TiledMapTileLayer, retry:Int = 0):Option[GridPoint2]= {
     if(retry>=MAX_RANDOM_RETRIES)
       None
     else{
@@ -30,7 +35,7 @@ abstract class MapGeneratorElement{
     val ry=Random.nextInt(layer.getHeight - 2)+1
 
     if(canBePlaced(rx,ry,layer))
-      Some((rx,ry))
+      Some(new GridPoint2(rx,ry))
     else
       getRandomValidCoordinates(layer,retry+1)
   }}

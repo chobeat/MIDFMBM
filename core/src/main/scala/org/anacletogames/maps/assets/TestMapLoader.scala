@@ -13,4 +13,5 @@ object TestMapLoader {
   val grassTiles = new Tile9Region(texture, 672, 64, 32)
   val holeTiles = new Tile9Region(texture, 764, 64, 32)
 
+
 }
