@@ -5,13 +5,19 @@ import com.badlogic.gdx.graphics.g2d.{Batch, Sprite}
 import com.badlogic.gdx.graphics.{Color, GL20, Pixmap, Texture}
 import com.badlogic.gdx.math.{Intersector, Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Event, EventListener, Stage}
+import org.anacletogames.actions.EntityBehaviour.{DecisionContext, EntityBehaviour}
 import org.anacletogames.actions._
 
 
-abstract class Entity(x: Float, y: Float, val speed: Float) extends Actor {
+abstract class Entity(x: Float, y: Float, val speed: Float=1) extends Actor {
 
+  private var behaviour:EntityBehaviour= (_,_)=>NoAction
   this.setX(x)
   this.setY(y)
+
+  def setBehaviour(e:EntityBehaviour)=behaviour=e
+
+  def doOnce(a:GameAction):Unit=behaviour=(_,_)=>DoOnceAction(a,this)
 
   def stageCoord = localToStageCoordinates(new Vector2(this.getX, this.getY))
 
@@ -20,19 +26,8 @@ abstract class Entity(x: Float, y: Float, val speed: Float) extends Actor {
 
   def overlaps(other: Rectangle) = other.overlaps(this.stageBounds)
 
-
-  def nextStep(entities: List[Entity]): GameAction = {
-
-    val destX = 100F
-    val destY = 100F
-    val (nextStepX, nextStepY) = MoveUtil.projectStep(this, destX, destY)
-    if (entities.exists(entity => (!entity.equals(this)) && entity.overlaps(this.stageBounds.setPosition(
-      getX + nextStepX, getY + nextStepY)
-    )))
-     NoAction
-    else
-      MoveTo(this, destX, destY)
-
+  def nextStep(decisionContext: DecisionContext):GameAction={
+    behaviour(this,decisionContext)
   }
 
   def sprite:Sprite
@@ -55,6 +50,9 @@ abstract class Entity(x: Float, y: Float, val speed: Float) extends Actor {
   }
 
 }
+
+
+
 
 class Midfmbm extends Game {
   var simulation: Simulation = null

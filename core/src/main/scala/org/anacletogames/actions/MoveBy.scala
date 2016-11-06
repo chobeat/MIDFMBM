@@ -2,7 +2,6 @@ package org.anacletogames.actions
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.Entity
-import org.anacletogames.entities.MeleeAttack
 
 case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
   def executeStep: Unit = {
@@ -23,6 +22,13 @@ case class MoveTo(entity: Entity, destX: Float, destY: Float)
 
     val (movX,movY)=MoveUtil.projectStep(entity,destX,destY)
     MoveBy(entity, movX, movY).executeStep
+  }
+}
+
+case class DoOnceAction(a:GameAction,entity: Entity) extends  GameAction{
+  override def executeStep: Unit = {
+    a.executeStep
+    entity.setBehaviour((_,_)=>NoAction)
   }
 }
 

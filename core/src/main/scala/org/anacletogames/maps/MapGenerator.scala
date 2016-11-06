@@ -67,10 +67,10 @@ object LayerGenerator {
 
   def generate4HoleLayer(layer: TiledMapTileLayer) = {
     val holeTiles = TestMapLoader.holeTiles
-
+/*
     val grassRiver= new MapGeneratorLineElement(List(layer)) with GrassTile
     grassRiver.placeOnLayerAbs(layer,grassRiver.path.last)
-
+*/
     for {_ <- 0 to 5
     element= new MapGeneratorRectElement with HoleTile
     } yield element.placeRandomOnLayer(layer)
@@ -78,7 +78,6 @@ object LayerGenerator {
     for {_ <- 0 to 5
          element= new MapGeneratorRectElement(6) with GrassTile
     } yield element.placeRandomOnLayer(layer)
-
 
 
     layer

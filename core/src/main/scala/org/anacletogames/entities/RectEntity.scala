@@ -13,6 +13,7 @@ class RectEntity(x: Float, y: Float, speed: Float = 1) extends Entity(x, y, spee
   //Draw a circle about the middle
   pixmap.setColor(Color.YELLOW)
   pixmap.drawCircle(pixmap.getWidth / 2 - 1, pixmap.getHeight / 2 - 1, pixmap.getWidth / 2 - 1)
+  pixmap.fill()
 
   override val sprite = new Sprite(new Texture(pixmap))
   pixmap.dispose()
