@@ -12,19 +12,23 @@ import util.InputDefaultHandler
 /**
   * Created by simone on 05.11.16.
   */
-abstract class DebugRenderer(tiledMapWidth:Int,tiledMapHeigth:Int) extends ApplicationAdapter with InputProcessor with InputDefaultHandler with WithCamera with WithTiledMap{
+abstract class DebugRenderer(tiledMapWidth: Int, tiledMapHeigth: Int)
+    extends ApplicationAdapter
+    with InputProcessor
+    with InputDefaultHandler
+    with WithCamera
+    with WithTiledMap {
 
-
-  var w:Int=0
-  var h:Int=0
+  var w: Int = 0
+  var h: Int = 0
 
   override def create(): Unit = {
-    map=  MapGenerator.generateRandomMap(tiledMapWidth,tiledMapHeigth)
+    map = MapGenerator.generateRandomMap(tiledMapWidth, tiledMapHeigth)
     w = Gdx.graphics.getWidth()
     h = Gdx.graphics.getHeight()
-    tiledMapRenderer= new OrthogonalTiledMapRenderer(map)
+    tiledMapRenderer = new OrthogonalTiledMapRenderer(map)
 
-    camera.setToOrtho(false,w,h);
+    camera.setToOrtho(false, w, h);
     camera.update();
     Gdx.input.setInputProcessor(this)
   }
@@ -38,12 +42,14 @@ abstract class DebugRenderer(tiledMapWidth:Int,tiledMapHeigth:Int) extends Appli
     tiledMapRenderer.render()
   }
 
-
-  var inputProcessor: PartialFunction[Int,Unit] = {case x:Int=>}
+  var inputProcessor: PartialFunction[Int, Unit] = { case x: Int => }
 
   override def keyUp(keycode: Int): Boolean = {
     super.keyUp(keycode)
-    val processorWithCatchAll= inputProcessor orElse PartialFunction[Int,Unit]{case x:Int=>}
+    val processorWithCatchAll = inputProcessor orElse PartialFunction[Int,
+                                                                      Unit] {
+      case x: Int =>
+    }
     processorWithCatchAll(keycode)
     false
   }

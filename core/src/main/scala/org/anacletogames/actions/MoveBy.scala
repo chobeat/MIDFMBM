@@ -1,11 +1,18 @@
 package org.anacletogames.actions
 
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import org.anacletogames.Entity
+import org.anacletogames.actions.GameAction.ActionContext
+import org.anacletogames.entities.Entity
 
-case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
+case class MoveBy(entity: Entity, x: Float, y: Float)
+    extends MovementGameAction(entity,new Vector2(entity.getX + x, entity.getY + y))(
+      entity.getActionContext) {
   def executeStep: Unit = {
-    entity.moveBy(x, y)
+    if (this.isValid)
+      entity.moveBy(x, y)
+    else
+      println("Suca")
   }
 }
 
@@ -15,58 +22,40 @@ case class MoveBy(entity: Entity, x: Float, y: Float) extends GameAction {
     attacker.getParent.addActor(attackActor)
   }
 }
-*/
-case class MoveTo(entity: Entity, destX: Float, destY: Float)
-    extends GameAction {
+ */
+case class MoveTo(entity: Entity, destination: Vector2)
+    extends GameAction()(entity.getActionContext) {
   def executeStep: Unit = {
 
-    val (movX,movY)=MoveUtil.projectStep(entity,destX,destY)
+    val (movX, movY) = MoveUtil.projectStep(entity, destination)
     MoveBy(entity, movX, movY).executeStep
   }
 }
 
-case class DoOnceAction(a:GameAction,entity: Entity) extends  GameAction{
+case class DoOnceAction(a: GameAction, entity: Entity)(
+    implicit actionContext: ActionContext)
+    extends GameAction()(entity.getActionContext) {
   override def executeStep: Unit = {
     a.executeStep
-    entity.setBehaviour((_,_)=>NoAction)
+    entity.setBehaviour((_, _) => NoAction)
   }
 }
 
-object MoveUtil{
-  def projectStep(entity: Entity,destX:Float,destY:Float)= {
-    val currX = entity.getX
-    val currY = entity.getY
-
-    val movCalc: PartialFunction[(Float, Float), Float] = {
-      case (a, b) if a == b => 0
-      case (a, b) if a - b < entity.speed => entity.speed
-      case (a, b) if b - a < entity.speed => -entity.speed
-      case (a, b) if a > b => a - entity.speed
-      case (a, b) if b > a => a + entity.speed
-    }
-
-    val movX = movCalc(currX, destX)
-
-    val movY = movCalc(currY, destY)
-
-    (movX,movY)
-  }
-}
-
-case class RelocateTo(entity: Entity, x: Float, y: Float) extends GameAction {
+case class RelocateTo(entity: Entity, destination: Vector2)
+    extends MovementGameAction(entity,destination)(entity.getActionContext) {
   def executeStep: Unit = {
-    entity.setX(x)
-    entity.setY(y)
+    entity.setX(destination.x)
+    entity.setY(destination.x)
   }
 }
 
-case class MultiAction(actions: GameAction*) extends GameAction {
+case class MultiAction(actions: GameAction*) extends GameActionWithoutContext {
   def executeStep: Unit = {
     actions.foreach(_.executeStep)
   }
+
 }
 
-case object NoAction extends GameAction {
-  def executeStep: Unit = {
-  }
+case object NoAction extends GameActionWithoutContext {
+  def executeStep: Unit = {}
 }

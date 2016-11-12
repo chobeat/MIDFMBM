@@ -2,7 +2,7 @@ package org.anacletogames
 
 import com.badlogic.gdx.backends.lwjgl._
 import debug.TestMapRender
-
+/*
 object Main extends App {
     val cfg = new LwjglApplicationConfiguration
     cfg.title = "MIDFMBM"
@@ -11,3 +11,4 @@ object Main extends App {
     cfg.forceExit = false
     new LwjglApplication(new Midfmbm, cfg)
 }
+*/

@@ -2,9 +2,9 @@ package org.anacletogames.entities
 
 import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
 import com.badlogic.gdx.graphics.g2d.Sprite
-import org.anacletogames.Entity
+import org.anacletogames.{BattleMap, Simulation}
 
-class RectEntity(x: Float, y: Float, speed: Float = 1) extends Entity(x, y, speed) {
+class RectEntity(x: Float, y: Float, speed: Float = 1, context: BattleMap) extends Entity(x, y, speed,context: BattleMap) {
 
 
   private val pixmap = new Pixmap(128, 128, Pixmap.Format.RGBA8888)

@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.{Actor, InputEvent, Stage}
 import com.badlogic.gdx.scenes.scene2d.ui.{Skin, Table, TextButton}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import org.anacletogames.actions.GameAction
-import org.anacletogames.entities.RectEntity
+import org.anacletogames.entities.{Entity, RectEntity}
 import com.badlogic.gdx.physics.box2d._
 
 import scala.collection.JavaConversions._
@@ -14,8 +14,9 @@ object Simulation {
   type Drawable = { def draw(): Unit }
 }
 
+
 class Simulation {
-  var toBeComputed: List[Entity] = List()
+/*  var toBeComputed: List[Entity] = List()
   var toBeCollided: List[Entity] = List()
 
   var x = 1
@@ -72,5 +73,5 @@ val table= new Table()
 
     battleStage.draw()
   }
-
+*/
 }

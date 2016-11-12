@@ -1,7 +1,7 @@
 package org.anacletogames.actions
 
-import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.Entity
+import com.badlogic.gdx.math.{GridPoint2, Vector2}
+import org.anacletogames.entities.Entity
 
 /**
   * Created by simone on 06.11.16.
@@ -12,18 +12,18 @@ object EntityBehaviour {
 
 
 
-      def reachPointBehaviour(point:GridPoint2)=
+      def reachPointBehaviour(destination:Vector2)=
       (self:Entity,entities: List[Entity])=>{
 
         val destX = 100F
         val destY = 100F
-        val (nextStepX, nextStepY) = MoveUtil.projectStep(self, point.x, point.y)
+        val (nextStepX, nextStepY) = MoveUtil.projectStep(self, destination)
         if (entities.exists(entity => (!entity.equals(self)) && entity.overlaps(self.stageBounds.setPosition(
           self.getX + nextStepX, self.getY + nextStepY)
         )))
           NoAction
         else
-          MoveTo(self, destX, destY)
+          MoveTo(self, destination)
 
       }
 
