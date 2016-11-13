@@ -27,7 +27,7 @@ abstract class Entity(x: Float, y: Float, val speed: Float=1, context:BattleMap)
 
   def stageBounds: Rectangle = sprite.getBoundingRectangle.setPosition(this.getX, this.getY)
 
-  def getActionContext:ActionContext=context.entities
+  def getActionContext:ActionContext=context.getActionContext
 
   def overlaps(other: Rectangle) = other.overlaps(this.stageBounds)
 

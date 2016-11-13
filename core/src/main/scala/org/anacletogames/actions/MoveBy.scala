@@ -6,13 +6,11 @@ import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.entities.Entity
 
 case class MoveBy(entity: Entity, x: Float, y: Float)
-    extends MovementGameAction(entity,new Vector2(entity.getX + x, entity.getY + y))(
+    extends MovementGameAction(entity,new Vector2(x,y))(
       entity.getActionContext) {
   def executeStep: Unit = {
     if (this.isValid)
       entity.moveBy(x, y)
-    else
-      println("Suca")
   }
 }
 

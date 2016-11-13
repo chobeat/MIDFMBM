@@ -25,4 +25,12 @@ object MoveUtil {
 
     (movX, movY)
   }
+
+  def projectShapeWithDisplacement(entity: Entity,displacement:Vector2)={
+    val adjustedDisplacement=displacement.limit(entity.speed)
+    val shape=entity.stageBounds
+    val origPos=new Vector2(shape.x,shape.y)
+    origPos.add(adjustedDisplacement)
+
+  }
 }

@@ -23,10 +23,10 @@ abstract class DebugRenderer(tiledMapWidth: Int, tiledMapHeigth: Int)
   var h: Int = 0
 
   override def create(): Unit = {
-    map = MapGenerator.generateRandomMap(tiledMapWidth, tiledMapHeigth)
+    tiledMap = MapGenerator.generateRandomMap(tiledMapWidth, tiledMapHeigth)
     w = Gdx.graphics.getWidth()
     h = Gdx.graphics.getHeight()
-    tiledMapRenderer = new OrthogonalTiledMapRenderer(map)
+    tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap)
 
     camera.setToOrtho(false, w, h);
     camera.update();

@@ -18,6 +18,8 @@ import scala.util.Random
   */
 object MapGenerator {
 
+  val IMPASSABLE_LAYER_NAME="IMPASSABLE"
+
   def generateRandomMap(width: Int, height: Int): TiledMap = {
     val genMap = new TiledMap()
     val layers = genMap.getLayers()
@@ -27,13 +29,14 @@ object MapGenerator {
 
     val walkableLayer =
       new TiledMapTileLayer(width, height, tileWidth, tileHeight)
-    val impassableLayer =
+    val impassableTileLayer =
       new TiledMapTileLayer(width, height, tileWidth, tileHeight)
     val dirtLayer = LayerGenerator.generateBackgroundLayer(walkableLayer)
-    val holeLayer = LayerGenerator.generate4HoleLayer(impassableLayer)
-
+    val impassableLayer = LayerGenerator.generateImpassableLayer(impassableTileLayer)
+    impassableLayer.setName(IMPASSABLE_LAYER_NAME)
     layers.add(dirtLayer)
-    layers.add(holeLayer)
+    layers.add(impassableTileLayer)
+
 
     genMap
   }
@@ -65,8 +68,7 @@ object LayerGenerator {
     layer
   }
 
-  def generate4HoleLayer(layer: TiledMapTileLayer) = {
-    val holeTiles = TestMapLoader.holeTiles
+  def generateImpassableLayer(layer: TiledMapTileLayer) = {
 /*
     val grassRiver= new MapGeneratorLineElement(List(layer)) with GrassTile
     grassRiver.placeOnLayerAbs(layer,grassRiver.path.last)
