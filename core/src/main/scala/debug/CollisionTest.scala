@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.math.{Rectangle, Vector2}
+import com.badlogic.gdx.math.{GridPoint2, Rectangle, Vector2}
 import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
 import com.badlogic.gdx.{ApplicationAdapter, InputProcessor}
-import org.anacletogames.BattleMap
-import org.anacletogames.entities.RectEntity
+import org.anacletogames.battle.BattleMap
+import org.anacletogames.entities.{RectEntity, WithStackable}
 import util.InputDefaultHandler
 import org.anacletogames.maps._
 
@@ -51,19 +51,17 @@ class CollisionTest
   override def create(): Unit = {
 
     super.create()
-    myChar = new RectEntity(300, 300, 32, battleMap)
+    myChar = new RectEntity( 1, battleMap) with WithStackable
     shapeRenderer = new ShapeRenderer()
-    myChar2 = new RectEntity(150, 150, 32, battleMap)
+    myChar2 = new RectEntity( 1, battleMap) with WithStackable
 
     inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(myChar)
     stage = new Stage()
 
-    battleMap.addEntity(myChar)
-    battleMap.addCollidableShapes(tiledMap.getSolidShapes)
-
+    battleMap.addEntity(myChar,new GridPoint2(5,5))
     stage.addActor(myChar)
 
-    battleMap.addEntity(myChar2)
+    battleMap.addEntity(myChar2,new GridPoint2(1,1))
     stage.addActor(myChar2)
   }
 }

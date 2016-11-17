@@ -23,7 +23,7 @@ object EntityBehaviour {
         )))
           NoAction
         else
-          MoveTo(self, destination)
+          MoveBy(self,1,0)
 
       }
 

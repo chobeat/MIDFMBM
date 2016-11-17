@@ -1,6 +1,6 @@
 package org.anacletogames.entities
 
-import com.badlogic.gdx.math.{Circle, Intersector, Rectangle, Shape2D}
+import com.badlogic.gdx.math._
 
 /**
   * Created by simone on 13.11.16.
@@ -14,4 +14,10 @@ object CustomIntersector {
     case (a: Circle,b:Rectangle)=> Intersector.overlaps(a,b)
     case _=>false
   }
+
+  def contains(a:Shape2D,p:Vector2):Boolean=
+    a match{
+      case x:Rectangle=>x.contains(p)
+      case x:Circle=>x.contains(p)
+    }
 }

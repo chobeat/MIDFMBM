@@ -1,39 +1,40 @@
 package org.anacletogames.actions
 
+import javax.print.attribute.standard.Destination
+
 import com.badlogic.gdx.math.{GridPoint2, Intersector, Shape2D, Vector2}
 import org.anacletogames.actions.GameAction.ActionContext
+import org.anacletogames.battle.{BattleMap, GameGrid}
 import org.anacletogames.entities.{CustomIntersector, Entity}
 
 import scala.collection.mutable.ArrayBuffer
 
-abstract class GameAction()(implicit val actionContext: ActionContext) {
+case class GridMovement(x: Int, y: Int) {
+  def calculateDestination(currentPosition: GridPoint2) =
+    new GridPoint2(currentPosition.x + x, currentPosition.y + y)
+}
+
+abstract class GameAction()(implicit val actionContext: Option[ActionContext]) {
   def executeStep: Unit
 
   def isValid: Boolean = true
 
 }
 
-abstract class MovementGameAction(subject:Entity,displacement: Vector2)(
-    implicit val context: ActionContext)
+abstract class MovementGameAction(subject: Entity, destination: GridPoint2)(
+    implicit val context: Option[ActionContext])
     extends GameAction {
   override def isValid = {
-
-    val shapes = context.collidables - subject.stageBounds
-    val (origX,origY)=(subject.stageBounds.getX,subject.stageBounds.getY)
-    val projected=MoveUtil.projectShapeWithDisplacement(subject,displacement)
-    subject.setPosition(projected.x,projected.y)
-    val isValid = !shapes.exists(shape =>CustomIntersector.overlaps(shape,subject.stageBounds))
-    subject.setPosition(origX,origY)
-    isValid
+    subject.canIMoveThere(destination)
 
   }
 }
 
-abstract class GameActionWithoutContext
-    extends GameAction()(GameAction.emptyContext)
+abstract class GameActionWithoutContext extends GameAction()(None)
 
 object GameAction {
-  case class ActionContext(entities:ArrayBuffer[Entity],collidables:ArrayBuffer[Shape2D])
+  case class ActionContext(battleMap: BattleMap) {
+    def isTileAccessible(p: GridPoint2) = battleMap.isTileAccessible(p)
+  }
 
-  val emptyContext: ActionContext = ActionContext(ArrayBuffer.empty,ArrayBuffer.empty)
 }

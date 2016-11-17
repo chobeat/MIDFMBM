@@ -1,13 +1,13 @@
 package org.anacletogames.actions
 
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{GridPoint2, Vector2}
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.entities.Entity
 
-case class MoveBy(entity: Entity, x: Float, y: Float)
-    extends MovementGameAction(entity,new Vector2(x,y))(
-      entity.getActionContext) {
+case class MoveBy(entity: Entity, x: Int, y: Int)
+    extends MovementGameAction(entity, new GridPoint2(x, y))(
+      Some(entity.getActionContext)) {
   def executeStep: Unit = {
     if (this.isValid)
       entity.moveBy(x, y)
@@ -21,6 +21,7 @@ case class MoveBy(entity: Entity, x: Float, y: Float)
   }
 }
  */
+/*
 case class MoveTo(entity: Entity, destination: Vector2)
     extends GameAction()(entity.getActionContext) {
   def executeStep: Unit = {
@@ -29,21 +30,22 @@ case class MoveTo(entity: Entity, destination: Vector2)
     MoveBy(entity, movX, movY).executeStep
   }
 }
-
-case class DoOnceAction(a: GameAction, entity: Entity)(
-    implicit actionContext: ActionContext)
-    extends GameAction()(entity.getActionContext) {
+ */
+case class DoOnceAction(a: GameAction, entity: Entity)
+    extends GameAction()(Some(entity.getActionContext)) {
   override def executeStep: Unit = {
     a.executeStep
     entity.setBehaviour((_, _) => NoAction)
   }
 }
 
-case class RelocateTo(entity: Entity, destination: Vector2)
-    extends MovementGameAction(entity,destination)(entity.getActionContext) {
+case class RelocateTo(entity: Entity, destination: GridPoint2)
+    extends MovementGameAction(entity, destination)(Some(entity.getActionContext)) {
   def executeStep: Unit = {
-    entity.setX(destination.x)
-    entity.setY(destination.x)
+    context.map(ctx=>{
+      if(this.isValid)
+        ctx.battleMap
+    })
   }
 }
 

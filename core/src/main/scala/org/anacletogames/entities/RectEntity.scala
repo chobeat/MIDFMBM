@@ -2,9 +2,11 @@ package org.anacletogames.entities
 
 import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
 import com.badlogic.gdx.graphics.g2d.Sprite
-import org.anacletogames.{BattleMap, Simulation}
+import com.badlogic.gdx.math.GridPoint2
+import org.anacletogames.Simulation
+import org.anacletogames.battle.BattleMap
 
-class RectEntity(x: Float, y: Float, speed: Float = 1, context: BattleMap) extends Entity(x, y, speed,context: BattleMap) {
+abstract class RectEntity(speed: Int = 1, battleMap: BattleMap) extends SingleTileEntity(speed,battleMap) {
 
 
   private val pixmap = new Pixmap(128, 128, Pixmap.Format.RGBA8888)
@@ -18,5 +20,4 @@ class RectEntity(x: Float, y: Float, speed: Float = 1, context: BattleMap) exten
   override val sprite = new Sprite(new Texture(pixmap))
   pixmap.dispose()
 
-  this.setBounds(x, y, sprite.getWidth, sprite.getHeight)
 }
