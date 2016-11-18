@@ -9,7 +9,7 @@ import org.anacletogames.battle.BattleMap
 abstract class RectEntity(speed: Int = 1, battleMap: BattleMap) extends SingleTileEntity(speed,battleMap) {
 
 
-  private val pixmap = new Pixmap(128, 128, Pixmap.Format.RGBA8888)
+  private val pixmap = new Pixmap(32, 32, Pixmap.Format.RGBA8888)
 
   //Fill it red
   //Draw a circle about the middle

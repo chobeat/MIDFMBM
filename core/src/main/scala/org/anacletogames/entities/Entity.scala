@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.Simulation
 import org.anacletogames.actions.EntityBehaviour._
 import org.anacletogames.actions.GameAction.ActionContext
-import org.anacletogames.actions.{DoOnceAction, GameAction, NoAction}
+import org.anacletogames.actions.{DoOnceAction, GameAction, GridMovement, NoAction}
 import org.anacletogames.battle.BattleMap
 
 import scala.collection.JavaConversions._
@@ -25,7 +25,7 @@ abstract class SingleTileEntity(speed: Int = 1, battleMap: BattleMap)
 
 abstract class Entity(val speed: Int = 1, battleMap: BattleMap) extends Actor {
 
-  def getMyPosition = battleMap.getEntityPosition(this)
+  def getPosition = battleMap.getEntityPosition(this)
 
   def canIMoveThere(destination: GridPoint2): Boolean
 
@@ -51,10 +51,14 @@ abstract class Entity(val speed: Int = 1, battleMap: BattleMap) extends Actor {
     behaviour(this, decisionContext)
   }
 
+  override def moveBy(x: Float, y: Float): Unit = {
+    battleMap.moveEntity(this,GridMovement(x.toInt,y.toInt))
+  }
+
   def sprite: Sprite
 
   override def draw(batch: Batch, parentAlpha: Float): Unit = {
-    val position = getMyPosition
+    val position = getPosition
     if (position.nonEmpty) {
       this.setX(position.get.x * render.Constants.TileWidth)
       this.setY(position.get.y * render.Constants.TileHeigth)

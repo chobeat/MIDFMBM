@@ -5,12 +5,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.entities.Entity
 
-case class MoveBy(entity: Entity, x: Int, y: Int)
-    extends MovementGameAction(entity, new GridPoint2(x, y))(
+case class MoveBy(entity: Entity, movement: GridMovement)
+    extends MovementGameAction(entity, movement.calculateDestination(entity.getPosition.get))(
       Some(entity.getActionContext)) {
   def executeStep: Unit = {
     if (this.isValid)
-      entity.moveBy(x, y)
+      entity.moveBy(movement.x,movement.y)
   }
 }
 

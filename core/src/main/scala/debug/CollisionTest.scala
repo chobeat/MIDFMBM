@@ -30,6 +30,7 @@ class CollisionTest
   var myChar2: RectEntity = null
   override def render(): Unit = {
     super.render()
+    battleMap.updateForDraw()
     stage.draw()
     myChar.nextStep(List()).executeStep
     /*

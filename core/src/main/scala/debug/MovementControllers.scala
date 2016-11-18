@@ -1,7 +1,7 @@
 package debug
 
 import com.badlogic.gdx.Input
-import org.anacletogames.actions.MoveBy
+import org.anacletogames.actions.{GridMovement, MoveBy}
 import com.badlogic.gdx.graphics.OrthographicCamera
 import org.anacletogames.entities.Entity
 
@@ -21,11 +21,10 @@ trait MovementControllers { this: WithCamera with WithStage =>
   }
 
   def entityControl(entity: Entity): InputProcessor = {
-    case Input.Keys.W => entity.doOnce(MoveBy(entity, 0, entity.speed))
-
-    case Input.Keys.A => entity.doOnce(MoveBy(entity, -entity.speed, 0))
-    case Input.Keys.D => entity.doOnce(MoveBy(entity, entity.speed, 0))
-    case Input.Keys.S => entity.doOnce(MoveBy(entity, 0, -entity.speed))
+    case Input.Keys.W => entity.doOnce(MoveBy(entity, GridMovement(0, entity.speed)))
+    case Input.Keys.A => entity.doOnce(MoveBy(entity, GridMovement(-entity.speed, 0)))
+    case Input.Keys.D => entity.doOnce(MoveBy(entity, GridMovement(entity.speed, 0)))
+    case Input.Keys.S => entity.doOnce(MoveBy(entity, GridMovement(0, -entity.speed)))
   }
 
   def zoom: InputProcessor = {

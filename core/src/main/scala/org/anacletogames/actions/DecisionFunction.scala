@@ -23,7 +23,7 @@ object EntityBehaviour {
         )))
           NoAction
         else
-          MoveBy(self,1,0)
+          MoveBy(self,GridMovement(1,0))
 
       }
 
