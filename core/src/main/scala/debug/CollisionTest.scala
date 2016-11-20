@@ -24,7 +24,7 @@ class CollisionTest
   val tileSize = 32
   val mapWidth = 32 * tileSize
   val mapHeight = 32 * tileSize
-  val battleMap = new BattleMap(mapWidth, mapHeight, tiledMap)
+  var battleMap:BattleMap = null
   var myChar: RectEntity = null
   var shapeRenderer: ShapeRenderer = null
   var myChar2: RectEntity = null
@@ -52,12 +52,15 @@ class CollisionTest
   override def create(): Unit = {
 
     super.create()
+
+    battleMap=new BattleMap(mapWidth, mapHeight, tiledMap)
     myChar = new RectEntity( 1, battleMap) with WithStackable
     shapeRenderer = new ShapeRenderer()
     myChar2 = new RectEntity( 1, battleMap) with WithStackable
 
     inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(myChar)
     stage = new Stage()
+
 
     battleMap.addEntity(myChar,new GridPoint2(5,5))
     stage.addActor(myChar)

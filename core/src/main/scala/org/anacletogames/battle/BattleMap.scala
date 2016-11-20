@@ -6,6 +6,7 @@ import com.sun.net.httpserver.Authenticator.Failure
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.entities.Entity
+import org.anacletogames.maps.TiledMap2Rich
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -54,11 +55,12 @@ class GameGrid(x: Int, y: Int) {
       })
   }
 
-  def isTileAccessible(p: GridPoint2) =
+  def isTileAccessible(p: GridPoint2) = {
     isContentAccessible(getEntitiesAtPosition(p))
 
+  }
   def isContentAccessible(content: Seq[Entity]) =
-    !content.exists(e => !e.stackable)
+    !content.exists(e => e.stackable)
 
   def getAllEntities: Iterator[Entity] = entitiesToPosition.keysIterator
 
@@ -83,8 +85,12 @@ class BattleMap(mapWidth: Int, mapHeigth: Int, tiledMap: TiledMap) {
   }
 
   private val gameGrid = new GameGrid(mapWidth, mapHeigth)
+  private lazy val impassableMapTile=
+    tiledMap.getImpassableTiles
 
-  def isTileAccessible = gameGrid.isTileAccessible _
+  def isTileAccessible(p:GridPoint2) = {
+     gameGrid.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
+    }
 
   def getActionContext: ActionContext =
     ActionContext(this)
@@ -97,9 +103,9 @@ class BattleMap(mapWidth: Int, mapHeigth: Int, tiledMap: TiledMap) {
   def getEntityPosition = gameGrid.getEntityPosition _
 
   def moveEntity(e: Entity, movement: GridMovement) = {
-    val newPosition=movement.calculateDestination(e.getPosition.get)
+    val newPosition = movement.calculateDestination(e.getPosition.get)
     if (e.canIMoveThere(newPosition))
       gameGrid.removeEntity(e)
-      gameGrid.placeEntity(e, newPosition)
+    gameGrid.placeEntity(e, newPosition)
   }
 }
