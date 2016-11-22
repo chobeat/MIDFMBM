@@ -1,12 +1,15 @@
 package org.anacletogames.actions
 
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{GridPoint2, Vector2}
+import org.anacletogames.battle.BattleMap
 import org.anacletogames.entities.Entity
 
 /**
   * Created by simone on 12.11.16.
   */
 object MoveUtil {
+
+  /*
   def projectStep(entity: Entity, destination:Vector2) = {
     val currX = entity.getX
     val currY = entity.getY
@@ -32,5 +35,11 @@ object MoveUtil {
     val origPos=new Vector2(shape.x,shape.y)
     origPos.add(adjustedDisplacement)
 
-  }
+  }*/
+
+  def findPath(subject: Entity, battleMap: BattleMap): Seq[GridPoint2] =
+    {
+      val s=List(new GridPoint2(2,2),new GridPoint2(3,3))
+      Stream.continually(s).flatten.take(10000).toList
+    }
 }

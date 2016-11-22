@@ -12,6 +12,8 @@ import scala.collection.mutable.ArrayBuffer
 case class GridMovement(x: Int, y: Int) {
   def calculateDestination(currentPosition: GridPoint2) =
     new GridPoint2(currentPosition.x + x, currentPosition.y + y)
+
+  def isAdjacent = x <= 1 && x >= -1 && y <= 1 && y >= -1
 }
 
 abstract class GameAction()(implicit val actionContext: Option[ActionContext]) {

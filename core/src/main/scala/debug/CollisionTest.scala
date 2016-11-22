@@ -1,18 +1,11 @@
 package debug
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.math.{GridPoint2, Rectangle, Vector2}
-import com.badlogic.gdx.scenes.scene2d.{Actor, Stage}
-import com.badlogic.gdx.{ApplicationAdapter, InputProcessor}
+import com.badlogic.gdx.math.GridPoint2
+import com.badlogic.gdx.scenes.scene2d.Stage
 import org.anacletogames.battle.BattleMap
-import org.anacletogames.entities.{RectEntity, WithStackable}
-import util.InputDefaultHandler
-import org.anacletogames.maps._
-
-import scala.collection.JavaConversions._
+import org.anacletogames.behaviour.ReachPointBehaviour
+import org.anacletogames.entities.{DoNothingByDefault, RectEntity, WithStackable}
 
 /**
   * Created by simone on 05.11.16.
@@ -32,7 +25,7 @@ class CollisionTest
     super.render()
     battleMap.updateForDraw()
     stage.draw()
-    myChar.nextStep(List()).executeStep
+    myChar.nextStep().executeStep
     /*
     shapeRenderer.begin(ShapeType.Filled)
     shapeRenderer.setColor(Color.RED)
@@ -54,15 +47,16 @@ class CollisionTest
     super.create()
 
     battleMap=new BattleMap(mapWidth, mapHeight, tiledMap)
-    myChar = new RectEntity( 1, battleMap) with WithStackable
+    myChar = new RectEntity( 1, battleMap) with WithStackable with DoNothingByDefault
+    myChar.setBehaviour(ReachPointBehaviour(myChar,new GridPoint2(10,10)))
     shapeRenderer = new ShapeRenderer()
-    myChar2 = new RectEntity( 1, battleMap) with WithStackable
+    myChar2 = new RectEntity( 1, battleMap) with WithStackable with DoNothingByDefault
 
     inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(myChar)
     stage = new Stage()
 
 
-    battleMap.addEntity(myChar,new GridPoint2(5,5))
+    battleMap.addEntity(myChar,new GridPoint2(3,3))
     stage.addActor(myChar)
 
     battleMap.addEntity(myChar2,new GridPoint2(1,1))

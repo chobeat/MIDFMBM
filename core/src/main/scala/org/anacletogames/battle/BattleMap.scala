@@ -1,16 +1,13 @@
 package org.anacletogames.battle
 
 import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.math.{GridPoint2, Shape2D, Vector2}
-import com.sun.net.httpserver.Authenticator.Failure
+import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.entities.Entity
 import org.anacletogames.maps.TiledMap2Rich
 
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
-import scala.util.{Failure, Try}
 
 class GameGrid(x: Int, y: Int) {
 

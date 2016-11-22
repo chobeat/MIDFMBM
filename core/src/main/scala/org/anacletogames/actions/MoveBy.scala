@@ -21,21 +21,21 @@ case class MoveBy(entity: Entity, movement: GridMovement)
   }
 }
  */
-/*
-case class MoveTo(entity: Entity, destination: Vector2)
-    extends GameAction()(entity.getActionContext) {
-  def executeStep: Unit = {
 
-    val (movX, movY) = MoveUtil.projectStep(entity, destination)
-    MoveBy(entity, movX, movY).executeStep
+case class MoveToAdjacent(entity: Entity, destination: GridPoint2)
+    extends GameAction()(Some(entity.getActionContext)) {
+  def executeStep: Unit = {
+    val (diffX,diffY)=(destination.x - entity.getPosition.get.x,destination.y - entity.getPosition.get.y)
+    val nextStep=GridMovement(diffX,diffY)
+    if(nextStep.isAdjacent&& entity.canIMoveThere(destination))
+        MoveBy(entity, nextStep).executeStep
   }
 }
- */
+
 case class DoOnceAction(a: GameAction, entity: Entity)
     extends GameAction()(Some(entity.getActionContext)) {
   override def executeStep: Unit = {
     a.executeStep
-    entity.setBehaviour((_, _) => NoAction)
   }
 }
 
