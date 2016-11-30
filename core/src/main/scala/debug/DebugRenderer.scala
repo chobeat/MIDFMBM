@@ -12,7 +12,7 @@ import util.InputDefaultHandler
 /**
   * Created by simone on 05.11.16.
   */
-abstract class DebugRenderer(tiledMapWidth: Int, tiledMapHeigth: Int)
+abstract class DebugRenderer(val tiledMapWidth: Int, val tiledMapHeigth: Int)
     extends ApplicationAdapter
     with InputProcessor
     with InputDefaultHandler
@@ -23,10 +23,10 @@ abstract class DebugRenderer(tiledMapWidth: Int, tiledMapHeigth: Int)
   var h: Int = 0
 
   override def create(): Unit = {
-    tiledMap = MapGenerator.generateRandomMap(tiledMapWidth, tiledMapHeigth)
+    super.create()
     w = Gdx.graphics.getWidth()
     h = Gdx.graphics.getHeight()
-    tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap)
+
 
     camera.setToOrtho(false, w, h);
     camera.update();

@@ -15,8 +15,8 @@ class CollisionTest
     with MovementControllers
     with WithStage {
   val tileSize = 32
-  val mapWidth = 32 * tileSize
-  val mapHeight = 32 * tileSize
+  val mapWidth = 32
+  val mapHeight = 32
   var battleMap:BattleMap = null
   var myChar: RectEntity = null
   var shapeRenderer: ShapeRenderer = null

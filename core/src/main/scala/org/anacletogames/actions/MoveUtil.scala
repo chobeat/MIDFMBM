@@ -3,6 +3,11 @@ package org.anacletogames.actions
 import com.badlogic.gdx.math.{GridPoint2, Vector2}
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.entities.Entity
+import org.xguzm.pathfinding.PathFinder
+import org.xguzm.pathfinding.grid.finders.AStarGridFinder
+import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
+
+import scala.collection.JavaConversions._
 
 /**
   * Created by simone on 12.11.16.
@@ -37,9 +42,29 @@ object MoveUtil {
 
   }*/
 
-  def findPath(subject: Entity, battleMap: BattleMap): Seq[GridPoint2] =
-    {
-      val s=List(new GridPoint2(2,2),new GridPoint2(3,3))
-      Stream.continually(s).flatten.take(10000).toList
-    }
+  def findPath(subject: Entity,
+               destination: GridPoint2,
+               battleMap: BattleMap): Seq[GridPoint2] = {
+
+    val cells: Array[Array[GridCell]] = (for (i <- 0 to battleMap.mapWidth)
+      yield
+        (for (j <- 0 to battleMap.mapHeigth)
+          yield
+            new GridCell(
+              i,
+              j,
+              battleMap
+                .isTileAccessible(new GridPoint2(i, j)))).toArray).toArray
+
+    val navGrid = new NavigationGrid[GridCell](cells, true)
+    val finder = new AStarGridFinder(classOf[GridCell])
+    val pos = subject.getPosition.get
+    val resultPath =
+      finder.findPath(pos.x, pos.y, destination.x, destination.y, navGrid)
+
+    if (resultPath != null)
+      resultPath.map(p => new GridPoint2(p.x, p.y)).toList
+    else
+      List()
+  }
 }
