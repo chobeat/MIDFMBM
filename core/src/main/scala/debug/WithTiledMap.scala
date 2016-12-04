@@ -18,6 +18,20 @@ trait WithTiledMap {
   def create()={
 
     tiledMap = MapGenerator.generateRandomMap(tiledMapWidth, tiledMapHeigth)
+
+    tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap)
+  }
+}
+
+
+trait WithTiledEmptyMap extends WithTiledMap{
+  this:{def tiledMapWidth:Int
+    def tiledMapHeigth:Int}=>
+
+  override def create()={
+
+    tiledMap = MapGenerator.generateEmptyMap(tiledMapWidth,tiledMapHeigth)
+
     tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap)
   }
 }

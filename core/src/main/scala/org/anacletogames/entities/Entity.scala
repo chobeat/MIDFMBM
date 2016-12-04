@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions._
 import org.anacletogames.battle.BattleMap
-import org.anacletogames.behaviour.{Decision, DoOnceBehaviour, EntityBehaviour}
+import org.anacletogames.behaviour.{DoOnceBehaviour, EntityBehaviour}
+
+import scala.util.{Failure, Success, Try}
 
 /**
   * Created by simone on 12.11.16.
@@ -30,12 +32,11 @@ abstract class Entity(val speed: Int = 1, battleMap: BattleMap) extends Actor {
 
   val stackable: Boolean
 
-  private var behaviour: EntityBehaviour = getDefaultBehaviour
+  private var behaviour = getDefaultBehaviour
 
-  def setBehaviour(e: EntityBehaviour) = behaviour = e
-
-  def doOnce(a: GameAction): Unit =
-    this.setBehaviour(DoOnceBehaviour(this,a,behaviour))
+  def doOnce(a: GameAction) = {
+    setBehaviour(DoOnceBehaviour(a))
+  }
 
   def stageCoord = localToStageCoordinates(new Vector2(this.getX, this.getY))
 
@@ -46,12 +47,34 @@ abstract class Entity(val speed: Int = 1, battleMap: BattleMap) extends Actor {
 
   def overlaps(other: Rectangle) = other.overlaps(this.stageBounds)
 
-  def nextStep(): GameAction = {
+  def nextAction(): Try[GameAction] = {
+    behaviour.decideNextAction(battleMap)
+  }
 
-    val Decision(newBehaviour, nextAction) =
-      behaviour.decideNextAction(this.battleMap)
-    this.setBehaviour(newBehaviour)
-    nextAction
+  def nextBehaviour(action: GameAction): Try[EntityBehaviour] = {
+    behaviour.decideNextBehaviour(action)
+  }
+
+  def setBehaviour(newBehaviour: EntityBehaviour) = {
+    behaviour = newBehaviour
+  }
+
+  def setBehaviour(newBehaviour: Try[EntityBehaviour]) = {
+    newBehaviour match {
+      case Success(b) => behaviour = b
+      case Failure(e) => behaviour = getDefaultBehaviour
+    }
+  }
+
+  def act(): Unit = {
+    val action = nextAction()
+    action match {
+      case Success(a) =>
+        a.execute
+        setBehaviour(nextBehaviour(a))
+
+      case Failure(e) =>
+    }
   }
 
   override def moveBy(x: Float, y: Float): Unit = {

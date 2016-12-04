@@ -1,46 +1,55 @@
 package org.anacletogames.behaviour
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.actions.{MoveToAdjacent, MoveUtil, NoAction}
+import org.anacletogames.actions.{
+  GameAction,
+  MoveToAdjacent,
+  MoveUtil,
+  NoAction
+}
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.entities.Entity
+import sun.plugin.dom.exception.InvalidStateException
 
-import scala.util.Random
+import scala.util.{Failure, Random, Success, Try}
 
 /**
   * Created by simone on 22.11.16.
   */
 case class ReachPointBehaviour(subject: Entity,
                                destination: GridPoint2,
-                               decidedPath: Option[Seq[GridPoint2]] = None)
+                               var decidedPath: Option[Seq[GridPoint2]] = None)
     extends EntityBehaviour {
-  override def decideNextAction(context: BattleMap): Decision = {
+  override def decideNextAction(context: BattleMap): Try[GameAction] = {
 
     val path = decidedPath match {
       case None =>
         context.findPath(subject, destination)
 
-      case Some(nextPos :: rest) =>
-        if (subject.canIMoveThere(nextPos))
-          nextPos :: rest
-        else
-          context.findPath(subject, destination)
+      case Some(path) => path
     }
+    decidedPath = Some(path)
+
     path match {
+      case Nil => Success(NoAction)
+      case head :: tail => Success(MoveToAdjacent(subject, head))
+    }
+  }
 
-      case Nil => Decision(subject.getDefaultBehaviour, NoAction)
+  override def decideNextBehaviour(action: GameAction): Try[EntityBehaviour] = {
 
-      case nextPosition :: Nil =>
-        val action = MoveToAdjacent(subject, nextPosition)
-        Decision(subject.getDefaultBehaviour, action)
-
-      case nextPosition :: rest =>
-        val action = MoveToAdjacent(subject, nextPosition)
-        Decision(ReachPointBehaviour(subject, destination, Some(rest)), action)
-
-
+    (action, decidedPath) match {
+      case (MoveToAdjacent(e, d), Some(head :: Nil))
+          if d.equals(head) =>
+        Success(DoNothingBehaviour)
+      case (MoveToAdjacent(e, d), Some(head :: rest))
+          if d.equals(head) =>
+        Success(ReachPointBehaviour(subject, destination, Some(rest)))
+      case _ =>
+        Failure(
+          new InvalidStateException(
+            "Invalid movement action for ReachPointBehaviour"))
     }
 
   }
-
 }

@@ -17,7 +17,7 @@ case class GridMovement(x: Int, y: Int) {
 }
 
 abstract class GameAction()(implicit val actionContext: Option[ActionContext]) {
-  def executeStep: Unit
+  def execute: Unit
 
   def isValid: Boolean = true
 

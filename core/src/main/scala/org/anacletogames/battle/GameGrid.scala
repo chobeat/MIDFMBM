@@ -1,13 +1,10 @@
 package org.anacletogames.battle
 
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.actions.GameAction.ActionContext
-import org.anacletogames.actions.GridMovement
 import org.anacletogames.entities.Entity
-import org.anacletogames.maps.TiledMap2Rich
-import org.xguzm.pathfinding.grid.finders.AStarGridFinder
+import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions, ThetaStarGridFinder}
 import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
+
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
@@ -22,7 +19,10 @@ trait PathFinding { this: BattleMap =>
         yield new GridCell(i, j, true)).toArray).toArray
 
   val navGrid = new NavigationGrid[GridCell](cells, true)
-  val pathFinder = new AStarGridFinder(classOf[GridCell])
+  val gridFinderOptions= new GridFinderOptions()
+  gridFinderOptions.allowDiagonal= false
+  gridFinderOptions.dontCrossCorners=true
+  val pathFinder = new AStarGridFinder(classOf[GridCell], gridFinderOptions)
 
   def findPath(subject: Entity, destination: GridPoint2): Seq[GridPoint2] = {
 
@@ -85,13 +85,7 @@ class GameGrid(x: Int, y: Int) {
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    cachedOccupied.get(p) match {
-      case None =>
-        val b = isContentAccessible(getEntitiesAtPosition(p))
-        cachedOccupied.put(p, b)
-        b
-      case Some(b) => b
-    }
+   isContentAccessible(getEntitiesAtPosition(p))
 
   }
   def isContentAccessible(content: Seq[Entity]) =

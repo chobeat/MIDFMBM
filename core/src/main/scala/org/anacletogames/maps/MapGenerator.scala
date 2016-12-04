@@ -18,27 +18,43 @@ import scala.util.Random
   */
 object MapGenerator {
 
+  val tileWidth = 32
+  val tileHeight = 32
+
   val IMPASSABLE_LAYER_NAME="IMPASSABLE"
 
   def generateRandomMap(width: Int, height: Int): TiledMap = {
-    val genMap = new TiledMap()
-    val layers = genMap.getLayers()
 
-    val tileWidth = 32
-    val tileHeight = 32
 
-    val walkableLayer =
+    val dirtLayer =
       new TiledMapTileLayer(width, height, tileWidth, tileHeight)
+    LayerGenerator.fillWithTexture(dirtLayer,TestMapLoader.dirtTiles.Center)
+
     val impassableTileLayer =
       new TiledMapTileLayer(width, height, tileWidth, tileHeight)
-    val dirtLayer = LayerGenerator.generateBackgroundLayer(walkableLayer)
     val impassableLayer = LayerGenerator.generateImpassableLayer(impassableTileLayer)
     impassableLayer.setName(IMPASSABLE_LAYER_NAME)
-    layers.add(dirtLayer)
-    layers.add(impassableTileLayer)
+
+    layersToMap(List(dirtLayer, impassableLayer))
 
 
-    genMap
+
+  }
+
+  def generateEmptyMap(width: Int, height: Int): TiledMap ={
+    val dirtLayer =
+      new TiledMapTileLayer(width, height, tileWidth, tileHeight)
+    LayerGenerator.fillWithTexture(dirtLayer,TestMapLoader.dirtTiles.Center)
+
+    layersToMap(List(dirtLayer))
+  }
+
+
+  def layersToMap(layers:Seq[TiledMapTileLayer]): TiledMap ={
+    val map = new TiledMap()
+    val mapLayers = map.getLayers()
+    layers.foreach(mapLayers.add)
+    map
   }
 }
 
@@ -52,12 +68,12 @@ object LayerGenerator {
   }
 
 
-  def generateBackgroundLayer(layer: TiledMapTileLayer) = {
+  def fillWithTexture(layer: TiledMapTileLayer, texture:TextureRegion): TiledMapTileLayer = {
 
     val dirtCentercell = new Cell()
 
     dirtCentercell.setTile(
-      new StaticTiledMapTile(TestMapLoader.dirtTiles.Center))
+      new StaticTiledMapTile(texture))
 
     for {
       i <- 0 to layer.getWidth
@@ -69,10 +85,7 @@ object LayerGenerator {
   }
 
   def generateImpassableLayer(layer: TiledMapTileLayer) = {
-/*
-    val grassRiver= new MapGeneratorLineElement(List(layer)) with GrassTile
-    grassRiver.placeOnLayerAbs(layer,grassRiver.path.last)
-*/
+
     for {_ <- 0 to 5
     element= new MapGeneratorRectElement with HoleTile
     } yield element.placeRandomOnLayer(layer)

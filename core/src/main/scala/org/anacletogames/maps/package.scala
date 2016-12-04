@@ -1,7 +1,11 @@
 package org.anacletogames
 
 import com.badlogic.gdx.maps.MapObject
-import com.badlogic.gdx.maps.objects.{CircleMapObject, PolylineMapObject, RectangleMapObject}
+import com.badlogic.gdx.maps.objects.{
+  CircleMapObject,
+  PolylineMapObject,
+  RectangleMapObject
+}
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
 import com.badlogic.gdx.math.{GridPoint2, Shape2D}
@@ -44,12 +48,20 @@ class TiledMapRich(m: TiledMap) {
     } yield obj.getShape
   }
 
-  def getImpassableTiles: Map[GridPoint2, Cell] ={
-    val impassableLayer=m.getLayers.get(MapGenerator.IMPASSABLE_LAYER_NAME).asInstanceOf[TiledMapTileLayer]
-    (for {
-      i<-0 to impassableLayer.getWidth
-      j<-0 to impassableLayer.getHeight
-      cell = impassableLayer.getCell(i,j) if cell != null
-    } yield new GridPoint2(i,j)->cell)(breakOut)
+  def getImpassableTiles: Map[GridPoint2, Cell] = {
+    val impassableLayer = Option(
+      m.getLayers
+        .get(MapGenerator.IMPASSABLE_LAYER_NAME)
+        .asInstanceOf[TiledMapTileLayer])
+    impassableLayer match {
+      case Some(impLayer) =>
+        (for {
+          i <- 0 to impLayer.getWidth
+          j <- 0 to impLayer.getHeight
+          cell = impLayer.getCell(i, j) if cell != null
+        } yield new GridPoint2(i, j) -> cell)(breakOut)
+
+      case None => Map.empty
+    }
   }
 }

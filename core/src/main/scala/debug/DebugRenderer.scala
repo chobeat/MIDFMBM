@@ -17,7 +17,7 @@ abstract class DebugRenderer(val tiledMapWidth: Int, val tiledMapHeigth: Int)
     with InputProcessor
     with InputDefaultHandler
     with WithCamera
-    with WithTiledMap {
+    with WithTiledEmptyMap {
 
   var w: Int = 0
   var h: Int = 0
@@ -28,8 +28,8 @@ abstract class DebugRenderer(val tiledMapWidth: Int, val tiledMapHeigth: Int)
     h = Gdx.graphics.getHeight()
 
 
-    camera.setToOrtho(false, w, h);
-    camera.update();
+    camera.setToOrtho(false, w, h)
+    camera.update()
     Gdx.input.setInputProcessor(this)
   }
 
