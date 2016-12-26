@@ -18,8 +18,6 @@ class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
   private lazy val impassableMapTile =
     tiledMap.getImpassableTiles
 
-
-
   def isTileAccessible(p: GridPoint2) = {
     gameGrid.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
   }
@@ -30,12 +28,14 @@ class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
   def getAllEntities = gameGrid.getAllEntities
 
   def addEntity(e: Entity, position: GridPoint2) = {
-    gameGrid.placeEntity(e, position)
-    navGrid.setCell(
-      position.x,
-      position.y,
-      new GridCell(position.x, position.y, isTileAccessible(position)))
-
+    val isPlaced = gameGrid.placeEntity(e, position)
+    if (isPlaced) {
+      e.setPosition(position.x, position.y)
+      navGrid.setCell(
+        position.x,
+        position.y,
+        new GridCell(position.x, position.y, isTileAccessible(position)))
+    }
   }
 
   def removeEntity(entity: Entity) = {
