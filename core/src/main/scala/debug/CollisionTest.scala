@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.behaviour.ReachPointBehaviour
 import org.anacletogames.entities.{DoNothingByDefault, RectEntity, WithEntityMovement, WithStackable}
-import render.{EntityWithMovementAnimation, WithDelta}
+import render.{EntityWithAnimation, WithDelta}
 
 import scala.util.Random
 
@@ -37,7 +37,6 @@ class CollisionTest
     }
 
     if (isTimeToRender) {
-      println(accumulatedRender)
       accumulatedRender+=1
 
       super.render()
@@ -48,7 +47,7 @@ class CollisionTest
   }
 
   def createDummy() = {
-    val myChar = new RectEntity(1, battleMap, this) with WithStackable with EntityWithMovementAnimation with WithEntityMovement
+    val myChar = new RectEntity(1, battleMap, this) with WithStackable with EntityWithAnimation with WithEntityMovement
       with DoNothingByDefault
     myChar.setBehaviour(
       ReachPointBehaviour(

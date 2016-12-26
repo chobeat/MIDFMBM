@@ -3,12 +3,12 @@ package org.anacletogames.entities
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.entities.assets.MaleBaseCharacterTexture
-import render.{EntityWithMovementAnimation, MovementAnimation}
+import render.{EntityWithAnimation, MovementAnimation}
 
 /**
   * Created by simone on 04.12.16.
   */
-trait WithEntityMovement { this: Entity with EntityWithMovementAnimation=>
+trait WithEntityMovement { this: Entity with EntityWithAnimation=>
   override def moveBy(x: Float, y: Float): Unit = {
     val startingPosition=getPosition
     val mov=GridMovement(x.toInt, y.toInt)
