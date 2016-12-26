@@ -9,6 +9,7 @@ import org.anacletogames.entities.{Entity, EntityOrientation}
 case class RestAnimation(animation: Animation)
     extends EntityAnimation(animation) {
   override def draw(batch: Batch, entity: Entity with EntityWithAnimation): Unit = {
+
     val currentFrame = animation.getKeyFrame(0)
     val position = entity.getPosition
     position match {

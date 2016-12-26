@@ -52,7 +52,7 @@ class CollisionTest
     myChar.setBehaviour(
       ReachPointBehaviour(
         myChar,
-        new GridPoint2(Random.nextInt(22), Random.nextInt(22))))
+        new GridPoint2(3,22)))
     battleMap
       .addEntity(myChar, new GridPoint2(4, 4))
     stage.addActor(myChar)

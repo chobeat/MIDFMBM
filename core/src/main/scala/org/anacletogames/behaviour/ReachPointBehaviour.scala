@@ -17,17 +17,16 @@ case class ReachPointBehaviour(subject: Entity with WithEntityMovement,
     extends EntityBehaviour {
   override def decideNextAction(context: BattleMap): Try[GameAction] = {
 
-    val path = decidedPath match {
+    decidedPath = decidedPath match {
       case None =>
-        context.findPath(subject, destination)
+        Some(context.findPath(subject, destination))
 
-      case Some(path) => path
+      case Some(_) => decidedPath
     }
-    decidedPath = Some(path)
 
-    path match {
-      case Nil => Success(NoAction)
-      case head :: tail => Success(MoveToAdjacent(subject, head))
+    decidedPath match {
+      case Some(Nil) => Success(NoAction)
+      case Some(head :: tail) => Success(MoveToAdjacent(subject, head))
     }
   }
 

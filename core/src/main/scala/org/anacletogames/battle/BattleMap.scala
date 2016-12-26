@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
+import org.anacletogames.behaviour.PathFinding
 import org.anacletogames.entities.{Entity, WithEntityMovement}
 import org.anacletogames.maps.TiledMap2Rich
 import org.xguzm.pathfinding.grid.GridCell
@@ -13,10 +14,11 @@ import scala.collection.mutable
 class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     extends PathFinding {
 
-
-  private val gameGrid = new GameGrid(mapWidth, mapHeigth)
+  val gameGrid = new GameGrid(mapWidth, mapHeigth)
   private lazy val impassableMapTile =
     tiledMap.getImpassableTiles
+
+
 
   def isTileAccessible(p: GridPoint2) = {
     gameGrid.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)

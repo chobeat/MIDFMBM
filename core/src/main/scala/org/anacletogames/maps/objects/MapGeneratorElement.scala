@@ -43,9 +43,9 @@ abstract class MapGeneratorElement {
     layer.setCell(x, y, t)
   }
 
-  def placeOnLayerAbs(layer: TiledMapTileLayer, position: GridPoint2) = {
+  def placeOnLayerWithPosition(layer: TiledMapTileLayer, position: GridPoint2) = {
     parts.foreach {
-      case MapGeneratorElementPart(p, t) => placeOnLayer(layer, p.x, p.y, t)
+      case MapGeneratorElementPart(p, t) => placeOnLayer(layer, p.x+position.x, p.y+position.y, t)
     }
   }
   def getRandomValidCoordinates(layer: TiledMapTileLayer,

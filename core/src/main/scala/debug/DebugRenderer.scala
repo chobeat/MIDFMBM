@@ -17,7 +17,7 @@ abstract class DebugRenderer(val tiledMapWidth: Int, val tiledMapHeigth: Int)
     with InputProcessor
     with InputDefaultHandler
     with WithCamera
-    with WithTiledEmptyMap {
+    with WithTiledDebugMap {
 
   var w: Int = 0
   var h: Int = 0

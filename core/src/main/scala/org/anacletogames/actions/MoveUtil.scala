@@ -42,29 +42,4 @@ object MoveUtil {
 
   }*/
 
-  def findPath(subject: Entity,
-               destination: GridPoint2,
-               battleMap: BattleMap): Seq[GridPoint2] = {
-
-    val cells: Array[Array[GridCell]] = (for (i <- 0 to battleMap.mapWidth)
-      yield
-        (for (j <- 0 to battleMap.mapHeigth)
-          yield
-            new GridCell(
-              i,
-              j,
-              battleMap
-                .isTileAccessible(new GridPoint2(i, j)))).toArray).toArray
-
-    val navGrid = new NavigationGrid[GridCell](cells, true)
-    val finder = new AStarGridFinder(classOf[GridCell])
-    val pos = subject.getPosition.get
-    val resultPath =
-      finder.findPath(pos.x, pos.y, destination.x, destination.y, navGrid)
-
-    if (resultPath != null)
-      resultPath.map(p => new GridPoint2(p.x, p.y)).toList
-    else
-      List()
-  }
 }

@@ -11,15 +11,14 @@ import org.anacletogames.entities.{Entity, EntityOrientation}
   */
 case class MovementAnimation(orientedAnimation: OrientedAnimation,
                              startingPosition: GridPoint2,
-                             destination: GridPoint2
-                             )
+                             destination: GridPoint2)
     extends EntityAnimation(orientedAnimation.animation) {
 
   override def draw(batch: Batch,
                     entity: Entity with EntityWithAnimation): Unit = {
 
-    val alpha = Math.min(Constants.moveToCellTime * statetime, 1)
-    if (alpha<1.0) {
+    val alpha = Constants.moveToCellTime * statetime
+    if (alpha < 1.0) {
 
       updateStateTime()
 
@@ -31,7 +30,8 @@ case class MovementAnimation(orientedAnimation: OrientedAnimation,
       drawAtPosition(batch, drawPosition.x, drawPosition.y)
 
     } else {
-      val endMovementAnimation= entity.getRestingAnimation(this.orientedAnimation.direction)
+      val endMovementAnimation =
+        entity.getRestingAnimation(this.orientedAnimation.direction)
       entity.animation = endMovementAnimation
       endMovementAnimation.draw(batch, entity)
     }
