@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.entities.Entity
 import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions, ThetaStarGridFinder}
 import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
+import render.Constants
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -93,11 +94,7 @@ class GameGrid(x: Int, y: Int) {
 
   def getAllEntities: Iterator[Entity] = entitiesToPosition.keysIterator
 
-  def updateEntitiesForDraw() = {
-    entitiesToPosition.foreach {
-      case (e: Entity, point) => e.setPosition(point.x, point.y)
-    }
-  }
+
 
   def getEntityPosition(e: Entity) = entitiesToPosition.get(e)
 

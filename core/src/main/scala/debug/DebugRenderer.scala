@@ -37,6 +37,7 @@ abstract class DebugRenderer(val tiledMapWidth: Int, val tiledMapHeigth: Int)
     Gdx.gl.glClearColor(1, 0, 0, 1)
     Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
     camera.update()
     tiledMapRenderer.setView(camera)
     tiledMapRenderer.render()
@@ -44,7 +45,7 @@ abstract class DebugRenderer(val tiledMapWidth: Int, val tiledMapHeigth: Int)
 
   var inputProcessor: PartialFunction[Int, Unit] = { case x: Int => }
 
-  override def keyUp(keycode: Int): Boolean = {
+  override def keyDown(keycode: Int): Boolean = {
     super.keyUp(keycode)
     val processorWithCatchAll = inputProcessor orElse PartialFunction[Int,
                                                                       Unit] {

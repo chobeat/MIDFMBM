@@ -4,7 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
-import org.anacletogames.entities.Entity
+import org.anacletogames.entities.{Entity, WithEntityMovement}
 import org.anacletogames.maps.TiledMap2Rich
 import org.xguzm.pathfinding.grid.GridCell
 
@@ -13,9 +13,6 @@ import scala.collection.mutable
 class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     extends PathFinding {
 
-  def updateForDraw() = {
-    gameGrid.updateEntitiesForDraw()
-  }
 
   private val gameGrid = new GameGrid(mapWidth, mapHeigth)
   private lazy val impassableMapTile =
@@ -52,7 +49,7 @@ class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
 
   def getEntityPosition = gameGrid.getEntityPosition _
 
-  def moveEntity(e: Entity, movement: GridMovement) = {
+  def moveEntity(e: Entity with WithEntityMovement, movement: GridMovement) = {
     val newPosition = movement.calculateDestination(e.getPosition.get)
     if (e.canIMoveThere(newPosition)) {
       this.removeEntity(e)
