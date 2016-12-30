@@ -7,7 +7,8 @@ import render.{EntityWithAnimation, WithDelta}
 
 abstract class RectEntity(speed: Int = 1,
                           battleMap: BattleMap,
+                          gameName:Option[String],
                           renderingContext: WithDelta)
-    extends Entity(speed, battleMap, renderingContext) with EntityWithAnimation with SingleTileMovingEntity{
+    extends Entity(speed, battleMap,gameName, renderingContext) with EntityWithAnimation with SingleTileMovingEntity{
 
 }

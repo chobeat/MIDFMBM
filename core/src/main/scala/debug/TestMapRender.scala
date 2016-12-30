@@ -1,13 +1,14 @@
 package debug
 
+import org.anacletogames.modes.{BaseRenderer, MovementControllers, WithStage}
+
 /**
   * Created by lara on 10/29/16.
   */
-class TestMapRender
-    extends DebugRenderer(32, 32)
+abstract class TestMapRender
+    extends BaseRenderer
     with WithStage
-    with WithCamera
     with MovementControllers {
 
-  inputProcessor = zoom orElse arrowMovMap(64)
+  override val inputProcessor = zoom orElse arrowMovMap(64)
 }

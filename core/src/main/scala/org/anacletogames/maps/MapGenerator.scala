@@ -7,14 +7,15 @@ import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.maps.assets.{GrassTile, HoleTile, TestMapLoader}
 import org.anacletogames.maps.objects.{MapGeneratorRandomRectElement, MapGeneratorRectElement}
+import render.Constants
 
 /**
   * Created by lara on 10/29/16.
   */
 object MapGenerator {
 
-  val tileWidth = 32
-  val tileHeight = 32
+  val tileWidth = Constants.TileWidth
+  val tileHeight =  Constants.TileHeigth
 
   val IMPASSABLE_LAYER_NAME = "IMPASSABLE"
 

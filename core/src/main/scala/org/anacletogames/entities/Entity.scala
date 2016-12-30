@@ -14,6 +14,7 @@ import scala.util.{Failure, Success, Try}
 
 abstract class Entity(val speed: Int = 1,
                       val battleMap: BattleMap,
+                      val gameName:Option[String]=None,
                       renderingContext: WithDelta)
     extends Actor {
 
@@ -21,6 +22,11 @@ abstract class Entity(val speed: Int = 1,
 
   def getPosition = battleMap.getEntityPosition(this)
 
+  def getGameName:String= gameName match{
+    case None=> getName
+    case Some(n)=>n
+
+  }
 
   val stackable: Boolean
 

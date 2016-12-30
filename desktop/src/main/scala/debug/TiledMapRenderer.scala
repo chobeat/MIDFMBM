@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfig
 /**
   * Created by simone on 06.11.16.
   */
+/*
 
 object TiledMapRenderer extends App {
   val cfg = new LwjglApplicationConfiguration
@@ -14,3 +15,4 @@ object TiledMapRenderer extends App {
   cfg.forceExit = false
   new LwjglApplication(new TestMapRender, cfg)
 }
+*/

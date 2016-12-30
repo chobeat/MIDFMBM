@@ -1,11 +1,8 @@
 package org.anacletogames.behaviour
 
-import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions._
 import org.anacletogames.battle.BattleMap
-import org.anacletogames.entities.Entity
 
-import scala.collection.immutable.::
 import scala.util.Try
 
 /**

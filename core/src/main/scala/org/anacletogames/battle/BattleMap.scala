@@ -8,7 +8,6 @@ import org.anacletogames.behaviour.PathFinding
 import org.anacletogames.entities.{Entity, WithEntityMovement}
 import org.anacletogames.maps.TiledMap2Rich
 import org.xguzm.pathfinding.grid.GridCell
-
 import scala.collection.mutable
 
 class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
