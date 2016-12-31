@@ -1,21 +1,13 @@
 package org.anacletogames.modes
 
-import com.badlogic.gdx.graphics.FPSLogger
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
-import com.badlogic.gdx.utils.viewport.FitViewport
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.behaviour.ReachPointBehaviour
-import org.anacletogames.entities.{
-  DoNothingByDefault,
-  RectEntity,
-  WithEntityMovement,
-  WithStackable
-}
+import org.anacletogames.entities.{DoNothingByDefault, RectEntity, WithEntityMovement, WithStackable}
 import org.anacletogames.gui.{BattleMapDebugMenu, BattleMapGUIControl}
 import org.anacletogames.maps.MapGenerator
-import render.{Constants, EntityWithAnimation, WithDelta}
+import render.{EntityWithAnimation, WithDelta}
 
 import scala.collection.JavaConversions._
 
@@ -28,8 +20,8 @@ class BattleMapRenderer
     with BattleMapDebugMenu
     with BattleMapGUIControl
     with WithDelta {
-  val mapWidth = 100
-  val mapHeight = 100
+  val mapWidth = 32
+  val mapHeight = 32
   lazy val battleMap: BattleMap = new BattleMap(mapWidth, mapHeight, tiledMap)
   var isPaused = false
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse battleMapGUIKeyprocessor
@@ -71,7 +63,7 @@ class BattleMapRenderer
 
     super.create()
 
-    (0 until 25).foreach(x => createDummy(x))
+    (0 until 5).foreach(x => createDummy(x))
   }
   override def resize(width: Int, height: Int): Unit = {
 

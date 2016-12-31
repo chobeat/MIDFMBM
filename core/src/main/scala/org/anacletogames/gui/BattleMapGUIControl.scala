@@ -10,7 +10,7 @@ import org.anacletogames.modes.WithStage
 trait BattleMapGUIControl {
   this: BattleMapDebugMenu with WithStage=>
   def battleMapGUIKeyprocessor():PartialFunction[Int,Unit]= {
-    case Input.Keys.SLASH => openDebugMenu()
+    case Input.Keys.SLASH => toggleDebugMenu()
   }
 
 }

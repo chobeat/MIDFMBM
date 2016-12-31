@@ -19,26 +19,22 @@ import org.anacletogames.modes.BattleMapRenderer
 /**
   * Created by simone on 27.12.16.
   */
-trait BattleMapDebugMenu { this: BattleMapRenderer =>
-  var isDebugMenuOpen = false
-  lazy val atlas = new TextureAtlas(Gdx.files.internal("GUI/uiskin.atlas"))
-  def openDebugMenu(): Unit = {
-    val table = new Table()
-    table.setColor(Color.BLUE)
-    table.setFillParent(true)
-    table.setTouchable(Touchable.enabled)
-    table.setSize(100, 100)
-    table.align(Align.center | Align.top)
-    table.debug()
-    battleMap.getAllEntities.foreach(entity => {
-      val button = BattleMapDebugMenu.buildEntityButton(entity)
-      table.add(button)
-      table.row()
-    })
+trait BattleMapDebugMenu extends ToggleableTable{ this: BattleMapRenderer =>
 
-    guiStage.addActor(table)
-    isDebugMenuOpen = true
-  }
+  lazy val atlas = new TextureAtlas(Gdx.files.internal("GUI/uiskin.atlas"))
+
+  def createTable:Table= {
+        val table = BattleMapDebugMenu.buildDebugMenuTable
+
+        battleMap.getAllEntities.foreach(entity => {
+          val button = BattleMapDebugMenu.buildEntityButton(entity)
+          table.add(button)
+          table.row()
+        })
+
+    table
+    }
+
 }
 
 object BattleMapDebugMenu {
@@ -57,6 +53,17 @@ object BattleMapDebugMenu {
   textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY)
   textButtonStyle.font = skin.getFont("default")
   skin.add("default", textButtonStyle)
+
+  def buildDebugMenuTable: Table = {
+    val table = new Table()
+    table.setColor(Color.BLUE)
+    table.setFillParent(true)
+    table.setTouchable(Touchable.enabled)
+    table.setSize(100, 100)
+    table.align(Align.center | Align.top)
+    table.debug()
+    table
+  }
 
   def buildEntityButton(entity: Entity): TextButton = {
 
