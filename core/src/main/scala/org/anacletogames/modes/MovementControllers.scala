@@ -33,13 +33,13 @@ trait MovementControllers { this: WithStage =>
 
   def zoom: InputProcessor = {
 
-    case Input.Keys.N => {
+    case Input.Keys.N =>
       stage.getCamera.asInstanceOf[OrthographicCamera].zoom *= 1.1F
-    }
-    case Input.Keys.M => {
+
+    case Input.Keys.M =>
 
       stage.getCamera.asInstanceOf[OrthographicCamera].zoom *= 0.9F
-    }
+
   }
 
 }

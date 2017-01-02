@@ -26,9 +26,9 @@ object Settings {
         "-encoding",
         "UTF-8",
         "-source",
-        "1.6",
+        "1.7",
         "-target",
-        "1.6"
+        "1.7"
       ),
       scalacOptions ++= Seq(
         "-Xlint",
@@ -42,7 +42,7 @@ object Settings {
         "-feature",
         "-encoding",
         "UTF-8",
-        "-target:jvm-1.6"
+        "-target:jvm-1.7"
       ),
       cancelable := true,
       exportJars := true

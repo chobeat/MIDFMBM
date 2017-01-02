@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.{GameAction, MoveToAdjacent, MoveUtil, NoAction}
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.entities.{Entity, WithEntityMovement}
-import sun.plugin.dom.exception.InvalidStateException
 
 import scala.util.{Failure, Random, Success, Try}
 
@@ -41,7 +40,7 @@ case class ReachPointBehaviour(subject: Entity with WithEntityMovement,
         Success(ReachPointBehaviour(subject, destination, Some(rest)))
       case _ =>
         Failure(
-          new InvalidStateException(
+          new Exception(
             "Invalid movement action for ReachPointBehaviour"))
     }
 

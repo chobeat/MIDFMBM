@@ -4,10 +4,15 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.behaviour.ReachPointBehaviour
-import org.anacletogames.entities.{DoNothingByDefault, RectEntity, WithEntityMovement, WithStackable}
-import org.anacletogames.gui.{BattleMapDebugMenu, BattleMapGUIControl}
+import org.anacletogames.entities.{
+  DoNothingByDefault,
+  RectEntity,
+  WithEntityMovement,
+  WithStackable
+}
+import org.anacletogames.gui.{BattleMapGUIControl, WithBattleMapGUI}
 import org.anacletogames.maps.MapGenerator
-import render.{EntityWithAnimation, WithDelta}
+import render.EntityWithAnimation
 
 import scala.collection.JavaConversions._
 
@@ -17,18 +22,15 @@ import scala.collection.JavaConversions._
 class BattleMapRenderer
     extends BaseRenderer
     with MovementControllers
-    with BattleMapDebugMenu
-    with BattleMapGUIControl
-    with WithDelta {
+    with WithBattleMapGUI
+    with BattleMapGUIControl {
   val mapWidth = 32
   val mapHeight = 32
   lazy val battleMap: BattleMap = new BattleMap(mapWidth, mapHeight, tiledMap)
-  var isPaused = false
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse battleMapGUIKeyprocessor
 
-  override def render(): Unit = {
+  override def renderContent(): Unit = {
 
-    updateDelta()
     if (isTimeToAct && !isPaused) {
       accumulatedRender = 0
       battleMap.getAllEntities.foreach(_.act())
@@ -36,8 +38,6 @@ class BattleMapRenderer
 
     if (isTimeToRender) {
       accumulatedRender += 1
-
-      super.render()
       //to draw actors ordered by position
       val actors =
         stage.getActors.toList.sortBy(_.getY)(Ordering[Float].reverse)
@@ -45,8 +45,8 @@ class BattleMapRenderer
       actors.foreach(stage.addActor)
 
       stage.draw()
-      guiStage.draw()
     }
+
   }
 
   def createDummy(x: Int) = {
@@ -62,14 +62,19 @@ class BattleMapRenderer
   override def create(): Unit = {
 
     super.create()
+    initGUI()
 
     (0 until 5).foreach(x => createDummy(x))
   }
+  def initGUI(): Unit = {
+    guiStage.addActor(battleMapGUIBar)
+  }
+
   override def resize(width: Int, height: Int): Unit = {
 
-    stage.getViewport().update(width, height, true)
+    stage.getViewport.update(width, height, true)
 
-    guiStage.getViewport().update(width, height, true)
+    guiStage.getViewport.update(width, height, true)
   }
 
   override val mapGenerator: (Int, Int) => TiledMap =

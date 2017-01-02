@@ -61,14 +61,14 @@ abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
 
       visited match {
         case h :: tail if h == arrival => visited
-        case h :: tail if offCount <= randomness => {
+        case h :: tail if offCount <= randomness =>
           val goOff = Math.random() < randomness
           val next = nextStep(h, goOff)
           if (next.isEmpty)
             visited
           else
             generateSup(next.get :: visited)
-        }
+
         case h :: tail =>
           val next = nextStep(h, goOff = false)
           if (next.isEmpty)

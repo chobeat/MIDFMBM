@@ -19,25 +19,31 @@ import org.anacletogames.modes.BattleMapRenderer
 /**
   * Created by simone on 27.12.16.
   */
-trait BattleMapDebugMenu extends ToggleableTable{ this: BattleMapRenderer =>
+trait WithBattleMapGUI { this: BattleMapRenderer =>
 
-  lazy val atlas = new TextureAtlas(Gdx.files.internal("GUI/uiskin.atlas"))
-
-  def createTable:Table= {
-        val table = BattleMapDebugMenu.buildDebugMenuTable
-
-        battleMap.getAllEntities.foreach(entity => {
-          val button = BattleMapDebugMenu.buildEntityButton(entity)
-          table.add(button)
-          table.row()
-        })
-
-    table
-    }
+  lazy val debugConsoleTable = new DebugConsoleTable(this)
+  lazy val battleMapGUIBar = new BattleMapGUIBar(this)
+  def toggleDebugMenu(): Unit = debugConsoleTable.toggle()
+  def togglePause(): Unit = battleMapGUIBar.togglePause()
 
 }
 
-object BattleMapDebugMenu {
+class DebugConsoleTable(battleMapRenderer: BattleMapRenderer)
+    extends ToggleableTable(battleMapRenderer) {
+  def createTable: Table = {
+    val table = WithBattleMapGUI.buildDebugMenuTable
+
+    battleMapRenderer.battleMap.getAllEntities.foreach(entity => {
+      val button = WithBattleMapGUI.buildEntityButton(entity)
+      table.add(button)
+      table.row()
+    })
+
+    table
+  }
+}
+
+object WithBattleMapGUI {
   val skin = new Skin()
 
   val pixmap = new Pixmap(1, 1, Format.RGBA8888)

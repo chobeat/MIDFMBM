@@ -61,7 +61,7 @@ object MapGenerator {
 
   def layersToMap(layers: Seq[TiledMapTileLayer]): TiledMap = {
     val map = new TiledMap()
-    val mapLayers = map.getLayers()
+    val mapLayers = map.getLayers
     layers.foreach(mapLayers.add)
     map
   }

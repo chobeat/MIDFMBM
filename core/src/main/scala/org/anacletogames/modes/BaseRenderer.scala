@@ -2,6 +2,7 @@ package org.anacletogames.modes
 
 import com.badlogic.gdx.graphics.{FPSLogger, GL20, OrthographicCamera}
 import com.badlogic.gdx.{Gdx, _}
+import render.WithDelta
 import util.InputDefaultHandler
 
 /**
@@ -12,9 +13,12 @@ abstract class BaseRenderer()
     with InputProcessor
     with InputDefaultHandler
     with WithTiledMap
-    with WithStage {
+    with WithStage
+      with WithDelta {
 
+  var isPaused:Boolean=false
   val fpsLogger = new FPSLogger
+  def renderContent():Unit
   override def create(): Unit = {
     super.create()
 
@@ -26,13 +30,18 @@ abstract class BaseRenderer()
 
   override def render(): Unit = {
 
+    updateDelta()
     fpsLogger.log()
     Gdx.gl.glClearColor(1, 0, 0, 1)
     Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     tiledMapRenderer.setView(stage.getCamera.asInstanceOf[OrthographicCamera])
     tiledMapRenderer.render()
+    renderContent()
+    guiStage.draw()
   }
+
+
 
   val inputProcessor: PartialFunction[Int, Unit]
 
