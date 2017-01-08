@@ -10,7 +10,7 @@ import util.AssetsUtil
 /**
   * Created by simone on 04.12.16.
   */
-object MaleBaseCharacterTexture extends DefaultHumanWalkingTexture {
+object MaleBaseCharacterTexture extends MovementAnimatedTexture {
 
   lazy val texture: scala.Array[Array[TextureRegion]] =
     AssetsUtil.readTextureFromFile("BODY_male.png", 9, 4)
@@ -22,12 +22,16 @@ object MaleBaseCharacterTexture extends DefaultHumanWalkingTexture {
 case class OrientedAnimation(animation: Animation,
                              direction: EntityOrientation)
 
-trait DefaultHumanWalkingTexture {
+trait EntityTexture{
   val frameDuration: Float
   val texture: Array[Array[TextureRegion]]
 
   val animationFromFrameIndices =
     AssetsUtil.animationFromFrameIndices(texture,frameDuration,_:Int,_:Seq[Int])
+}
+
+trait MovementAnimatedTexture extends EntityTexture{
+
 
   lazy val upStandingBase = animationFromFrameIndices(0, 0 until 1)
   lazy val leftStandingBase = animationFromFrameIndices(1, 0 until 1)

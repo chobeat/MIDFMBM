@@ -13,14 +13,12 @@ import render.Constants
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
-class GameGrid(x: Int, y: Int) {
+class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   private val positionToEntities = mutable.HashMap[GridPoint2, Seq[Entity]]()
   private val entitiesToPosition = mutable.HashMap[Entity, GridPoint2]()
 
   private val cachedOccupied = mutable.HashMap[GridPoint2, Boolean]()
-
-
 
   def getEntitiesAtPosition(p: GridPoint2): Seq[Entity] =
     positionToEntities.getOrElse(p, Seq())
@@ -36,16 +34,22 @@ class GameGrid(x: Int, y: Int) {
       Right(tileContent :+ entity)
   }
 
+  def isInsideGrid(position: GridPoint2) =
+    position.x >= 0 && position.x <= gridWidth && position.y >= 0 && position.y <= gridHeight
+
   def placeEntity(entity: Entity, position: GridPoint2): Boolean = {
+    if (!isInsideGrid(position))
+      false
+    else {
+      val content = getEntitiesAtPosition(position)
+      val newContent = addEntityToTileContent(entity, content)
 
-    val content = getEntitiesAtPosition(position)
-    val newContent = addEntityToTileContent(entity, content)
-
-    newContent.fold((x) => false, (entities) => {
-      positionToEntities.put(position, entities)
-      entities.foreach(x => entitiesToPosition.put(x, position))
-      true
-    })
+      newContent.fold((x) => false, (entities) => {
+        positionToEntities.put(position, entities)
+        entities.foreach(x => entitiesToPosition.put(x, position))
+        true
+      })
+    }
 
   }
 

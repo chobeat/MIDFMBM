@@ -11,23 +11,21 @@ import org.xguzm.pathfinding.grid.GridCell
 import scala.collection.mutable
 
 class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
-    extends PathFinding {
+    extends GameGrid(mapWidth, mapHeigth)
+    with PathFinding {
 
-  val gameGrid = new GameGrid(mapWidth, mapHeigth)
   private lazy val impassableMapTile =
     tiledMap.getImpassableTiles
 
-  def isTileAccessible(p: GridPoint2) = {
-    gameGrid.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
+  override def isTileAccessible(p: GridPoint2) = {
+    super.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
   }
 
   def getActionContext: ActionContext =
     ActionContext(this)
 
-  def getAllEntities = gameGrid.getAllEntities
-
   def addEntity(e: Entity, position: GridPoint2) = {
-    val isPlaced = gameGrid.placeEntity(e, position)
+    val isPlaced = this.placeEntity(e, position)
     if (isPlaced) {
       e.setPosition(position.x, position.y)
       navGrid.setCell(
@@ -37,8 +35,8 @@ class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     }
   }
 
-  def removeEntity(entity: Entity) = {
-    gameGrid.removeEntity(entity)
+  override def removeEntity(entity: Entity) = {
+    super.removeEntity(entity)
     entity.getPosition match {
       case Some(pos) =>
         navGrid.setCell(pos.x,
@@ -47,8 +45,6 @@ class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
       case None =>
     }
   }
-
-  def getEntityPosition = gameGrid.getEntityPosition _
 
   def moveEntity(e: Entity with WithEntityMovement, movement: GridMovement) = {
     val newPosition = movement.calculateDestination(e.getPosition.get)

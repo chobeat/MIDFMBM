@@ -12,20 +12,20 @@ import org.anacletogames.entities.{
 }
 import org.anacletogames.gui.{BattleMapGUIControl, WithBattleMapGUI}
 import org.anacletogames.maps.MapGenerator
-import render.EntityWithAnimation
+import render.{EntityWithAnimation, MaleAnimatedTexture}
 
 import scala.collection.JavaConversions._
 
 /**
   * Created by simone on 05.11.16.
   */
-class BattleMapRenderer
+class BattleMapRenderer(mapWidth: Int = 32, mapHeight: Int = 32)
     extends BaseRenderer
     with MovementControllers
     with WithBattleMapGUI
     with BattleMapGUIControl {
-  val mapWidth = 32
-  val mapHeight = 32
+  override lazy val tiledMap =
+    MapGenerator.generateDebugMap(mapWidth, mapHeight)
   lazy val battleMap: BattleMap = new BattleMap(mapWidth, mapHeight, tiledMap)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse battleMapGUIKeyprocessor
 
@@ -51,8 +51,8 @@ class BattleMapRenderer
 
   def createDummy(x: Int) = {
     val myChar = new RectEntity(1, battleMap, Some("Entity " + x), this)
-    with WithStackable with EntityWithAnimation with WithEntityMovement
-    with DoNothingByDefault
+    with MaleAnimatedTexture with WithStackable with EntityWithAnimation
+    with WithEntityMovement with DoNothingByDefault
     myChar.setBehaviour(ReachPointBehaviour(myChar, new GridPoint2(3, 22)))
     battleMap
       .addEntity(myChar, new GridPoint2(x, x))
@@ -77,6 +77,4 @@ class BattleMapRenderer
     guiStage.getViewport.update(width, height, true)
   }
 
-  override val mapGenerator: (Int, Int) => TiledMap =
-    MapGenerator.generateDebugMap
 }

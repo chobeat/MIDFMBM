@@ -9,10 +9,7 @@ import org.anacletogames.maps.MapGenerator
   */
 trait WithTiledMap { this: BaseRenderer =>
 
-  val mapWidth: Int
-  val mapHeight: Int
-  lazy val tiledMap: TiledMap = mapGenerator(mapWidth, mapHeight)
-  val mapGenerator: (Int, Int) => TiledMap
+  val tiledMap: TiledMap
   lazy val tiledMapRenderer: OrthogonalTiledMapRenderer =
     new OrthogonalTiledMapRenderer(tiledMap)
 
