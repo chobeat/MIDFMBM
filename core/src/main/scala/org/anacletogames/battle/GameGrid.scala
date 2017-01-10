@@ -1,12 +1,9 @@
 package org.anacletogames.battle
 
 import com.badlogic.gdx.math.GridPoint2
+import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.entities.Entity
-import org.xguzm.pathfinding.grid.finders.{
-  AStarGridFinder,
-  GridFinderOptions,
-  ThetaStarGridFinder
-}
+import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions, ThetaStarGridFinder}
 import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
 import render.Constants
 
@@ -78,4 +75,8 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
   def nextStep(): Unit = {
     cachedOccupied.clear()
   }
+
+
+  def getActionContext: ActionContext =
+    ActionContext(this)
 }

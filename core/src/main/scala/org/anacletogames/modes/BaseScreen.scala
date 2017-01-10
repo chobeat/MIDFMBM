@@ -8,8 +8,8 @@ import util.InputDefaultHandler
 /**
   * Created by simone on 05.11.16.
   */
-abstract class BaseRenderer()
-    extends ApplicationAdapter
+abstract class BaseScreen()
+    extends Screen
     with InputProcessor
     with InputDefaultHandler
     with WithTiledMap
@@ -19,16 +19,14 @@ abstract class BaseRenderer()
   var isPaused:Boolean=false
   val fpsLogger = new FPSLogger
   def renderContent():Unit
-  override def create(): Unit = {
-    super.create()
+  /*override def create(): Unit = {*/
 
     val inputMulti = new InputMultiplexer()
     inputMulti.addProcessor(this)
     inputMulti.addProcessor(guiStage)
     Gdx.input.setInputProcessor(inputMulti)
-  }
 
-  override def render(): Unit = {
+  override def render(delta:Float): Unit = {
 
     updateDelta()
     fpsLogger.log()
@@ -55,4 +53,19 @@ abstract class BaseRenderer()
     false
   }
 
+  override def hide(): Unit = {
+    Gdx.input.setInputProcessor(null)
+  }
+
+  override def dispose(): Unit = {stage.dispose()}
+
+
+  override def show(): Unit = {
+    Gdx.input.setInputProcessor(this)
+    render(0)
+  }
+
+  override def pause(): Unit = {}
+
+  override def resume(): Unit = {}
 }

@@ -1,12 +1,12 @@
 package org.anacletogames.gui
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import org.anacletogames.modes.{BaseRenderer, BattleMapRenderer}
+import org.anacletogames.modes.{BaseScreen, BattleMapScreen}
 
 /**
   * Created by simone on 31.12.16.
   */
-abstract class ToggleableTable(baseRenderer: BaseRenderer){
+abstract class ToggleableTable(baseRenderer: BaseScreen){
   var table: Option[Table] = None
   def createTable:Table
   def toggle() = {

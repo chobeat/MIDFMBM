@@ -1,16 +1,17 @@
 package org.anacletogames.behaviour
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.battle.BattleMap
+import org.anacletogames.battle.{BattleMap, GameMap}
 import org.anacletogames.entities.Entity
 import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions}
 import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
+
 import scala.collection.JavaConversions._
 
 /**
   * Created by simone on 30.11.16.
   */
-trait PathFinding { this: BattleMap =>
+trait PathFinding { this: GameMap =>
 
   lazy val navGrid = {
 

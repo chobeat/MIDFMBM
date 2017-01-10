@@ -2,7 +2,7 @@ package org.anacletogames.behaviour
 
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.{GameAction, MoveToAdjacent, MoveUtil, NoAction}
-import org.anacletogames.battle.BattleMap
+import org.anacletogames.battle.{BattleMap, GameMap}
 import org.anacletogames.entities.{Entity, WithEntityMovement}
 
 import scala.util.{Failure, Random, Success, Try}
@@ -14,7 +14,7 @@ case class ReachPointBehaviour(subject: Entity with WithEntityMovement,
                                destination: GridPoint2,
                                var decidedPath: Option[Seq[GridPoint2]] = None)
     extends EntityBehaviour {
-  override def decideNextAction(context: BattleMap): Try[GameAction] = {
+  override def decideNextAction(context: GameMap): Try[GameAction] = {
 
     decidedPath = decidedPath match {
       case None =>

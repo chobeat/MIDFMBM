@@ -38,8 +38,8 @@ abstract class MovementGameAction(subject: Entity with WithEntityMovement, desti
 abstract class GameActionWithoutContext extends GameAction()(None)
 
 object GameAction {
-  case class ActionContext(battleMap: BattleMap) {
-    def isTileAccessible(p: GridPoint2) = battleMap.isTileAccessible(p)
+  case class ActionContext(gameGrid: GameGrid) {
+    def isTileAccessible(p: GridPoint2) = gameGrid.isTileAccessible(p)
   }
 
 }

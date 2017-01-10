@@ -14,12 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.{Align, ChangeListener}
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.entities.Entity
-import org.anacletogames.modes.BattleMapRenderer
+import org.anacletogames.modes.BattleMapScreen
 
 /**
   * Created by simone on 27.12.16.
   */
-trait WithBattleMapGUI { this: BattleMapRenderer =>
+trait WithBattleMapGUI { this: BattleMapScreen =>
 
   lazy val debugConsoleTable = new DebugConsoleTable(this)
   lazy val battleMapGUIBar = new BattleMapGUIBar(this)
@@ -28,7 +28,7 @@ trait WithBattleMapGUI { this: BattleMapRenderer =>
 
 }
 
-class DebugConsoleTable(battleMapRenderer: BattleMapRenderer)
+class DebugConsoleTable(battleMapRenderer: BattleMapScreen)
     extends ToggleableTable(battleMapRenderer) {
   def createTable: Table = {
     val table = WithBattleMapGUI.buildDebugMenuTable

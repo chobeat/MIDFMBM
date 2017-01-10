@@ -19,8 +19,8 @@ import scala.collection.JavaConversions._
 /**
   * Created by simone on 05.11.16.
   */
-class BattleMapRenderer(mapWidth: Int = 32, mapHeight: Int = 32)
-    extends BaseRenderer
+class BattleMapScreen(mapWidth: Int = 32, mapHeight: Int = 32)
+    extends BaseScreen
     with MovementControllers
     with WithBattleMapGUI
     with BattleMapGUIControl {
@@ -59,13 +59,10 @@ class BattleMapRenderer(mapWidth: Int = 32, mapHeight: Int = 32)
     stage.addActor(myChar)
   }
 
-  override def create(): Unit = {
-
-    super.create()
     initGUI()
 
     (0 until 5).foreach(x => createDummy(x))
-  }
+
   def initGUI(): Unit = {
     guiStage.addActor(battleMapGUIBar)
   }

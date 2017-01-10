@@ -1,7 +1,7 @@
 package debug
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import org.anacletogames.modes.BattleMapRenderer
+import org.anacletogames.modes.BattleMapScreen
 
 /**
   * Created by simone on 06.11.16.
@@ -12,5 +12,5 @@ object CollisionMapExplorer extends App {
   cfg.height = 480
   cfg.width = 800
   cfg.forceExit = false
-  new LwjglApplication(new BattleMapRenderer, cfg)
+  new LwjglApplication(new MainRenderer, cfg)
 }

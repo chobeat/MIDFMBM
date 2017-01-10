@@ -42,7 +42,7 @@ case class RelocateTo(entity: Entity with WithEntityMovement, destination: GridP
   def execute: Unit = {
     context.map(ctx=>{
       if(this.isValid)
-        ctx.battleMap
+        ctx.gameGrid
     })
   }
 }

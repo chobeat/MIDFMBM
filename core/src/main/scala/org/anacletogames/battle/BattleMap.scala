@@ -10,7 +10,10 @@ import org.anacletogames.maps.TiledMap2Rich
 import org.xguzm.pathfinding.grid.GridCell
 import scala.collection.mutable
 
-class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
+class BattleMap(mapWidth: Int, mapHeigth: Int, tiledMap: TiledMap)
+    extends GameMap(mapWidth, mapHeigth, tiledMap)
+
+class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     extends GameGrid(mapWidth, mapHeigth)
     with PathFinding {
 
@@ -20,9 +23,6 @@ class BattleMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
   override def isTileAccessible(p: GridPoint2) = {
     super.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
   }
-
-  def getActionContext: ActionContext =
-    ActionContext(this)
 
   def addEntity(e: Entity, position: GridPoint2) = {
     val isPlaced = this.placeEntity(e, position)

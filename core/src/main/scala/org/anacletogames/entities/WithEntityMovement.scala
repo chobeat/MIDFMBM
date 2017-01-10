@@ -12,7 +12,7 @@ trait WithEntityMovement { this: Entity with EntityWithAnimation=>
   override def moveBy(x: Float, y: Float): Unit = {
     val startingPosition=getPosition
     val mov=GridMovement(x.toInt, y.toInt)
-    this.battleMap.moveEntity(this, mov)
+    this.gameMap.moveEntity(this, mov)
     val destination=getPosition
     this.animation=MovementAnimation(getMovementAnimation(mov),startingPosition.get,destination.get)
   }

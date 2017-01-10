@@ -1,5 +1,6 @@
 package org.anacletogames.modes
 
+import com.badlogic.gdx.Screen
 import org.anacletogames.battle.GameGrid
 import org.anacletogames.entities.{Entity, RectEntity, SingleTileMovingEntity}
 import org.anacletogames.maps.world.WithWorldMap
@@ -13,22 +14,19 @@ import scala.collection.JavaConversions._
 
 class WorldGrid(gridWidth:Int,gridHeight:Int) extends GameGrid(gridWidth,gridHeight)
 
-class WorldMapRenderer
-    extends BaseRenderer
+class WorldMapScreen
+    extends BaseScreen
     with WithWorldMap
 
     with MovementControllers{
 
   lazy val worldGrid = new WorldGrid(mapWidth,mapHeight)
-
   //val partyLocator: Entity= new RectEntity with SingleTileMovingEntity with EntityWithAnimation with MaleAnimatedTexture{
 
   //}
 
   override val inputProcessor = zoom orElse arrowMovMap(64)
   override def renderContent(): Unit = {
-
-
 
     if (isTimeToRender) {
 
@@ -43,13 +41,7 @@ class WorldMapRenderer
 
   }
 
-
-  override def create(): Unit = {
-
-    super.create()
-    initGUI()
-
-  }
+  initGUI()
   def initGUI(): Unit = {
   }
 

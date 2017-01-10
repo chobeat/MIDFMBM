@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.{GridPoint2, Vector2}
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions._
-import org.anacletogames.battle.BattleMap
+import org.anacletogames.battle.{BattleMap, GameGrid, GameMap}
 import org.anacletogames.behaviour.{DoOnceBehaviour, EntityBehaviour}
 import render.WithDelta
 
@@ -13,14 +13,14 @@ import scala.util.{Failure, Success, Try}
 
 
 abstract class Entity(val speed: Int = 1,
-                      val battleMap: BattleMap,
+                      val gameMap: GameMap,
                       val gameName:Option[String]=None,
                       renderingContext: WithDelta)
     extends Actor {
 
   def getDefaultBehaviour: EntityBehaviour
 
-  def getPosition = battleMap.getEntityPosition(this)
+  def getPosition = gameMap.getEntityPosition(this)
 
   def getGameName:String= gameName match{
     case None=> getName
@@ -36,10 +36,10 @@ abstract class Entity(val speed: Int = 1,
     setBehaviour(DoOnceBehaviour(a))
   }
 
-  def getActionContext: ActionContext = battleMap.getActionContext
+  def getActionContext: ActionContext = gameMap.getActionContext
 
   def nextAction(): Try[GameAction] = {
-    behaviour.decideNextAction(battleMap)
+    behaviour.decideNextAction(gameMap)
   }
 
   def nextBehaviour(action: GameAction): Try[EntityBehaviour] = {

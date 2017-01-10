@@ -7,7 +7,7 @@ import org.anacletogames.maps.MapGenerator
 /**
   * Created by simone on 06.11.16.
   */
-trait WithTiledMap { this: BaseRenderer =>
+trait WithTiledMap { this: BaseScreen =>
 
   val tiledMap: TiledMap
   lazy val tiledMapRenderer: OrthogonalTiledMapRenderer =
