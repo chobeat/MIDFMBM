@@ -31,8 +31,8 @@ trait WithBattleMapGUI { this: BattleScreen =>
 class DebugConsoleTable(battleMapRenderer: BattleScreen)
     extends ToggleableTable(battleMapRenderer) {
 
-  def createTable: Table = ???
-  /*{  val table = WithBattleMapGUI.buildDebugMenuTable
+  def createTable: Table = {
+    val table = WithBattleMapGUI.buildDebugMenuTable
 
     battleMapRenderer.battleMap.getAllEntities.foreach(entity => {
       val button = WithBattleMapGUI.buildEntityButton(entity)
@@ -41,7 +41,7 @@ class DebugConsoleTable(battleMapRenderer: BattleScreen)
     })
 
     table
-  }*/
+  }
 }
 
 object WithBattleMapGUI {
@@ -71,7 +71,7 @@ object WithBattleMapGUI {
     table.debug()
     table
   }
-/*
+
   def buildEntityButton(entity: Entity): TextButton = {
 
     val button = new ButtonWithEntity(entity, textButtonStyle)
@@ -88,5 +88,5 @@ object WithBattleMapGUI {
 
     button
   }
-  */
+
 }

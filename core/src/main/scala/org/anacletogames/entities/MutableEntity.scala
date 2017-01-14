@@ -12,19 +12,13 @@ import scala.util.{Failure, Success, Try}
 
 abstract class MutableEntity(val speed: Int = 1,
                              val gameMap: GameMap,
-                             val gameName: Option[String] = None,
+                             override val gameName: Option[String] = None,
                              renderingContext: WithDelta)
     extends Actor with Entity{
 
   def getDefaultBehaviour: EntityBehaviour
 
-  def getPosition = gameMap.getEntityPosition(this)
 
-  def getGameName: String = gameName match {
-    case None => getName
-    case Some(n) => n
-
-  }
 
 
 

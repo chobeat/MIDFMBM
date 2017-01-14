@@ -14,7 +14,7 @@ import scala.util.{Success, Try}
   * Created by simone on 14.01.17.
   */
 class SettlementEntity(settlement: Settlement,
-                       gameMap: GameMap,
+                       val gameMap: GameMap,
                        renderingContext: WithDelta)
     extends ImmutableEntity(0, Some(settlement.name), renderingContext) {
   override def doStep(): SettlementEntity =
