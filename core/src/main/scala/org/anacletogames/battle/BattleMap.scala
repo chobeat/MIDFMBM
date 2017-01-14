@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.behaviour.PathFinding
-import org.anacletogames.entities.{Entity, WithEntityMovement}
+import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
 import org.anacletogames.maps.TiledMap2Rich
 import org.xguzm.pathfinding.grid.GridCell
 import scala.collection.mutable
@@ -24,7 +24,7 @@ class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     super.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
   }
 
-  def addEntity(e: Entity, position: GridPoint2) = {
+  def addEntity(e: MutableEntity, position: GridPoint2) = {
     val isPlaced = this.placeEntity(e, position)
     if (isPlaced) {
       e.setPosition(position.x, position.y)
@@ -35,7 +35,7 @@ class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     }
   }
 
-  override def removeEntity(entity: Entity) = {
+  override def removeEntity(entity: MutableEntity) = {
     super.removeEntity(entity)
     entity.getPosition match {
       case Some(pos) =>
@@ -46,11 +46,12 @@ class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     }
   }
 
-  def moveEntity(e: Entity with WithEntityMovement, movement: GridMovement) = {
+  def moveEntity(e: MutableEntity with WithEntityMovement, movement: GridMovement) = {
     val newPosition = movement.calculateDestination(e.getPosition.get)
     if (e.canIMoveThere(newPosition)) {
       this.removeEntity(e)
       this.addEntity(e, newPosition)
     }
   }
+
 }

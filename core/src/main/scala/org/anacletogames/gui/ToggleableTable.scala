@@ -1,7 +1,7 @@
 package org.anacletogames.gui
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import org.anacletogames.modes.{BaseScreen, BattleMapScreen}
+import org.anacletogames.modes.{BaseScreen, BattleScreen}
 
 /**
   * Created by simone on 31.12.16.

@@ -3,14 +3,14 @@ package org.anacletogames.behaviour
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.{GameAction, MoveToAdjacent, MoveUtil, NoAction}
 import org.anacletogames.battle.{BattleMap, GameMap}
-import org.anacletogames.entities.{Entity, WithEntityMovement}
+import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
 
 import scala.util.{Failure, Random, Success, Try}
 
 /**
   * Created by simone on 22.11.16.
   */
-case class ReachPointBehaviour(subject: Entity with WithEntityMovement,
+case class ReachPointBehaviour(subject: MutableEntity with WithEntityMovement,
                                destination: GridPoint2,
                                var decidedPath: Option[Seq[GridPoint2]] = None)
     extends EntityBehaviour {

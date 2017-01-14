@@ -3,7 +3,7 @@ package org.anacletogames.modes
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import org.anacletogames.actions.{GridMovement, MoveBy}
-import org.anacletogames.entities.{Entity, WithEntityMovement}
+import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
 
 /**
   * Created by simone on 05.11.16.
@@ -20,7 +20,7 @@ trait MovementControllers { this: WithStage =>
 
   }
 
-  def entityControl(entity: Entity with WithEntityMovement): InputProcessor = {
+  def entityControl(entity: MutableEntity with WithEntityMovement): InputProcessor = {
     case Input.Keys.W =>
       entity.doOnce(MoveBy(entity, GridMovement(0, entity.speed)))
     case Input.Keys.A =>

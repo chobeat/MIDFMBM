@@ -5,7 +5,7 @@ import javax.print.attribute.standard.Destination
 import com.badlogic.gdx.math.{GridPoint2, Intersector, Shape2D, Vector2}
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.battle.{BattleMap, GameGrid}
-import org.anacletogames.entities.{CustomIntersector, Entity, WithEntityMovement}
+import org.anacletogames.entities.{CustomIntersector, MutableEntity, WithEntityMovement}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -19,23 +19,21 @@ case class GridMovement(x: Int, y: Int) {
   }
 }
 
-abstract class GameAction()(implicit val actionContext: Option[ActionContext]) {
+abstract class GameAction() {
   def execute: Unit
 
   def isValid: Boolean = true
 
 }
 
-abstract class MovementGameAction(subject: Entity with WithEntityMovement, destination: GridPoint2)(
-    implicit val context: Option[ActionContext])
+abstract class MovementGameAction(subject: MutableEntity with WithEntityMovement, destination: GridPoint2)
     extends GameAction {
   override def isValid = {
     subject.canIMoveThere(destination)
-
   }
 }
 
-abstract class GameActionWithoutContext extends GameAction()(None)
+abstract class GameActionWithoutContext extends GameAction()
 
 object GameAction {
   case class ActionContext(gameGrid: GameGrid) {

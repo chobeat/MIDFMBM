@@ -13,13 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui._
 import com.badlogic.gdx.scenes.scene2d.utils.{Align, ChangeListener}
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent
 import org.anacletogames.battle.BattleMap
-import org.anacletogames.entities.Entity
-import org.anacletogames.modes.BattleMapScreen
+import org.anacletogames.entities.{Entity, MutableEntity}
+import org.anacletogames.modes.BattleScreen
 
 /**
   * Created by simone on 27.12.16.
   */
-trait WithBattleMapGUI { this: BattleMapScreen =>
+trait WithBattleMapGUI { this: BattleScreen =>
 
   lazy val debugConsoleTable = new DebugConsoleTable(this)
   lazy val battleMapGUIBar = new BattleMapGUIBar(this)
@@ -28,10 +28,11 @@ trait WithBattleMapGUI { this: BattleMapScreen =>
 
 }
 
-class DebugConsoleTable(battleMapRenderer: BattleMapScreen)
+class DebugConsoleTable(battleMapRenderer: BattleScreen)
     extends ToggleableTable(battleMapRenderer) {
-  def createTable: Table = {
-    val table = WithBattleMapGUI.buildDebugMenuTable
+
+  def createTable: Table = ???
+  /*{  val table = WithBattleMapGUI.buildDebugMenuTable
 
     battleMapRenderer.battleMap.getAllEntities.foreach(entity => {
       val button = WithBattleMapGUI.buildEntityButton(entity)
@@ -40,7 +41,7 @@ class DebugConsoleTable(battleMapRenderer: BattleMapScreen)
     })
 
     table
-  }
+  }*/
 }
 
 object WithBattleMapGUI {
@@ -70,7 +71,7 @@ object WithBattleMapGUI {
     table.debug()
     table
   }
-
+/*
   def buildEntityButton(entity: Entity): TextButton = {
 
     val button = new ButtonWithEntity(entity, textButtonStyle)
@@ -87,4 +88,5 @@ object WithBattleMapGUI {
 
     button
   }
+  */
 }

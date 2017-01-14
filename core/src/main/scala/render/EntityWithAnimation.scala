@@ -20,7 +20,7 @@ trait MaleAnimatedTexture {
   val entityTextures = MaleBaseCharacterTexture
 }
 
-trait EntityWithAnimation { this: Entity =>
+trait EntityWithAnimation { this: MutableEntity =>
 
   val entityTextures: MovementAnimatedTexture
   var animation: EntityAnimation = null

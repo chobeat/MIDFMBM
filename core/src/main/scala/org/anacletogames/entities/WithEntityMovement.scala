@@ -8,7 +8,7 @@ import render.{EntityWithAnimation, MovementAnimation}
 /**
   * Created by simone on 04.12.16.
   */
-trait WithEntityMovement { this: Entity with EntityWithAnimation=>
+trait WithEntityMovement { this: MutableEntity with EntityWithAnimation=>
   override def moveBy(x: Float, y: Float): Unit = {
     val startingPosition=getPosition
     val mov=GridMovement(x.toInt, y.toInt)

@@ -6,7 +6,7 @@ import org.anacletogames.battle.BattleMap
 import org.anacletogames.behaviour.ReachPointBehaviour
 import org.anacletogames.entities.{
   DoNothingByDefault,
-  RectEntity,
+  RectMutableEntity,
   WithEntityMovement,
   WithStackable
 }
@@ -19,7 +19,7 @@ import scala.collection.JavaConversions._
 /**
   * Created by simone on 05.11.16.
   */
-class BattleMapScreen(mapWidth: Int = 32, mapHeight: Int = 32)
+class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
     extends BaseScreen
     with MovementControllers
     with WithBattleMapGUI
@@ -33,7 +33,7 @@ class BattleMapScreen(mapWidth: Int = 32, mapHeight: Int = 32)
 
     if (isTimeToAct && !isPaused) {
       accumulatedRender = 0
-      battleMap.getAllEntities.foreach(_.act())
+      battleMap.doStep()
     }
 
     if (isTimeToRender) {
@@ -50,7 +50,7 @@ class BattleMapScreen(mapWidth: Int = 32, mapHeight: Int = 32)
   }
 
   def createDummy(x: Int) = {
-    val myChar = new RectEntity(1, battleMap, Some("Entity " + x), this)
+    val myChar = new RectMutableEntity(1, battleMap, Some("Entity " + x), this)
     with MaleAnimatedTexture with WithStackable with EntityWithAnimation
     with WithEntityMovement with DoNothingByDefault
     myChar.setBehaviour(ReachPointBehaviour(myChar, new GridPoint2(3, 22)))

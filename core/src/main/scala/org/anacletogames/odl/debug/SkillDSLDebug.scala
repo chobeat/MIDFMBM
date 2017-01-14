@@ -15,10 +15,10 @@ object SkillDSLDebug extends SkillDSL {
 
     }
 
-    val s = parse(parseSkill, "Blacksmithing is a smithing skill")
+    val s = parse(skillParser, "Blacksmithing is a smithing skill. It must be learned with training.")
     printParsed(s)
 
-    val s2 = parse(parseSkill, "Plowing is a farming skill")
+    val s2 = parse(skillParser, "Plowing is a farming skill")
     printParsed(s2)
 
 

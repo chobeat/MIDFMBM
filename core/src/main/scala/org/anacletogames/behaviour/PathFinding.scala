@@ -2,7 +2,7 @@ package org.anacletogames.behaviour
 
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.{BattleMap, GameMap}
-import org.anacletogames.entities.Entity
+import org.anacletogames.entities.MutableEntity
 import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions}
 import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
 
@@ -27,7 +27,7 @@ trait PathFinding { this: GameMap =>
   gridFinderOptions.dontCrossCorners = true
   val pathFinder = new AStarGridFinder(classOf[GridCell], gridFinderOptions)
 
-  def findPath(subject: Entity, destination: GridPoint2): Seq[GridPoint2] = {
+  def findPath(subject: MutableEntity, destination: GridPoint2): Seq[GridPoint2] = {
 
     val pos = subject.getPosition.get
     val resultPath =

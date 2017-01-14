@@ -4,14 +4,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.{Button, ImageButton, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import org.anacletogames.gui.assets.PauseButtonAsset
-import org.anacletogames.modes.{BaseScreen, BattleMapScreen}
+import org.anacletogames.modes.{BaseScreen, BattleScreen}
 
 import scala.collection.JavaConversions._
 
 /**
   * Created by simone on 31.12.16.
   */
-class BattleMapGUIBar(bmRenderer: BattleMapScreen) extends Table {
+class BattleMapGUIBar(bmRenderer: BattleScreen) extends Table {
 
   val pauseButton = BattleMapGUIBar.createPauseButton(bmRenderer)
   val playButton = BattleMapGUIBar.createPlayButton(bmRenderer)
@@ -29,7 +29,7 @@ class BattleMapGUIBar(bmRenderer: BattleMapScreen) extends Table {
 
 object BattleMapGUIBar {
 
-  def togglePauseButtonListener(bmRenderer: BattleMapScreen) = {
+  def togglePauseButtonListener(bmRenderer: BattleScreen) = {
     new ClickListener() {
       override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
         super.clicked(event, x, y)
@@ -38,13 +38,13 @@ object BattleMapGUIBar {
     }
 
   }
-  def createPauseButton(bmRenderer: BattleMapScreen): ImageButton = {
+  def createPauseButton(bmRenderer: BattleScreen): ImageButton = {
     val button =
       new ImageButton(PauseButtonAsset.pauseImage, PauseButtonAsset.pauseImage)
     button.addListener(togglePauseButtonListener(bmRenderer))
     button
   }
-  def createPlayButton(bmRenderer: BattleMapScreen): ImageButton = {
+  def createPlayButton(bmRenderer: BattleScreen): ImageButton = {
     val button =
       new ImageButton(PauseButtonAsset.playImage, PauseButtonAsset.playImage)
     button.addListener(togglePauseButtonListener(bmRenderer))

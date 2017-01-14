@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch}
 import com.badlogic.gdx.math.{GridPoint2, Vector2}
 import org.anacletogames.entities.assets.OrientedAnimation
-import org.anacletogames.entities.{Entity, EntityOrientation}
+import org.anacletogames.entities.{MutableEntity, EntityOrientation}
 
 /**
   * Created by simone on 26.12.16.
@@ -15,7 +15,7 @@ case class MovementAnimation(orientedAnimation: OrientedAnimation,
     extends EntityAnimation(orientedAnimation.animation) {
 
   override def draw(batch: Batch,
-                    entity: Entity with EntityWithAnimation): Unit = {
+                    entity: MutableEntity with EntityWithAnimation): Unit = {
 
     val alpha = Constants.moveToCellTime * statetime
     if (alpha < 1.0) {

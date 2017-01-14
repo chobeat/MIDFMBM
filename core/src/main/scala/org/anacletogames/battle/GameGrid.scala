@@ -2,18 +2,14 @@ package org.anacletogames.battle
 
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
-import org.anacletogames.entities.Entity
-import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions, ThetaStarGridFinder}
-import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
-import render.Constants
+import org.anacletogames.entities.{Entity, ImmutableEntity, MutableEntity}
 
-import scala.collection.JavaConversions._
 import scala.collection.mutable
-
 class GameGrid(gridWidth: Int, gridHeight: Int) {
 
-  private val positionToEntities = mutable.HashMap[GridPoint2, Seq[Entity]]()
-  private val entitiesToPosition = mutable.HashMap[Entity, GridPoint2]()
+  private var positionToEntities =
+    mutable.HashMap[GridPoint2, Seq[Entity]]()
+  private var entitiesToPosition = mutable.HashMap[Entity, GridPoint2]()
 
   private val cachedOccupied = mutable.HashMap[GridPoint2, Boolean]()
 
@@ -50,7 +46,7 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   }
 
-  def removeEntity(entity: Entity) = {
+  def removeEntity(entity: MutableEntity) = {
     entitiesToPosition
       .get(entity)
       .foreach(currentPosition => {
@@ -72,10 +68,30 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   def getEntityPosition(e: Entity) = entitiesToPosition.get(e)
 
-  def nextStep(): Unit = {
+  def doStep(): Unit = {
+    entitiesToPosition.foreach {
+      case (entity: MutableEntity, _) => entity.act()
+    }
+    val res = entitiesToPosition.map {
+      case (entity: ImmutableEntity, pos) => entity.doStep() -> pos
+      case x => x
+    }
+    entitiesToPosition = res
+
     cachedOccupied.clear()
+    alignPositionToEntities()
   }
 
+  private def alignPositionToEntities() = {
+
+    entitiesToPosition.toList
+      .groupBy(_._2)
+      .foreach(x => {
+
+        positionToEntities.put(x._1, x._2.map(_._1))
+      })
+
+  }
 
   def getActionContext: ActionContext =
     ActionContext(this)

@@ -1,7 +1,7 @@
 package debug
 
 import com.badlogic.gdx.Game
-import org.anacletogames.modes.{BattleMapScreen, WorldMapScreen}
+import org.anacletogames.modes.{BattleScreen, WorldMapScreen}
 
 import scala.util.Random
 
@@ -12,7 +12,7 @@ class MainRenderer extends Game{
   val game:Game = this
   override def create(): Unit = {
 
-    this.setScreen(new BattleMapScreen())
+    this.setScreen(new BattleScreen())
 
   }
 

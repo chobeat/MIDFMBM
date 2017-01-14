@@ -13,6 +13,7 @@ trait SkillDSL extends RegexParsers with Parsers {
   val skillLiteral = literal("skill")
   val is = literal("is")
   def number: Parser[Int] = """(0|[1-9]\d*)""".r ^^ { _.toInt }
+  def itmustbelearnedLiteral = literal("It must be learned")
 
   def genericSkillCategoryParser(o: SkillCategory): Parser[SkillCategory] = {
     val name = o.getClass.getSimpleName.replace("$", "")
@@ -26,9 +27,21 @@ trait SkillDSL extends RegexParsers with Parsers {
   val skillCategory =
     skillCategoryList.map(genericSkillCategoryParser).reduce(_ | _)
 
-  def parseSkill: Parser[Skill] =
+  def skillDefition: Parser[(String, SkillCategory)] =
     word ~ is ~ a ~ skillCategory ~ skillLiteral ^^ {
-      case name ~ _ ~ _ ~ skillCategory ~ _ => Skill(name, skillCategory)
+      case name ~ _ ~ _ ~ skillCategory ~ _ => (name, skillCategory)
     }
 
+  def learnTrainingDefinition: Parser[Boolean] =
+    itmustbelearnedLiteral ~ word ~ literal("training") ^^ {
+      case _ ~ "with" ~ _ => true
+      case _ ~ "without" ~ _ => false
+    }
+
+  def skillParser: Parser[Skill] =
+    skillDefition ~ opt(literal(".")) ~ opt(learnTrainingDefinition) ^^ {
+      case (name, skillCategory) ~ _ ~ Some(learnWithTrain) =>
+        Skill(name, skillCategory, learnWithTrain)
+      case (name, skillCategory) ~ _ ~ _ => Skill(name,skillCategory)
+    }
 }

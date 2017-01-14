@@ -11,7 +11,7 @@ import org.anacletogames.entities.assets.OrientedAnimation
   */
 abstract class EntityAnimation(animation: Animation) {
 
-  def draw(batch: Batch, entity: Entity with EntityWithAnimation): Unit
+  def draw(batch: Batch, entity: MutableEntity with EntityWithAnimation): Unit
 
   var statetime: Float = 0
   def updateStateTime():Unit={
