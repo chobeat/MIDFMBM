@@ -4,16 +4,17 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.{GameGrid, GameMap}
-import org.anacletogames.entities.{
-  MutableEntity,
-  RectMutableEntity,
-  SettlementEntity,
-  SingleTileMovingEntity
-}
+import org.anacletogames.entities._
 import org.anacletogames.game.skills.SkillSet
-import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Settlement}
+import org.anacletogames.game.world.{
+  CharacterProfile,
+  Inhabitant,
+  Party,
+  Settlement
+}
 import org.anacletogames.maps.world.WithWorldMap
 import render.{EntityWithAnimation, MaleAnimatedTexture}
+
 import scala.concurrent.duration._
 import scala.collection.JavaConversions._
 import scala.concurrent._
@@ -39,10 +40,17 @@ class WorldMapScreen
     Settlement("abacuc", pos, inhab.toList, Nil)
   }
 
-  (0 to 200).foreach(x =>
+  /*(0 to 10).foreach(x =>
     addSettlement(createDummySettlement(new GridPoint2(x, x + 3))))
+*/
+  val party = Party("test party", Seq())
+  val partyEntity = new PartyEntity(party, this.worldGrid, this)
 
-  override val inputProcessor = zoom orElse arrowMovMap(64)
+  worldGrid.addEntity(partyEntity,new GridPoint2(1,1))
+  stage.addActor(partyEntity)
+  override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
+      partyEntity)
+
   override def renderContent(): Unit = {
 
     worldGridResultFuture = worldGridResultFuture match {
@@ -71,7 +79,7 @@ class WorldMapScreen
 
   def addSettlement(s: Settlement) = {
     val settlementEntity = new SettlementEntity(s, worldGrid, this)
-    worldGrid.placeEntity(settlementEntity, s.position)
+    worldGrid.addEntity(settlementEntity, s.position)
   }
 
   override def resize(width: Int, height: Int): Unit = {

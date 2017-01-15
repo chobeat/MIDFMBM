@@ -10,7 +10,7 @@ import render.{EntityWithAnimation, WithDelta}
 trait SingleTileMovingEntity extends WithEntityMovement {
   this: MutableEntity with EntityWithAnimation =>
   override def canIMoveThere(destination: GridPoint2): Boolean = {
-    stackable && gameMap.isTileAccessible(destination)
+    gameMap.isTileAccessible(destination)
   }
 
 }

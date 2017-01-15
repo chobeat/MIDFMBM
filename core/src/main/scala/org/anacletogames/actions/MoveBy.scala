@@ -47,7 +47,7 @@ case class RelocateTo(entity: MutableEntity with WithEntityMovement,
        {
   def execute: Unit = {
     entity.gameMap.removeEntity(entity)
-    entity.gameMap.placeEntity(entity, destination)
+    entity.gameMap.addEntity(entity, destination)
   }
 }
 

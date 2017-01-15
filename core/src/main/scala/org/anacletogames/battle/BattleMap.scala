@@ -5,9 +5,10 @@ import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.behaviour.PathFinding
-import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
+import org.anacletogames.entities.{Entity, MutableEntity, WithEntityMovement}
 import org.anacletogames.maps.TiledMap2Rich
 import org.xguzm.pathfinding.grid.GridCell
+
 import scala.collection.mutable
 
 class BattleMap(mapWidth: Int, mapHeigth: Int, tiledMap: TiledMap)
@@ -24,10 +25,12 @@ class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     super.isTileAccessible(p) && !impassableMapTile.isDefinedAt(p)
   }
 
-  def addEntity(e: MutableEntity, position: GridPoint2) = {
+  def addEntity(e: Entity, position: GridPoint2) = {
     val isPlaced = this.placeEntity(e, position)
     if (isPlaced) {
+      //Setting the act
       e.setPosition(position.x, position.y)
+
       navGrid.setCell(
         position.x,
         position.y,
@@ -35,7 +38,7 @@ class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     }
   }
 
-  override def removeEntity(entity: MutableEntity) = {
+  override def removeEntity(entity: Entity) = {
     super.removeEntity(entity)
     entity.getPosition match {
       case Some(pos) =>

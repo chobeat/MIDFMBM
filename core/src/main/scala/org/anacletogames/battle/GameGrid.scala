@@ -32,7 +32,7 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
   def isInsideGrid(position: GridPoint2) =
     position.x >= 0 && position.x <= gridWidth && position.y >= 0 && position.y <= gridHeight
 
-  def placeEntity(entity: Entity, position: GridPoint2): Boolean = {
+  protected def placeEntity(entity: Entity, position: GridPoint2): Boolean = {
     if (!isInsideGrid(position))
       false
     else {
@@ -48,7 +48,7 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   }
 
-  def removeEntity(entity: MutableEntity) = {
+  protected def removeEntity(entity: Entity) = {
     entitiesToPosition
       .get(entity)
       .foreach(currentPosition => {
@@ -75,12 +75,12 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
     //These may change the state of the game grid and interact with other entities, so it's not safe or efficient
     // to make them immutable.
     Future {
-    entitiesToPosition.foreach {
-      case (entity: MutableEntity, _) => entity.act()
-      case _ =>
-    }
+      entitiesToPosition.foreach {
+        case (entity: MutableEntity, _) => entity.act()
+        case _ =>
+      }
 
-    //After that, we do a doStep() call where immutable entities, in isolation, get to their successive state.
+      //After that, we do a doStep() call where immutable entities, in isolation, get to their successive state.
 
       entitiesToPosition.map {
         case (entity: ImmutableEntity, pos) => entity.doStep() -> pos
