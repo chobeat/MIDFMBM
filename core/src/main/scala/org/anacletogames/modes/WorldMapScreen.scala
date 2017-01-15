@@ -14,8 +14,10 @@ import org.anacletogames.game.skills.SkillSet
 import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Settlement}
 import org.anacletogames.maps.world.WithWorldMap
 import render.{EntityWithAnimation, MaleAnimatedTexture}
-
+import scala.concurrent.duration._
 import scala.collection.JavaConversions._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 /**
   * Created by simone on 05.11.16.
@@ -29,27 +31,30 @@ class WorldMapScreen
     with MovementControllers {
 
   lazy val worldGrid = new WorldGrid(mapWidth, mapHeight, tiledMap)
-
+  var worldGridResultFuture: Option[Future[Unit]] = None
   def createDummySettlement(pos: GridPoint2) = {
-    val inhab =
-      Inhabitant(CharacterProfile("aaa", 0, Nil, new SkillSet()), Nil, 0)
-    val inhab2 =
-      Inhabitant(CharacterProfile("aaa", 0, Nil, new SkillSet()), Nil, 3)
+    val inhab = (0 to 1000).map(x =>
+      Inhabitant(CharacterProfile("aaa", 0, Nil, new SkillSet()), Nil, 0))
 
-    Settlement("abacuc", pos, List(inhab, inhab2), Nil)
+    Settlement("abacuc", pos, inhab.toList, Nil)
   }
 
-  addSettlement(createDummySettlement(new GridPoint2(3, 3)))
+  (0 to 200).foreach(x =>
+    addSettlement(createDummySettlement(new GridPoint2(x, x + 3))))
 
   override val inputProcessor = zoom orElse arrowMovMap(64)
   override def renderContent(): Unit = {
 
-    if (isTimeToAct) {
-      worldGrid
+    worldGridResultFuture = worldGridResultFuture match {
+      case Some(f) if f.isCompleted && isTimeToAct =>
+        Some(worldGrid.doStep())
+      case None => Some(worldGrid.doStep())
+      case x => x
     }
 
     if (isTimeToRender) {
 
+      accumulatedRender += 1
       //to draw actors ordered by position
       val actors =
         stage.getActors.toList.sortBy(_.getY)(Ordering[Float].reverse)

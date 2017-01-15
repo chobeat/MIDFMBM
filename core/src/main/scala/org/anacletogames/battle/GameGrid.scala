@@ -3,12 +3,14 @@ package org.anacletogames.battle
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.entities.{Entity, ImmutableEntity, MutableEntity}
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable
+import scala.concurrent.Future
 class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   private var positionToEntities =
     mutable.HashMap[GridPoint2, Seq[Entity]]()
+
   private var entitiesToPosition = mutable.HashMap[Entity, GridPoint2]()
 
   private val cachedOccupied = mutable.HashMap[GridPoint2, Boolean]()
@@ -68,18 +70,30 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   def getEntityPosition(e: Entity) = entitiesToPosition.get(e)
 
-  def doStep(): Unit = {
+  def doStep(): Future[Unit] = {
+    //First we activate the mutable entities.
+    //These may change the state of the game grid and interact with other entities, so it's not safe or efficient
+    // to make them immutable.
+    Future {
     entitiesToPosition.foreach {
       case (entity: MutableEntity, _) => entity.act()
+      case _ =>
     }
-    val res = entitiesToPosition.map {
-      case (entity: ImmutableEntity, pos) => entity.doStep() -> pos
-      case x => x
-    }
-    entitiesToPosition = res
 
-    cachedOccupied.clear()
-    alignPositionToEntities()
+    //After that, we do a doStep() call where immutable entities, in isolation, get to their successive state.
+
+      entitiesToPosition.map {
+        case (entity: ImmutableEntity, pos) => entity.doStep() -> pos
+        case x => x
+      }
+    }.map(x => {
+      entitiesToPosition = x
+      //we clear any kind of cache
+      cachedOccupied.clear()
+
+      //we recalculate the inverse index
+      alignPositionToEntities()
+    })
   }
 
   private def alignPositionToEntities() = {
