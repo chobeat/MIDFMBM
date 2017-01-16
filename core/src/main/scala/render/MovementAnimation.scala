@@ -17,7 +17,6 @@ case class MovementAnimation(orientedAnimation: OrientedAnimation,
   override def draw(batch: Batch,
                     entity: MutableEntity with EntityWithAnimation): Unit = {
 
-    val alpha = Constants.moveToCellTime * statetime
     if (alpha < 1.0) {
 
       updateStateTime()

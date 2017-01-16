@@ -13,7 +13,7 @@ import org.anacletogames.game.world.{
   Settlement
 }
 import org.anacletogames.maps.world.WithWorldMap
-import render.{EntityWithAnimation, MaleAnimatedTexture}
+import render.{Constants, EntityWithAnimation, MaleAnimatedTexture}
 
 import scala.concurrent.duration._
 import scala.collection.JavaConversions._
@@ -51,22 +51,15 @@ class WorldMapScreen
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
       partyEntity)
 
-  var x=false
   override def renderContent(): Unit = {
 
-    if(worldGridResultFuture.isDefined)
-      if(worldGridResultFuture.get.isCompleted&&x)
-        { x=false
-          println("completed")
-        }
-
-    if (isTimeToAct)
+    if (isTimeToAct&& partyEntity.isMovingAnimationCompleted())
       worldGrid.doStep()
 
     worldGridResultFuture = worldGridResultFuture match {
-      case Some(f) if f.isCompleted && isTimeToAct && partyEntity.isTimeToAct()=>
+      case Some(f)
+          if f.isCompleted && isTimeToAct && partyEntity.isTimeToAct() =>
         partyEntity.resetMovedCount()
-        x=true
         Some(worldGrid.doImmutableStep())
 
       case None => Some(worldGrid.doImmutableStep())

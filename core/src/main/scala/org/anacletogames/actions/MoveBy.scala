@@ -14,10 +14,6 @@ case class MoveBy(entity: MutableEntity with WithEntityMovement,
       movement.calculateDestination(entity.getPosition.get)) {
   def execute: Unit = {
     if (this.isValid) {
-      entity match {
-        case e: PartyEntity => e.increaseMovedCount()
-        case _ =>
-      }
       entity.moveBy(movement.x, movement.y)
     }
   }

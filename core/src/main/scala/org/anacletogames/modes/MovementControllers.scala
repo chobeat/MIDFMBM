@@ -3,7 +3,11 @@ package org.anacletogames.modes
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import org.anacletogames.actions.{GridMovement, MoveBy}
-import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
+import org.anacletogames.entities.{
+  MutableEntity,
+  PartyEntity,
+  WithEntityMovement
+}
 
 /**
   * Created by simone on 05.11.16.
@@ -20,15 +24,15 @@ trait MovementControllers { this: WithStage =>
 
   }
 
-  def entityControl(entity: MutableEntity with WithEntityMovement): InputProcessor = {
+  def entityControl(entity: PartyEntity): InputProcessor = {
     case Input.Keys.W =>
-      entity.doOnce(MoveBy(entity, GridMovement(0, entity.speed)))
+      entity.enqueueMovement(GridMovement(0, entity.speed))
     case Input.Keys.A =>
-      entity.doOnce(MoveBy(entity, GridMovement(-entity.speed, 0)))
+      entity.enqueueMovement(GridMovement(-entity.speed, 0))
     case Input.Keys.D =>
-      entity.doOnce(MoveBy(entity, GridMovement(entity.speed, 0)))
+      entity.enqueueMovement(GridMovement(entity.speed, 0))
     case Input.Keys.S =>
-      entity.doOnce(MoveBy(entity, GridMovement(0, -entity.speed)))
+      entity.enqueueMovement(GridMovement(0, -entity.speed))
   }
 
   def zoom: InputProcessor = {
@@ -37,7 +41,6 @@ trait MovementControllers { this: WithStage =>
       stage.getCamera.asInstanceOf[OrthographicCamera].zoom *= 1.1F
 
     case Input.Keys.M =>
-
       stage.getCamera.asInstanceOf[OrthographicCamera].zoom *= 0.9F
 
   }

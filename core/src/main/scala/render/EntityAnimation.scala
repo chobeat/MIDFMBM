@@ -13,9 +13,11 @@ abstract class EntityAnimation(animation: Animation) {
 
   def draw(batch: Batch, entity: MutableEntity with EntityWithAnimation): Unit
 
+  def alpha = Constants.moveToCellTime * statetime
+
   var statetime: Float = 0
-  def updateStateTime():Unit={
-    statetime+=Gdx.graphics.getDeltaTime
+  def updateStateTime(): Unit = {
+    statetime += Gdx.graphics.getDeltaTime
   }
   def drawAtPosition(batch: Batch, x: Float, y: Float) = {
     val currentFrame =
