@@ -49,7 +49,8 @@ class GameMap(val mapWidth: Int, val mapHeigth: Int, tiledMap: TiledMap)
     }
   }
 
-  def moveEntity(e: MutableEntity with WithEntityMovement, movement: GridMovement) = {
+  def moveEntity(e: MutableEntity with WithEntityMovement,
+                 movement: GridMovement) = {
     val newPosition = movement.calculateDestination(e.getPosition.get)
     if (e.canIMoveThere(newPosition)) {
       this.removeEntity(e)

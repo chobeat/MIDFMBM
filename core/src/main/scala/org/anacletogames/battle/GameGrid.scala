@@ -70,17 +70,17 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   def getEntityPosition(e: Entity) = entitiesToPosition.get(e)
 
-  def doStep(): Future[Unit] = {
-    //First we activate the mutable entities.
-    //These may change the state of the game grid and interact with other entities, so it's not safe or efficient
-    // to make them immutable.
-    Future {
-      entitiesToPosition.foreach {
-        case (entity: MutableEntity, _) => entity.act()
-        case _ =>
-      }
+  def doStep(): Unit = {
 
-      //After that, we do a doStep() call where immutable entities, in isolation, get to their successive state.
+    entitiesToPosition.foreach {
+      case (entity: MutableEntity, _) => entity.act()
+      case _ =>
+    }
+
+  }
+  def doImmutableStep(): Future[Unit] = {
+    println("act")
+    Future { //After that, we do a doStep() call where immutable entities, in isolation, get to their successive state.
 
       entitiesToPosition.map {
         case (entity: ImmutableEntity, pos) => entity.doStep() -> pos

@@ -34,29 +34,42 @@ class WorldMapScreen
   lazy val worldGrid = new WorldGrid(mapWidth, mapHeight, tiledMap)
   var worldGridResultFuture: Option[Future[Unit]] = None
   def createDummySettlement(pos: GridPoint2) = {
-    val inhab = (0 to 1000).map(x =>
+    val inhab = (0 to 10000).map(x =>
       Inhabitant(CharacterProfile("aaa", 0, Nil, new SkillSet()), Nil, 0))
 
     Settlement("abacuc", pos, inhab.toList, Nil)
   }
 
-  /*(0 to 10).foreach(x =>
+  (0 to 5000).foreach(x =>
     addSettlement(createDummySettlement(new GridPoint2(x, x + 3))))
-*/
+
   val party = Party("test party", Seq())
   val partyEntity = new PartyEntity(party, this.worldGrid, this)
 
-  worldGrid.addEntity(partyEntity,new GridPoint2(1,1))
+  worldGrid.addEntity(partyEntity, new GridPoint2(1, 1))
   stage.addActor(partyEntity)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
       partyEntity)
 
+  var x=false
   override def renderContent(): Unit = {
 
+    if(worldGridResultFuture.isDefined)
+      if(worldGridResultFuture.get.isCompleted&&x)
+        { x=false
+          println("completed")
+        }
+
+    if (isTimeToAct)
+      worldGrid.doStep()
+
     worldGridResultFuture = worldGridResultFuture match {
-      case Some(f) if f.isCompleted && isTimeToAct =>
-        Some(worldGrid.doStep())
-      case None => Some(worldGrid.doStep())
+      case Some(f) if f.isCompleted && isTimeToAct && partyEntity.isTimeToAct()=>
+        partyEntity.resetMovedCount()
+        x=true
+        Some(worldGrid.doImmutableStep())
+
+      case None => Some(worldGrid.doImmutableStep())
       case x => x
     }
 

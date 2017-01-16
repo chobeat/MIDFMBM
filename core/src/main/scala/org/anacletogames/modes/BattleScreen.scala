@@ -30,7 +30,7 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
 
     if (isTimeToAct && !isPaused) {
       accumulatedRender = 0
-      Await.result(battleMap.doStep(),5 second)
+      battleMap.doStep()
     }
 
     if (isTimeToRender) {

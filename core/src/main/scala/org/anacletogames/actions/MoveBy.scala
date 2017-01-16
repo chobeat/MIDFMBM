@@ -1,7 +1,11 @@
 package org.anacletogames.actions
 
 import com.badlogic.gdx.math.{GridPoint2, Vector2}
-import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
+import org.anacletogames.entities.{
+  MutableEntity,
+  PartyEntity,
+  WithEntityMovement
+}
 
 case class MoveBy(entity: MutableEntity with WithEntityMovement,
                   movement: GridMovement)
@@ -9,8 +13,13 @@ case class MoveBy(entity: MutableEntity with WithEntityMovement,
       entity,
       movement.calculateDestination(entity.getPosition.get)) {
   def execute: Unit = {
-    if (this.isValid)
+    if (this.isValid) {
+      entity match {
+        case e: PartyEntity => e.increaseMovedCount()
+        case _ =>
+      }
       entity.moveBy(movement.x, movement.y)
+    }
   }
 }
 
@@ -43,8 +52,7 @@ case class DoOnceAction(a: GameAction, entity: MutableEntity)
 
 case class RelocateTo(entity: MutableEntity with WithEntityMovement,
                       destination: GridPoint2)
-    extends MovementGameAction(entity, destination)
-       {
+    extends MovementGameAction(entity, destination) {
   def execute: Unit = {
     entity.gameMap.removeEntity(entity)
     entity.gameMap.addEntity(entity, destination)

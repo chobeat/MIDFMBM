@@ -10,4 +10,6 @@ object Constants {
   val moveToCellTime: Float = 1F
   val actTime=60
   val renderTime=1/60
+
+  val tileMovementsToDay=5
 }
