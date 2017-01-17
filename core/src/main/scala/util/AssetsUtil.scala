@@ -27,7 +27,7 @@ object AssetsUtil {
     val rowTexture = texture(row)
     val arr = new GdxArray[TextureRegion]()
     frames.foreach(frame => arr.add(rowTexture(frame)))
-    new Animation(frameDuration, arr, Animation.PlayMode.LOOP)
+    new Animation[TextureRegion](frameDuration, arr, Animation.PlayMode.LOOP)
 
   }
 }

@@ -43,7 +43,7 @@ abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
           }.filter(x => isValid(x) && !isOccupied(x) && !visited.contains(x))
         val closestDestinations = availableDestionations.foldLeft(
           List.empty[(GridPoint2, Double)])((closerDirections, direction) => {
-          val distanceFromArrival = direction.dst(arrival)
+          val distanceFromArrival = direction.dst(arrival).toDouble
           closerDirections match {
             case Nil => List((direction, distanceFromArrival))
             case (_, dist) :: tail if dist > distanceFromArrival =>

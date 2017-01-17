@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
 import com.badlogic.gdx.scenes.scene2d._
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.ui._
-import com.badlogic.gdx.scenes.scene2d.utils.Align
+import com.badlogic.gdx.utils.Align
 import org.anacletogames.entities.Entity
 import org.anacletogames.modes.BattleScreen
 

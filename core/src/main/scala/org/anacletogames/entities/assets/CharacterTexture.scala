@@ -10,13 +10,13 @@ import util.AssetsUtil
 object MaleBaseCharacterTexture extends MovementAnimatedTexture {
 
   lazy val texture: scala.Array[Array[TextureRegion]] =
-    AssetsUtil.readTextureFromFile("BODY_male.png", 9, 4)
+    AssetsUtil.readTextureFromFile("assets/BODY_male.png", 9, 4)
 
   val frameDuration = 0.2F
 
 }
 
-case class OrientedAnimation(animation: Animation,
+case class OrientedAnimation(animation: Animation[TextureRegion],
                              direction: EntityOrientation)
 
 trait EntityTexture{
