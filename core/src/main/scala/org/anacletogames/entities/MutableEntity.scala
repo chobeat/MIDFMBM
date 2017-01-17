@@ -2,7 +2,6 @@ package org.anacletogames.entities
 
 import com.badlogic.gdx.math.{GridPoint2, Vector2}
 import com.badlogic.gdx.scenes.scene2d.Actor
-import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions._
 import org.anacletogames.battle.{BattleMap, GameGrid, GameMap}
 import org.anacletogames.behaviour.{DoOnceBehaviour, EntityBehaviour}
@@ -28,7 +27,6 @@ abstract class MutableEntity(val speed: Int = 1,
     setBehaviour(DoOnceBehaviour(a))
   }
 
-  def getActionContext: ActionContext = gameMap.getActionContext
 
   def nextAction(): Try[GameAction] = {
     behaviour.decideNextAction(gameMap)

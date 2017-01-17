@@ -1,7 +1,7 @@
 package debug
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import org.anacletogames.modes.{BattleMapScreen, WorldMapScreen}
+import org.anacletogames.modes.{BattleScreen, WorldMapScreen}
 
 /**
   * Created by simone on 07.01.17.

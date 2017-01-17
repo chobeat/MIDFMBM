@@ -55,13 +55,13 @@ case class RelocateTo(entity: MutableEntity with WithEntityMovement,
   }
 }
 
-case class MultiAction(actions: GameAction*) extends GameActionWithoutContext {
+case class MultiAction(actions: GameAction*) extends GameAction{
   def execute: Unit = {
     actions.foreach(_.execute)
   }
 
 }
 
-case object NoAction extends GameActionWithoutContext {
+case object NoAction extends GameAction{
   def execute: Unit = {}
 }

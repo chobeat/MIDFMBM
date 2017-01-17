@@ -26,7 +26,11 @@ import ExecutionContext.Implicits.global
 class WorldGrid(gridWidth: Int, gridHeight: Int, tiledMap: TiledMap)
     extends GameMap(gridWidth, gridHeight, tiledMap)
 
-class WorldMapScreen
+case class WorldState(settlements: List[Settlement]) {
+  def addSettlement(s: Settlement) = this.copy(settlements = s :: settlements)
+}
+
+class WorldMapScreen(val party: Party, var worldState: WorldState)
     extends BaseScreen
     with WithWorldMap
     with MovementControllers {
@@ -43,7 +47,6 @@ class WorldMapScreen
   (0 to 5000).foreach(x =>
     addSettlement(createDummySettlement(new GridPoint2(x, x + 3))))
 
-  val party = Party("test party", Seq())
   val partyEntity = new PartyEntity(party, this.worldGrid, this)
 
   worldGrid.addEntity(partyEntity, new GridPoint2(1, 1))
@@ -53,7 +56,7 @@ class WorldMapScreen
 
   override def renderContent(): Unit = {
 
-    if (isTimeToAct&& partyEntity.isMovingAnimationCompleted())
+    if (isTimeToAct && partyEntity.isMovingAnimationCompleted())
       worldGrid.doStep()
 
     worldGridResultFuture = worldGridResultFuture match {
@@ -85,8 +88,11 @@ class WorldMapScreen
 
   def addSettlement(s: Settlement) = {
     val settlementEntity = new SettlementEntity(s, worldGrid, this)
+
     worldGrid.addEntity(settlementEntity, s.position)
   }
+
+  def initWorldMap() = {}
 
   override def resize(width: Int, height: Int): Unit = {
 
@@ -95,4 +101,11 @@ class WorldMapScreen
     guiStage.getViewport.update(width, height, true)
   }
 
+}
+
+object WorldMapScreen {
+  def debugWorldMapScreen = {
+
+    new WorldMapScreen(Party("test party", Seq()), WorldState(List()))
+  }
 }

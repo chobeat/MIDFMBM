@@ -1,7 +1,6 @@
 package org.anacletogames.battle
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.entities.{Entity, ImmutableEntity, MutableEntity}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable
@@ -60,7 +59,7 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    isContentAccessible(getEntitiesAtPosition(p))
+    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p))
 
   }
   def isContentAccessible(content: Seq[Entity]) =
@@ -77,21 +76,18 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
       case _ =>
     }
 
+    cachedOccupied.clear()
   }
   def doImmutableStep(): Future[Unit] = {
-    println("act")
-    Future { //After that, we do a doStep() call where immutable entities, in isolation, get to their successive state.
-
+    Future {
       entitiesToPosition.map {
         case (entity: ImmutableEntity, pos) => entity.doStep() -> pos
         case x => x
       }
     }.map(x => {
       entitiesToPosition = x
-      //we clear any kind of cache
-      cachedOccupied.clear()
 
-      //we recalculate the inverse index
+      //recalculate the inverse index
       alignPositionToEntities()
     })
   }
@@ -107,6 +103,4 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
 
   }
 
-  def getActionContext: ActionContext =
-    ActionContext(this)
 }

@@ -2,7 +2,6 @@ package org.anacletogames.battle
 
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.actions.GameAction.ActionContext
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.behaviour.PathFinding
 import org.anacletogames.entities.{Entity, MutableEntity, WithEntityMovement}

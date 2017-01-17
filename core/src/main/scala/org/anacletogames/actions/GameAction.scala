@@ -1,13 +1,7 @@
 package org.anacletogames.actions
 
-import javax.print.attribute.standard.Destination
-
-import com.badlogic.gdx.math.{GridPoint2, Intersector, Shape2D, Vector2}
-import org.anacletogames.actions.GameAction.ActionContext
-import org.anacletogames.battle.{BattleMap, GameGrid}
-import org.anacletogames.entities.{CustomIntersector, MutableEntity, WithEntityMovement}
-
-import scala.collection.mutable.ArrayBuffer
+import com.badlogic.gdx.math.GridPoint2
+import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
 
 case class GridMovement(x: Int, y: Int) {
   def calculateDestination(currentPosition: GridPoint2) =
@@ -33,11 +27,3 @@ abstract class MovementGameAction(subject: MutableEntity with WithEntityMovement
   }
 }
 
-abstract class GameActionWithoutContext extends GameAction()
-
-object GameAction {
-  case class ActionContext(gameGrid: GameGrid) {
-    def isTileAccessible(p: GridPoint2) = gameGrid.isTileAccessible(p)
-  }
-
-}
