@@ -16,9 +16,6 @@ object MaleBaseCharacterTexture extends MovementAnimatedTexture {
 
 }
 
-case class OrientedAnimation(animation: Animation[TextureRegion],
-                             direction: EntityOrientation)
-
 trait EntityTexture{
   val frameDuration: Float
   val texture: Array[Array[TextureRegion]]
@@ -36,12 +33,12 @@ trait MovementAnimatedTexture extends EntityTexture{
   lazy val rightStandingBase = animationFromFrameIndices(3, 0 until 1)
 
   lazy val upWalkingBase =
-    OrientedAnimation(animationFromFrameIndices(0, 1 to 8), LookingUp)
+    animationFromFrameIndices(0, 1 to 8)
   lazy val leftWalkingBase =
-    OrientedAnimation(animationFromFrameIndices(1, 1 to 8), LookingLeft)
+    animationFromFrameIndices(1, 1 to 8)
   lazy val downWalkingBase =
-    OrientedAnimation(animationFromFrameIndices(2, 1 to 8), LookingDown)
+    animationFromFrameIndices(2, 1 to 8)
   lazy val rightWalkingBase =
-    OrientedAnimation(animationFromFrameIndices(3, 1 to 8), LookingRight)
+    animationFromFrameIndices(3, 1 to 8)
 
 }

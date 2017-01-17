@@ -3,7 +3,10 @@ package render
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.utils.{Array => GdxArray}
 import org.anacletogames.entities._
-import org.anacletogames.entities.assets.{MaleBaseCharacterTexture, MovementAnimatedTexture}
+import org.anacletogames.entities.assets.{
+  MaleBaseCharacterTexture,
+  MovementAnimatedTexture
+}
 
 /**
   * Created by simone on 04.12.16.
@@ -17,23 +20,26 @@ trait EntityWithAnimation { this: MutableEntity =>
 
   val entityTextures: MovementAnimatedTexture
   var animation: EntityAnimation = null
-  lazy val defaultAnimation = RestAnimation(entityTextures.upStandingBase)
+  lazy val defaultAnimation = RestAnimation(entityTextures.upStandingBase,LookingUp)
 
   override def draw(batch: Batch, alpha: Float) = {
     //Done this way because of an init problem with traits
 
-    if(this.animation==null)
-      animation=defaultAnimation
+    if (this.animation == null)
+      animation = defaultAnimation
 
     this.animation.draw(batch, this)
   }
 
   def getRestingAnimation(direction: EntityOrientation): RestAnimation = {
     direction match {
-      case LookingUp => RestAnimation(entityTextures.upStandingBase)
-      case LookingLeft => RestAnimation(entityTextures.leftStandingBase)
-      case LookingDown => RestAnimation(entityTextures.downStandingBase)
-      case LookingRight => RestAnimation(entityTextures.rightStandingBase)
+      case LookingUp => RestAnimation(entityTextures.upStandingBase, LookingUp)
+      case LookingLeft =>
+        RestAnimation(entityTextures.leftStandingBase, LookingLeft)
+      case LookingDown =>
+        RestAnimation(entityTextures.downStandingBase, LookingDown)
+      case LookingRight =>
+        RestAnimation(entityTextures.rightStandingBase, LookingRight)
 
     }
   }

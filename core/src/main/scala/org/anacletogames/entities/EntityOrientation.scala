@@ -9,3 +9,4 @@ case object LookingUp extends EntityOrientation
 case object LookingDown extends EntityOrientation
 case object LookingLeft extends EntityOrientation
 case object LookingRight extends EntityOrientation
+case object NoOrientation extends EntityOrientation

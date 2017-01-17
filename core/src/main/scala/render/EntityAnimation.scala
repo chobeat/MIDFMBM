@@ -7,7 +7,9 @@ import org.anacletogames.entities._
 /**
   * Created by simone on 26.12.16.
   */
-abstract class EntityAnimation(animation: Animation[TextureRegion]) {
+abstract class EntityAnimation(
+    animation: Animation[TextureRegion],
+    val orientation: EntityOrientation = NoOrientation) {
 
   def draw(batch: Batch, entity: MutableEntity with EntityWithAnimation): Unit
 
