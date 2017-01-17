@@ -1,18 +1,14 @@
 package org.anacletogames
 
 import com.badlogic.gdx.maps.MapObject
-import com.badlogic.gdx.maps.objects.{
-  CircleMapObject,
-  PolylineMapObject,
-  RectangleMapObject
-}
+import com.badlogic.gdx.maps.objects.{CircleMapObject, PolylineMapObject, RectangleMapObject}
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
 import com.badlogic.gdx.math.{GridPoint2, Shape2D}
 import org.anacletogames.maps._
 
-import scala.collection.breakOut
 import scala.collection.JavaConversions._
+import scala.collection.breakOut
 
 /**
   * Created by lara on 11/2/16.

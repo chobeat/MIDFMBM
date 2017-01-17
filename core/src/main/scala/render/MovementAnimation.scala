@@ -1,10 +1,9 @@
 package render
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.{Animation, Batch}
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.{GridPoint2, Vector2}
+import org.anacletogames.entities.MutableEntity
 import org.anacletogames.entities.assets.OrientedAnimation
-import org.anacletogames.entities.{MutableEntity, EntityOrientation}
 
 /**
   * Created by simone on 26.12.16.

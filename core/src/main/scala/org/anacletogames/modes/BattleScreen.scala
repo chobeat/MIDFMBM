@@ -1,6 +1,5 @@
 package org.anacletogames.modes
 
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.BattleMap
 import org.anacletogames.behaviour.ReachPointBehaviour
@@ -9,9 +8,7 @@ import org.anacletogames.gui.{BattleMapGUIControl, WithBattleMapGUI}
 import org.anacletogames.maps.MapGenerator
 import render.{EntityWithAnimation, MaleAnimatedTexture}
 
-import scala.concurrent.duration._
 import scala.collection.JavaConversions._
-import scala.concurrent.{Await, Future}
 
 /**
   * Created by simone on 05.11.16.

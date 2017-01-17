@@ -1,11 +1,10 @@
 package org.anacletogames.gui.assets
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
 import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
 import com.badlogic.gdx.scenes.scene2d.utils.{Drawable, TextureRegionDrawable}
-import util.AssetsUtil
 
 /**
   * Created by simone on 31.12.16.

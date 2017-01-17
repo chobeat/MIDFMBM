@@ -1,10 +1,7 @@
 package org.anacletogames.entities.assets
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import org.anacletogames.entities._
-import render.{MovementAnimation, RestAnimation}
 import util.AssetsUtil
 
 /**

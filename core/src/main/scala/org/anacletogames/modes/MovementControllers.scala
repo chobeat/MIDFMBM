@@ -2,12 +2,8 @@ package org.anacletogames.modes
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
-import org.anacletogames.actions.{GridMovement, MoveBy}
-import org.anacletogames.entities.{
-  MutableEntity,
-  PartyEntity,
-  WithEntityMovement
-}
+import org.anacletogames.actions.GridMovement
+import org.anacletogames.entities.PartyEntity
 
 /**
   * Created by simone on 05.11.16.

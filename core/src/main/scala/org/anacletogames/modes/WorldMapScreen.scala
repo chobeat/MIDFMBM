@@ -1,24 +1,15 @@
 package org.anacletogames.modes
 
-import com.badlogic.gdx.Screen
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.battle.{GameGrid, GameMap}
+import org.anacletogames.battle.GameMap
 import org.anacletogames.entities._
 import org.anacletogames.game.skills.SkillSet
-import org.anacletogames.game.world.{
-  CharacterProfile,
-  Inhabitant,
-  Party,
-  Settlement
-}
+import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Party, Settlement}
 import org.anacletogames.maps.world.WithWorldMap
-import render.{Constants, EntityWithAnimation, MaleAnimatedTexture}
 
-import scala.concurrent.duration._
 import scala.collection.JavaConversions._
 import scala.concurrent._
-import ExecutionContext.Implicits.global
 
 /**
   * Created by simone on 05.11.16.

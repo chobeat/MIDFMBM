@@ -1,7 +1,7 @@
 package render
 
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch}
-import org.anacletogames.entities.{MutableEntity, EntityOrientation}
+import org.anacletogames.entities.MutableEntity
 
 /**
   * Created by simone on 26.12.16.

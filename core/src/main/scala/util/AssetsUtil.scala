@@ -3,7 +3,6 @@ package util
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
-
 import com.badlogic.gdx.utils.{Array => GdxArray}
 
 /**

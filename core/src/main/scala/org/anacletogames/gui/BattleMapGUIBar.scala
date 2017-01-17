@@ -1,12 +1,10 @@
 package org.anacletogames.gui
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.ui.{Button, ImageButton, Table}
+import com.badlogic.gdx.scenes.scene2d.ui.{ImageButton, Table}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import org.anacletogames.gui.assets.PauseButtonAsset
-import org.anacletogames.modes.{BaseScreen, BattleScreen}
-
-import scala.collection.JavaConversions._
+import org.anacletogames.modes.BattleScreen
 
 /**
   * Created by simone on 31.12.16.

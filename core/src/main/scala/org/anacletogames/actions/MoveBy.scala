@@ -1,11 +1,7 @@
 package org.anacletogames.actions
 
-import com.badlogic.gdx.math.{GridPoint2, Vector2}
-import org.anacletogames.entities.{
-  MutableEntity,
-  PartyEntity,
-  WithEntityMovement
-}
+import com.badlogic.gdx.math.GridPoint2
+import org.anacletogames.entities.{MutableEntity, WithEntityMovement}
 
 case class MoveBy(entity: MutableEntity with WithEntityMovement,
                   movement: GridMovement)

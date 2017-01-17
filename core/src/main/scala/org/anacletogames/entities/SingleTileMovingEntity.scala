@@ -1,8 +1,7 @@
 package org.anacletogames.entities
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.battle.BattleMap
-import render.{EntityWithAnimation, WithDelta}
+import render.EntityWithAnimation
 
 /**
   * Created by simone on 12.11.16.

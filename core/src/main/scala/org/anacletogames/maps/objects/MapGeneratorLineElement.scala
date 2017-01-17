@@ -1,12 +1,12 @@
 package org.anacletogames.maps.objects
 
-import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TiledMapTileSet}
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.maps.assets.Tile9Region
 import org.anacletogames.maps._
-import scala.collection.JavaConversions._
+import org.anacletogames.maps.assets.Tile9Region
+import org.anacletogames.maps.objects.Directions._
+
 import scala.util.Random
-import Directions._
 
 abstract class MapGeneratorLineElement(layers: List[TiledMapTileLayer],
                                        maxSize: Int = 3)

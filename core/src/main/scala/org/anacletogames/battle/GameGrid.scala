@@ -2,8 +2,9 @@ package org.anacletogames.battle
 
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.entities.{Entity, ImmutableEntity, MutableEntity}
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 class GameGrid(gridWidth: Int, gridHeight: Int) {
 

@@ -1,19 +1,13 @@
 package org.anacletogames.gui
 
-import java.io.File
-
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Pixmap.Format
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
-import com.badlogic.gdx.graphics.g2d.{BitmapFont, TextureAtlas}
 import com.badlogic.gdx.scenes.scene2d._
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle
 import com.badlogic.gdx.scenes.scene2d.ui._
-import com.badlogic.gdx.scenes.scene2d.utils.{Align, ChangeListener}
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent
-import org.anacletogames.battle.BattleMap
-import org.anacletogames.entities.{Entity, MutableEntity}
+import com.badlogic.gdx.scenes.scene2d.utils.Align
+import org.anacletogames.entities.Entity
 import org.anacletogames.modes.BattleScreen
 
 /**

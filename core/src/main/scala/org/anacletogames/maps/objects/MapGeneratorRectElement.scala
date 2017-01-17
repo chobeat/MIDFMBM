@@ -1,8 +1,6 @@
 package org.anacletogames.maps.objects
 
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
-import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TiledMapTileSet}
-import org.anacletogames.maps.assets.{TestMapLoader, Tile9Region}
+import org.anacletogames.maps.assets.Tile9Region
 
 import scala.util.Random
 

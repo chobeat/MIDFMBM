@@ -2,8 +2,6 @@ package org.anacletogames.entities
 
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.battle.GameMap
-import org.anacletogames.behaviour.EntityBehaviour
-import org.anacletogames.entities.assets.MovementAnimatedTexture
 import org.anacletogames.game.world.Party
 import render._
 

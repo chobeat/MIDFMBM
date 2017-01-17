@@ -1,14 +1,5 @@
 package org.anacletogames.actions
 
-import com.badlogic.gdx.math.{GridPoint2, Vector2}
-import org.anacletogames.battle.BattleMap
-import org.anacletogames.entities.MutableEntity
-import org.xguzm.pathfinding.PathFinder
-import org.xguzm.pathfinding.grid.finders.AStarGridFinder
-import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}
-
-import scala.collection.JavaConversions._
-
 /**
   * Created by simone on 12.11.16.
   */

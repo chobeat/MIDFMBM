@@ -1,7 +1,7 @@
 package debug
 
 import com.badlogic.gdx.Game
-import org.anacletogames.modes.{BattleScreen, WorldMapScreen}
+import org.anacletogames.modes.WorldMapScreen
 
 /**
   * Created by simone on 09.01.17.

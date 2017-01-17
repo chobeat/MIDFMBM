@@ -1,10 +1,9 @@
 package org.anacletogames.game.world
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.game.skills.{Skill, SkillCategory, SkillSet, Trait}
-import org.anacletogames.game.world.buildings.Building
-
 import org.anacletogames.battle.GameMap
+import org.anacletogames.game.skills.{SkillSet, Trait}
+import org.anacletogames.game.world.buildings.Building
 
 case class CharacterProfile(name: String,
                             age: Int,

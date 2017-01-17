@@ -1,8 +1,7 @@
 package org.anacletogames.odl
-import org.anacletogames.game.skills.SkillCategory
+import org.anacletogames.game.skills.{SkillCategory, _}
 
 import scala.util.parsing.combinator.{Parsers, RegexParsers}
-import org.anacletogames.game.skills._
 
 /**
   * Created by simone on 10.01.17.

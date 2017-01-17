@@ -1,7 +1,7 @@
 package org.anacletogames.behaviour
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.battle.{BattleMap, GameMap}
+import org.anacletogames.battle.GameMap
 import org.anacletogames.entities.MutableEntity
 import org.xguzm.pathfinding.grid.finders.{AStarGridFinder, GridFinderOptions}
 import org.xguzm.pathfinding.grid.{GridCell, NavigationGrid}

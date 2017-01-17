@@ -1,7 +1,7 @@
 package org.anacletogames.behaviour
 
 import org.anacletogames.actions.GameAction
-import org.anacletogames.battle.{BattleMap, GameMap}
+import org.anacletogames.battle.GameMap
 
 import scala.util.{Failure, Success, Try}
 

@@ -2,9 +2,7 @@ package render
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch, TextureRegion}
-import com.badlogic.gdx.math.Vector2
 import org.anacletogames.entities._
-import org.anacletogames.entities.assets.OrientedAnimation
 
 /**
   * Created by simone on 26.12.16.

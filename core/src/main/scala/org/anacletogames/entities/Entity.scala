@@ -1,6 +1,5 @@
 package org.anacletogames.entities
 
-import com.badlogic.gdx.math.GridPoint2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.battle.GameMap
 

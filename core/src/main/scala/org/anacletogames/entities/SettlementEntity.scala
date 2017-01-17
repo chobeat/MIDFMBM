@@ -1,6 +1,5 @@
 package org.anacletogames.entities
 
-import org.anacletogames.actions.GameAction
 import org.anacletogames.battle.GameMap
 import org.anacletogames.game.world.Settlement
 import render.WithDelta

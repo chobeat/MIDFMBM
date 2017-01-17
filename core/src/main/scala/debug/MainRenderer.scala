@@ -1,9 +1,7 @@
 package debug
 
 import com.badlogic.gdx.Game
-import org.anacletogames.modes.{BattleScreen, WorldMapScreen}
-
-import scala.util.Random
+import org.anacletogames.modes.BattleScreen
 
 /**
   * Created by simone on 09.01.17.
