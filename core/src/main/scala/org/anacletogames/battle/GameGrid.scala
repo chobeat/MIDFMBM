@@ -1,14 +1,12 @@
 package org.anacletogames.battle
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.entities.{Entity, ImmutableEntity, MutableEntity}
+import org.anacletogames.entities.{Entity, MutableEntity}
 
 import scala.collection.mutable
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 class GameGrid(gridWidth: Int, gridHeight: Int) {
 
-  private var positionToEntities =
+  private val positionToEntities =
     mutable.HashMap[GridPoint2, Seq[Entity]]()
 
   private var entitiesToPosition = mutable.HashMap[Entity, GridPoint2]()
@@ -78,19 +76,6 @@ class GameGrid(gridWidth: Int, gridHeight: Int) {
     }
 
     cachedOccupied.clear()
-  }
-  def doImmutableStep(): Future[Unit] = {
-    Future {
-      entitiesToPosition.map {
-        case (entity: ImmutableEntity, pos) => entity.doStep() -> pos
-        case x => x
-      }
-    }.map(x => {
-      entitiesToPosition = x
-
-      //recalculate the inverse index
-      alignPositionToEntities()
-    })
   }
 
   private def alignPositionToEntities() = {

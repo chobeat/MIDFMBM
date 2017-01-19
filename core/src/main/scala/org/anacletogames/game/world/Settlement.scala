@@ -30,7 +30,7 @@ case class Settlement(name: String,
   def doStep(gameMap: GameMap): Settlement = {
     val nextPop = population.map(_.doStep())
     val c = nextPop.foldRight(0)((c, i) => c.count + i)
-    copy(population = population.map(_.copy(count = c)))
+    copy(population = nextPop.map(p => p.copy(count = p.count)))
   }
 
 }

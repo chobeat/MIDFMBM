@@ -7,7 +7,7 @@ import render.WithDelta
 /**
   * Created by simone on 14.01.17.
   */
-class SettlementEntity(settlement: Settlement,
+class SettlementEntity(val settlement: Settlement,
                        val gameMap: GameMap,
                        renderingContext: WithDelta)
     extends ImmutableEntity(0, Some(settlement.name), renderingContext) {

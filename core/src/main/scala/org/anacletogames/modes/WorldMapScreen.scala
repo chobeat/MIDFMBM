@@ -5,20 +5,41 @@ import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.GameMap
 import org.anacletogames.entities._
 import org.anacletogames.game.skills.SkillSet
-import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Party, Settlement}
+import org.anacletogames.game.world.{
+  CharacterProfile,
+  Inhabitant,
+  Party,
+  Settlement
+}
 import org.anacletogames.maps.world.WithWorldMap
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 import scala.concurrent._
 
 /**
   * Created by simone on 05.11.16.
   */
-class WorldGrid(gridWidth: Int, gridHeight: Int, tiledMap: TiledMap)
-    extends GameMap(gridWidth, gridHeight, tiledMap)
+class WorldGrid(gridWidth: Int,
+                gridHeight: Int,
+                tiledMap: TiledMap,
+                settlements: mutable.MutableList[Settlement])
+    extends GameMap(gridWidth, gridHeight, tiledMap) {
 
-case class WorldState(settlements: List[Settlement]) {
-  def addSettlement(s: Settlement) = this.copy(settlements = s :: settlements)
+  val simulationManager = new WorldSimulationManager(
+    new WorldState(settlements))
+
+  override def addEntity(e: Entity, position: GridPoint2): Unit = {
+    e match {
+      case e: MutableEntity => super.addEntity(e, position)
+      case e: ImmutableEntity => simulationManager.addEntity(e)
+    }
+  }
+
+  def doImmutableStep(movedCountToday: Int) = {
+
+    simulationManager.doImmutableStep(this, movedCountToday)
+  }
 }
 
 class WorldMapScreen(val party: Party, var worldState: WorldState)
@@ -26,17 +47,19 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
     with WithWorldMap
     with MovementControllers {
 
-  lazy val worldGrid = new WorldGrid(mapWidth, mapHeight, tiledMap)
-  var worldGridResultFuture: Option[Future[Unit]] = None
-  def createDummySettlement(pos: GridPoint2) = {
-    val inhab = (0 to 10000).map(x =>
-      Inhabitant(CharacterProfile("aaa", 0, Nil, new SkillSet()), Nil, 0))
+  lazy val worldGrid = new WorldGrid(mapWidth, mapHeight, tiledMap, mlist)
+  def createDummySettlement(x: Int, pos: GridPoint2) = {
+    val inhab = (0 until 5000).map(y =>
+      Inhabitant(CharacterProfile(s"$x-$y", 0, Nil, new SkillSet()), Nil, 0))
 
     Settlement("abacuc", pos, inhab.toList, Nil)
   }
 
-  (0 to 5000).foreach(x =>
-    addSettlement(createDummySettlement(new GridPoint2(x, x + 3))))
+  val mlist = mutable.MutableList[Settlement]()
+  val settlements =
+    (0 until 200)
+      .map(x => createDummySettlement(x, new GridPoint2(x, x + 3)))
+      .foreach(x => mlist += x)
 
   val partyEntity = new PartyEntity(party, this.worldGrid, this)
 
@@ -45,19 +68,17 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
       partyEntity)
 
+  var lastMovedCount = 0
+
   override def renderContent(): Unit = {
 
-    if (isTimeToAct && partyEntity.isMovingAnimationCompleted())
+    if (isTimeToAct && partyEntity.isMovingAnimationCompleted()) {
       worldGrid.doStep()
+    }
 
-    worldGridResultFuture = worldGridResultFuture match {
-      case Some(f)
-          if f.isCompleted && isTimeToAct && partyEntity.isTimeToAct() =>
-        partyEntity.resetMovedCount()
-        Some(worldGrid.doImmutableStep())
-
-      case None => Some(worldGrid.doImmutableStep())
-      case x => x
+    if (partyEntity.hasEverMoved && lastMovedCount != partyEntity.getMovedCountToday) {
+      worldGrid.doImmutableStep(partyEntity.getMovedCountToday)
+      lastMovedCount = partyEntity.getMovedCountToday
     }
 
     if (isTimeToRender) {
@@ -97,6 +118,7 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
 object WorldMapScreen {
   def debugWorldMapScreen = {
 
-    new WorldMapScreen(Party("test party", Seq()), WorldState(List()))
+    new WorldMapScreen(Party("test party", Seq()),
+                       new WorldState(mutable.MutableList()))
   }
 }

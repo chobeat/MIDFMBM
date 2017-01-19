@@ -26,7 +26,7 @@ class PartyEntity(wrappedParty: Party,
   private var movedCountToday = 0
   private val movementsToBeDone: scala.collection.mutable.Queue[GridMovement] =
     mutable.Queue()
-
+  var hasEverMoved=false
   def isMovingAnimationCompleted() =
     this.animation match{
       case x:MovementAnimation=>
@@ -34,6 +34,7 @@ class PartyEntity(wrappedParty: Party,
       case _=>true
     }
 
+  def getMovedCountToday = movedCountToday
 
   def isTimeToAct(): Boolean = movedCountToday >= Constants.tileMovementsToDay
 
@@ -45,7 +46,13 @@ class PartyEntity(wrappedParty: Party,
 
   override def act() = {
     if (movementsToBeDone.nonEmpty) {
+      hasEverMoved=true
+
+      if(movedCountToday>=Constants.tileMovementsToDay)
+        resetMovedCount()
+
       this.increaseMovedCount()
+
       val movement = movementsToBeDone.dequeue()
       this.moveBy(movement.x, movement.y)
     }
