@@ -1,7 +1,8 @@
 package render
 
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch, TextureRegion}
-import org.anacletogames.entities.{EntityOrientation, MutableEntity}
+import org.anacletogames.battle.GameGrid
+import org.anacletogames.entities.{Entity, EntityOrientation, EntityRenderer}
 
 /**
   * Created by simone on 26.12.16.
@@ -10,10 +11,11 @@ case class RestAnimation(animation: Animation[TextureRegion],
                          override val orientation: EntityOrientation)
     extends EntityAnimation(animation, orientation) {
   override def draw(batch: Batch,
-                    entity: MutableEntity with EntityWithAnimation): Unit = {
+                    renderer: EntityRenderer,
+                    entity: Entity): Unit = {
 
     val currentFrame = animation.getKeyFrame(0)
-    val position = entity.getPosition
+    val position = entity.position
     position match {
       case Some(drawPosition) =>
         batch.draw(currentFrame,

@@ -2,19 +2,20 @@ package render
 
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch, TextureRegion}
 import com.badlogic.gdx.math.{GridPoint2, Vector2}
-import org.anacletogames.entities.{EntityOrientation, MutableEntity}
+import org.anacletogames.entities.{Entity, EntityOrientation, EntityRenderer}
 
 /**
   * Created by simone on 26.12.16.
   */
-case class MovementAnimation(animation:Animation[TextureRegion],
-                             override val orientation:EntityOrientation,
+case class MovementAnimation(animation: Animation[TextureRegion],
+                             override val orientation: EntityOrientation,
                              startingPosition: GridPoint2,
                              destination: GridPoint2)
-    extends EntityAnimation(animation,orientation) {
+    extends EntityAnimation(animation, orientation) {
 
   override def draw(batch: Batch,
-                    entity: MutableEntity with EntityWithAnimation): Unit = {
+                    renderer: EntityRenderer,
+                    entity: Entity): Unit = {
 
     if (alpha < 1.0) {
 
@@ -29,9 +30,9 @@ case class MovementAnimation(animation:Animation[TextureRegion],
 
     } else {
       val endMovementAnimation =
-        entity.getRestingAnimation(this.orientation)
-      entity.animation = endMovementAnimation
-      endMovementAnimation.draw(batch, entity)
+        renderer.getRestingAnimation(this.orientation)
+      renderer.copy(animation = endMovementAnimation)
+      endMovementAnimation.draw(batch, renderer, entity)
     }
   }
 

@@ -1,6 +1,6 @@
 package org.anacletogames.modes
 
-import org.anacletogames.battle.GameMap
+import org.anacletogames.battle.GameGrid
 import org.anacletogames.game.world.Settlement
 import render.Constants
 
@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class WorldState(
     val settlements: GenSeq[Settlement]) {
 
-  def doImmutableStep(gameMap: GameMap,
+  def doImmutableStep(gameGrid: GameGrid,
                       dayFraction: Int): Future[WorldState] = {
 
     Future {
@@ -26,7 +26,7 @@ class WorldState(
         case Some((start, end)) =>
           settlements.par.zipWithIndex.map {
             case (settlement, i) if i >= start && i < end =>
-              settlement.doStep(gameMap)
+              settlement.doStep(gameGrid)
             case (settlement, i) => settlement
           }
         case None => settlements

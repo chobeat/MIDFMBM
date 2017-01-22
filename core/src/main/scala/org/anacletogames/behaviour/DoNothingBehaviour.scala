@@ -1,14 +1,19 @@
 package org.anacletogames.behaviour
-import org.anacletogames.actions.{GameAction, NoAction}
-import org.anacletogames.battle.GameMap
+import org.anacletogames.battle.GameGrid
+import org.anacletogames.entities.{Entity, GameEvent}
 
 import scala.util.{Success, Try}
 
 /**
   * Created by simone on 22.11.16.
   */
-case object DoNothingBehaviour extends EntityBehaviour{
-  override def decideNextAction(context: GameMap) = Success(NoAction)
+case object DoNothingBehaviour extends EntityBehaviour {
+  override def doStep(subject: Entity,
+                      context: GameGrid): (Entity, Seq[GameEvent]) =
+    (subject,List())
 
-  override def decideNextBehaviour(action: GameAction): Try[EntityBehaviour] = Success(DoNothingBehaviour)
+  override def decideNextBehaviour(subject: Entity,
+                                   emittedEvents: Seq[GameEvent],
+                                   context: GameGrid): Try[EntityBehaviour] =
+    Success(DoNothingBehaviour)
 }

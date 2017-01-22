@@ -2,6 +2,7 @@ package render
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch, TextureRegion}
+import org.anacletogames.battle.GameGrid
 import org.anacletogames.entities._
 
 /**
@@ -11,7 +12,9 @@ abstract class EntityAnimation(
     animation: Animation[TextureRegion],
     val orientation: EntityOrientation = NoOrientation) {
 
-  def draw(batch: Batch, entity: MutableEntity with EntityWithAnimation): Unit
+  def draw(batch: Batch,
+           renderer: EntityRenderer,
+           entity: Entity): Unit
 
   def alpha = Constants.moveToCellTime * statetime
 

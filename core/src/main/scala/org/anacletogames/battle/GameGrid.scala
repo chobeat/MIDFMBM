@@ -1,92 +1,120 @@
 package org.anacletogames.battle
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.entities.{Entity, MutableEntity}
+import org.anacletogames.actions.GridMovement
+import org.anacletogames.behaviour.PathFinding
+import org.anacletogames.entities.{Entity, GameEvent, MovementEvent}
 
-import scala.collection.mutable
-class GameGrid(gridWidth: Int, gridHeight: Int) {
-
-  private val positionToEntities =
-    mutable.HashMap[GridPoint2, Seq[Entity]]()
-
-  private var entitiesToPosition = mutable.HashMap[Entity, GridPoint2]()
-
-  private val cachedOccupied = mutable.HashMap[GridPoint2, Boolean]()
+import scala.collection.{Map, breakOut, mutable}
+import scala.util.Try
+case class GameGrid(gridWidth: Int,
+                    gridHeight: Int,
+                    positionToEntities: Map[GridPoint2, Seq[Entity]] = Map(),
+                    impassableMapTile: Map[GridPoint2, Cell] = Map())
+    extends PathFinding {
 
   def getEntitiesAtPosition(p: GridPoint2): Seq[Entity] =
     positionToEntities.getOrElse(p, Seq())
 
-  private def addEntityToTileContent(
-      entity: Entity,
-      tileContent: Seq[Entity]): Either[Seq[Entity], Seq[Entity]] = {
+  private def addEntityToTileContent(entity: Entity,
+                                     tileContent: Seq[Entity]): Seq[Entity] = {
     if (!entity.stackable && tileContent.nonEmpty)
-      Left(tileContent)
+      tileContent
     else if (!isContentAccessible(tileContent))
-      Left(tileContent)
+      tileContent
     else
-      Right(tileContent :+ entity)
+      tileContent :+ entity
   }
 
   def isInsideGrid(position: GridPoint2) =
     position.x >= 0 && position.x <= gridWidth && position.y >= 0 && position.y <= gridHeight
 
-  protected def placeEntity(entity: Entity, position: GridPoint2): Boolean = {
+  def placeEntity(entity: Entity, position: GridPoint2): Option[GameGrid] = {
     if (!isInsideGrid(position))
-      false
+      None
     else {
       val content = getEntitiesAtPosition(position)
-      val newContent = addEntityToTileContent(entity, content)
-
-      newContent.fold((x) => false, (entities) => {
-        positionToEntities.put(position, entities)
-        entities.foreach(x => entitiesToPosition.put(x, position))
-        true
-      })
+      val positionedEntity = entity.copy(position = Some(position))
+      val newContent = addEntityToTileContent(positionedEntity, content)
+      Some(
+        this.copy(
+          positionToEntities = positionToEntities + (position -> newContent)))
     }
 
   }
 
-  protected def removeEntity(entity: Entity) = {
-    entitiesToPosition
-      .get(entity)
-      .foreach(currentPosition => {
-        entitiesToPosition -= entity
-        val oldContent = positionToEntities(currentPosition)
-        val contentWithEntityRemoved = oldContent.filter(_ != entity)
-        positionToEntities.put(currentPosition, contentWithEntityRemoved)
-      })
+  def removeEntity(entityToBeRemoved: Entity) = {
+    val newMap = positionToEntities.map {
+      case (pos, entities) => pos -> entities.filter(_ != entityToBeRemoved)
+    }
+    this.copy(positionToEntities = newMap)
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p))
-
+    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p)) && !impassableMapTile
+      .isDefinedAt(p)
   }
   def isContentAccessible(content: Seq[Entity]) =
     !content.exists(e => e.stackable)
 
-  def getAllEntities: Iterator[Entity] = entitiesToPosition.keysIterator
+  def getAllEntities: Seq[Entity] = positionToEntities.values.flatten.toList
 
-  def getEntityPosition(e: Entity) = entitiesToPosition.get(e)
+  def getReversedIndex: Map[Entity, GridPoint2] = {
 
-  def doStep(): Unit = {
-
-    entitiesToPosition.foreach {
-      case (entity: MutableEntity, _) => entity.act()
-      case _ =>
-    }
-
-    cachedOccupied.clear()
-  }
-
-  private def alignPositionToEntities() = {
-
-    entitiesToPosition.toList
-      .groupBy(_._2)
-      .foreach(x => {
-
-        positionToEntities.put(x._1, x._2.map(_._1))
-      })
+    for {
+      (position, entities) <- positionToEntities
+      entity <- entities
+    } yield entity -> position
 
   }
 
+  def doStep(events: Seq[GameEvent]): (GameGrid, Seq[GameEvent]) = {
+    val entitiesToEvents = events.groupBy(_.target)
+
+    val newEntitiesWithEventsAndPositions: Map[Entity,
+                                               (GridPoint2, Seq[GameEvent])] =
+      (for {
+        (pos, entities) <- positionToEntities
+        entity <- entities
+        (newEntity, events) = entity.doStep(
+          entitiesToEvents.getOrElse(entity, Seq()),
+          this)
+      } yield newEntity -> (pos, events))(breakOut)
+    val newEvents = newEntitiesWithEventsAndPositions.flatMap(_._2._2).toList
+    val newPosToEntities: Map[Entity, GridPoint2] =
+      newEntitiesWithEventsAndPositions.map {
+        case (e, (p, _)) => e -> p
+      }
+    val gridWithUpdatedEntities = this.updateEntities(newPosToEntities)
+
+    val movementEvents = newEvents.flatMap { case x: MovementEvent => Some(x) }
+    val newGrid = movementEvents.foldLeft(gridWithUpdatedEntities)((grid, event) =>
+      grid.moveEntity(event.target, event.destination))
+
+    (newGrid, newEvents.diff(movementEvents))
+  }
+
+  def moveEntity(e: Entity, movement: GridMovement): GameGrid = {
+    val newPosition = movement.calculateDestination(e.position.get)
+    if (e.canIMoveThere(this, newPosition)) {
+      val placed = this.removeEntity(e).placeEntity(e, newPosition)
+      placed match {
+        case Some(g) => g
+        case None => this
+      }
+    } else
+      this
+  }
+
+  def updateEntities(entitiesToPos: Map[Entity, GridPoint2]): GameGrid = {
+    val posToEntities =
+      entitiesToPos.toList.groupBy(_._2).map { case (k, v) => k -> v.map(_._1) }
+    this.copy(positionToEntities = posToEntities)
+  }
+}
+
+object GameGrid {
+  def empty(width: Int, height: Int) =
+    GameGrid(width, height)
 }

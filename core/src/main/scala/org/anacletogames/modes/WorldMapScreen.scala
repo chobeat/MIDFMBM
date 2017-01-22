@@ -2,7 +2,7 @@ package org.anacletogames.modes
 
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.battle.GameMap
+import org.anacletogames.battle.GameGrid
 import org.anacletogames.entities._
 import org.anacletogames.game.skills.SkillSet
 import org.anacletogames.game.world.{
@@ -16,6 +16,7 @@ import org.anacletogames.maps.world.WithWorldMap
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.concurrent._
+import org.anacletogames.maps._
 
 /**
   * Created by simone on 05.11.16.
@@ -24,17 +25,14 @@ class WorldGrid(gridWidth: Int,
                 gridHeight: Int,
                 tiledMap: TiledMap,
                 settlements: mutable.MutableList[Settlement])
-    extends GameMap(gridWidth, gridHeight, tiledMap) {
+    extends GameGrid(gridWidth,
+                     gridHeight,
+                     impassableMapTile = tiledMap.getImpassableTiles) {
 
   val simulationManager = new WorldSimulationManager(
     new WorldState(settlements))
 
-  override def addEntity(e: Entity, position: GridPoint2): Unit = {
-    e match {
-      case e: MutableEntity => super.addEntity(e, position)
-      case e: ImmutableEntity => simulationManager.addEntity(e)
-    }
-  }
+  def addEntity(e: Entity, position: GridPoint2) = ???
 
   def doImmutableStep(movedCountToday: Int) = {
 
@@ -42,10 +40,16 @@ class WorldGrid(gridWidth: Int,
   }
 }
 
+trait GameLoopCommons {
+
+  var eventsFromLastFrame: Seq[GameEvent] = Seq()
+}
+
 class WorldMapScreen(val party: Party, var worldState: WorldState)
     extends BaseScreen
     with WithWorldMap
-    with MovementControllers {
+    with MovementControllers
+    with GameLoopCommons {
 
   lazy val worldGrid = new WorldGrid(mapWidth, mapHeight, tiledMap, mlist)
   def createDummySettlement(x: Int, pos: GridPoint2) = {
@@ -63,18 +67,15 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
 
   val partyEntity = new PartyEntity(party, this.worldGrid, this)
 
-  worldGrid.addEntity(partyEntity, new GridPoint2(1, 1))
-  stage.addActor(partyEntity)
+  // worldGrid.addEntity(partyEntity, new GridPoint2(1, 1))
+  // stage.addActor(partyEntity)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
       partyEntity)
 
   var lastMovedCount = 0
-
   override def renderContent(): Unit = {
-
-    if (isTimeToAct && partyEntity.isMovingAnimationCompleted()) {
-      worldGrid.doStep()
-    }
+    val entities = worldGrid.getAllEntities
+    if (isTimeToAct && partyEntity.isMovingAnimationCompleted()) {}
 
     if (partyEntity.hasEverMoved && lastMovedCount != partyEntity.getMovedCountToday) {
       worldGrid.doImmutableStep(partyEntity.getMovedCountToday)

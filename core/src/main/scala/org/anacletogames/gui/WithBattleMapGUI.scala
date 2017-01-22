@@ -28,7 +28,7 @@ class DebugConsoleTable(battleMapRenderer: BattleScreen)
   def createTable: Table = {
     val table = WithBattleMapGUI.buildDebugMenuTable
 
-    battleMapRenderer.battleMap.getAllEntities.foreach(entity => {
+    battleMapRenderer.gameGrid.getAllEntities.foreach(entity => {
       val button = WithBattleMapGUI.buildEntityButton(entity)
       table.add(button)
       table.row()
@@ -75,7 +75,7 @@ object WithBattleMapGUI {
                              y: Float,
                              pointer: Int,
                              button: Int): Boolean = {
-        println(entity.getPosition.get)
+        //println(entity.getPosition(gameGrid).get)
         false
       }
     })

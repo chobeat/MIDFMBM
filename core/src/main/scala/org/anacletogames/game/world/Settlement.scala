@@ -1,7 +1,7 @@
 package org.anacletogames.game.world
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.battle.GameMap
+import org.anacletogames.battle.GameGrid
 import org.anacletogames.game.skills.{SkillSet, Trait}
 import org.anacletogames.game.world.buildings.Building
 
@@ -27,7 +27,7 @@ case class Settlement(name: String,
                       population: List[Inhabitant],
                       buildings: List[Building]) {
 
-  def doStep(gameMap: GameMap): Settlement = {
+  def doStep(gameGrid: GameGrid): Settlement = {
     val nextPop = population.map(_.doStep())
     val c = nextPop.foldRight(0)((c, i) => c.count + i)
     copy(population = nextPop.map(p => p.copy(count = p.count)))

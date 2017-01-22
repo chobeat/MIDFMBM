@@ -13,34 +13,5 @@ import org.anacletogames.entities.assets.{
   */
 trait MaleAnimatedTexture {
 
-  val entityTextures = MaleBaseCharacterTexture
-}
-
-trait EntityWithAnimation { this: MutableEntity =>
-
-  val entityTextures: MovementAnimatedTexture
-  var animation: EntityAnimation = null
-  lazy val defaultAnimation = RestAnimation(entityTextures.upStandingBase,LookingUp)
-
-  override def draw(batch: Batch, alpha: Float) = {
-    //Done this way because of an init problem with traits
-
-    if (this.animation == null)
-      animation = defaultAnimation
-
-    this.animation.draw(batch, this)
-  }
-
-  def getRestingAnimation(direction: EntityOrientation): RestAnimation = {
-    direction match {
-      case LookingUp => RestAnimation(entityTextures.upStandingBase, LookingUp)
-      case LookingLeft =>
-        RestAnimation(entityTextures.leftStandingBase, LookingLeft)
-      case LookingDown =>
-        RestAnimation(entityTextures.downStandingBase, LookingDown)
-      case LookingRight =>
-        RestAnimation(entityTextures.rightStandingBase, LookingRight)
-
-    }
-  }
+  val entityTextures: MaleBaseCharacterTexture.type = MaleBaseCharacterTexture
 }

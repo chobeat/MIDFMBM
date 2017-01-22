@@ -20,15 +20,15 @@ trait MovementControllers { this: WithStage =>
 
   }
 
-  def entityControl(entity: PartyEntity): InputProcessor = {
+  def entityControl(partyEntity: PartyEntity): InputProcessor = {
     case Input.Keys.W =>
-      entity.enqueueMovement(GridMovement(0, entity.speed))
+      partyEntity.enqueueMovement(GridMovement(0, partyEntity.entity.speed))
     case Input.Keys.A =>
-      entity.enqueueMovement(GridMovement(-entity.speed, 0))
+      partyEntity.enqueueMovement(GridMovement(-partyEntity.entity.speed, 0))
     case Input.Keys.D =>
-      entity.enqueueMovement(GridMovement(entity.speed, 0))
+      partyEntity.enqueueMovement(GridMovement(partyEntity.entity.speed, 0))
     case Input.Keys.S =>
-      entity.enqueueMovement(GridMovement(0, -entity.speed))
+      partyEntity.enqueueMovement(GridMovement(0, -partyEntity.entity.speed))
   }
 
   def zoom: InputProcessor = {

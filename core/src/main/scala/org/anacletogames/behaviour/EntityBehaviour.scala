@@ -1,7 +1,8 @@
 package org.anacletogames.behaviour
 
 import org.anacletogames.actions._
-import org.anacletogames.battle.GameMap
+import org.anacletogames.battle.GameGrid
+import org.anacletogames.entities.{Entity, GameEvent}
 
 import scala.util.Try
 
@@ -10,10 +11,7 @@ import scala.util.Try
   */
 abstract class EntityBehaviour {
 
-  def decideNextAction(context: GameMap): Try[GameAction]
-  def decideNextBehaviour(action:GameAction): Try[EntityBehaviour]
+  def doStep(subject: Entity, context: GameGrid): (Entity,Seq[GameEvent])
+  def decideNextBehaviour(subject: Entity, emittedEvents:Seq[GameEvent],
+                                   context: GameGrid): Try[EntityBehaviour]
 }
-
-
-
-
