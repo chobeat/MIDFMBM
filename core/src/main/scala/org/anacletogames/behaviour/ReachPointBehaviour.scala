@@ -19,17 +19,19 @@ case class ReachPointBehaviour(destination: GridPoint2,
     extends EntityBehaviour {
   override def doStep(subject: Entity,
                       context: GameGrid): (Entity, Seq[GameEvent]) = {
-
-    decidedPath match {
-      case None => (subject, List())
-      case Some(Nil) => (subject, List())
-      case Some(head :: tail) =>
-        (subject, List(MovementEvent(subject, head)))
+    val destination = decidedPath.getOrElse(List()).headOption
+    val nextBehaviour = decideNextBehaviour(subject, context)
+    val newEntity =
+      nextBehaviour.map(b => subject.copy(behaviour = b)).getOrElse(subject)
+    val events = destination match {
+      case None => Seq()
+      case Some(d) =>
+        List(MovementEvent(newEntity, d))
     }
+    (newEntity, events)
   }
 
   override def decideNextBehaviour(subject: Entity,
-                                   emittedEvents: Seq[GameEvent],
                                    context: GameGrid): Try[EntityBehaviour] = {
     val newPath = decidedPath match {
       case None =>

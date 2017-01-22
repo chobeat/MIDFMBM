@@ -7,7 +7,6 @@ import org.anacletogames.behaviour.PathFinding
 import org.anacletogames.entities.{Entity, GameEvent, MovementEvent}
 
 import scala.collection.{Map, breakOut, mutable}
-import scala.util.Try
 case class GameGrid(gridWidth: Int,
                     gridHeight: Int,
                     positionToEntities: Map[GridPoint2, Seq[Entity]] = Map(),
@@ -37,16 +36,18 @@ case class GameGrid(gridWidth: Int,
       val content = getEntitiesAtPosition(position)
       val positionedEntity = entity.copy(position = Some(position))
       val newContent = addEntityToTileContent(positionedEntity, content)
-      Some(
-        this.copy(
-          positionToEntities = positionToEntities + (position -> newContent)))
+      val result = positionToEntities + (position -> newContent)
+      Some(this.copy(positionToEntities = result))
     }
 
   }
 
   def removeEntity(entityToBeRemoved: Entity) = {
-    val newMap = positionToEntities.map {
-      case (pos, entities) => pos -> entities.filter(_ != entityToBeRemoved)
+    val newMap = positionToEntities.flatMap {
+      case (pos, entities) =>
+        val updatedContent = entities.filter(x => x.id != entityToBeRemoved.id)
+        if (updatedContent.nonEmpty) Some(pos -> updatedContent) else None
+      case _ => None
     }
     this.copy(positionToEntities = newMap)
   }
@@ -89,8 +90,9 @@ case class GameGrid(gridWidth: Int,
     val gridWithUpdatedEntities = this.updateEntities(newPosToEntities)
 
     val movementEvents = newEvents.flatMap { case x: MovementEvent => Some(x) }
-    val newGrid = movementEvents.foldLeft(gridWithUpdatedEntities)((grid, event) =>
-      grid.moveEntity(event.target, event.destination))
+    val newGrid =
+      movementEvents.foldLeft(gridWithUpdatedEntities)((grid, event) =>
+        grid.moveEntity(event.target, event.destination))
 
     (newGrid, newEvents.diff(movementEvents))
   }
@@ -98,7 +100,8 @@ case class GameGrid(gridWidth: Int,
   def moveEntity(e: Entity, movement: GridMovement): GameGrid = {
     val newPosition = movement.calculateDestination(e.position.get)
     if (e.canIMoveThere(this, newPosition)) {
-      val placed = this.removeEntity(e).placeEntity(e, newPosition)
+      val afterRemove = this.removeEntity(e)
+      val placed = afterRemove.placeEntity(e, newPosition)
       placed match {
         case Some(g) => g
         case None => this
@@ -109,7 +112,9 @@ case class GameGrid(gridWidth: Int,
 
   def updateEntities(entitiesToPos: Map[Entity, GridPoint2]): GameGrid = {
     val posToEntities =
-      entitiesToPos.toList.groupBy(_._2).map { case (k, v) => k -> v.map(_._1) }
+      entitiesToPos.toList.groupBy(_._2).map {
+        case (k, v) => k -> v.map(_._1)
+      }
     this.copy(positionToEntities = posToEntities)
   }
 }

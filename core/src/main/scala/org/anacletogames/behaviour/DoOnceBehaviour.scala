@@ -14,7 +14,6 @@ case class DoOnceBehaviour(a: GameEvent) extends EntityBehaviour {
     subject.doStep(List(a), context)
 
   def decideNextBehaviour(subject: Entity,
-                          emittedEvents: Seq[GameEvent],
                           context: GameGrid): Try[EntityBehaviour] =
     Failure(new Exception("No behaviour found"))
 }

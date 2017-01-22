@@ -13,7 +13,6 @@ case object DoNothingBehaviour extends EntityBehaviour {
     (subject,List())
 
   override def decideNextBehaviour(subject: Entity,
-                                   emittedEvents: Seq[GameEvent],
                                    context: GameGrid): Try[EntityBehaviour] =
     Success(DoNothingBehaviour)
 }

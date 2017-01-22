@@ -1,5 +1,7 @@
 package org.anacletogames.entities
 
+import java.util.UUID
+
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch, TextureRegion}
 import com.badlogic.gdx.math.GridPoint2
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -13,7 +15,7 @@ import org.anacletogames.entities.assets.{
 }
 import render.{EntityAnimation, MovementAnimation, RestAnimation, WithDelta}
 
-import scala.util.Success
+import scala.util.{Random, Success}
 
 /**
   * Created by simone on 14.01.17.
@@ -77,20 +79,16 @@ case class Entity(position: Option[GridPoint2],
                   gameName: Option[String],
                   stackable: Boolean = false,
                   renderer: EntityRenderer,
-                  behaviour: EntityBehaviour = DoNothingBehaviour)
+                  behaviour: EntityBehaviour = DoNothingBehaviour,
+                  id: String = UUID.randomUUID().toString)
     extends Actor {
 
   def getGameName: String = gameName.getOrElse("UnnamedEntity")
 
   def doStep(events: Seq[GameEvent],
              gameGrid: GameGrid): (Entity, Seq[GameEvent]) = {
-    val (entity, events) = behaviour.doStep(this, gameGrid)
-    val nextBehaviour =
-      behaviour.decideNextBehaviour(this, events, gameGrid) match {
-        case Success(b) => b
-        case _ => DoNothingBehaviour
-      }
-    val newEntity = entity.copy(behaviour = nextBehaviour)
+    val (newEntity, events) = behaviour.doStep(this, gameGrid)
+
     (newEntity, events)
 
   }

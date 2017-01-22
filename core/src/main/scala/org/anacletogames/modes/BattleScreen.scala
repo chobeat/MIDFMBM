@@ -76,7 +76,7 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
 
   initGUI()
 
-  (0 until 5).foreach(x => createDummy(x))
+  (3 until 4).foreach(x => createDummy(x))
 
   def initGUI(): Unit = {
     guiStage.addActor(battleMapGUIBar)

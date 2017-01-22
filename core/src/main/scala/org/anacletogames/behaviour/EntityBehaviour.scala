@@ -11,7 +11,7 @@ import scala.util.Try
   */
 abstract class EntityBehaviour {
 
-  def doStep(subject: Entity, context: GameGrid): (Entity,Seq[GameEvent])
-  def decideNextBehaviour(subject: Entity, emittedEvents:Seq[GameEvent],
-                                   context: GameGrid): Try[EntityBehaviour]
+  def doStep(subject: Entity, context: GameGrid): (Entity, Seq[GameEvent])
+  def decideNextBehaviour(subject: Entity,
+                          context: GameGrid): Try[EntityBehaviour]
 }
