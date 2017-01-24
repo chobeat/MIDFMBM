@@ -1,5 +1,6 @@
 package org.anacletogames.battle
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GridMovement
@@ -10,7 +11,7 @@ import scala.collection.{Map, breakOut, mutable}
 case class GameGrid(gridWidth: Int,
                     gridHeight: Int,
                     positionToEntities: Map[GridPoint2, Seq[Entity]] = Map(),
-                    impassableMapTile: Map[GridPoint2, Cell] = Map())
+                    impassableCells: Set[GridPoint2])
     extends PathFinding {
 
   def getEntitiesAtPosition(p: GridPoint2): Seq[Entity] =
@@ -53,8 +54,7 @@ case class GameGrid(gridWidth: Int,
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p)) && !impassableMapTile
-      .isDefinedAt(p)
+    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p)) && !impassableCells.contains(p)
   }
   def isContentAccessible(content: Seq[Entity]) =
     !content.exists(e => e.stackable)
@@ -120,6 +120,6 @@ case class GameGrid(gridWidth: Int,
 }
 
 object GameGrid {
-  def empty(width: Int, height: Int) =
-    GameGrid(width, height)
+  def empty(width: Int, height: Int, impassableCells:Set[GridPoint2]) =
+    GameGrid(width, height,impassableCells = impassableCells)
 }

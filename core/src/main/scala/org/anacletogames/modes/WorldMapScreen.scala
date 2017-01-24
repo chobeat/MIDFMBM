@@ -27,7 +27,7 @@ class WorldGrid(gridWidth: Int,
                 settlements: mutable.MutableList[Settlement])
     extends GameGrid(gridWidth,
                      gridHeight,
-                     impassableMapTile = tiledMap.getImpassableTiles) {
+                     impassableCells = tiledMap.getImpassableTiles.keySet) {
 
   val simulationManager = new WorldSimulationManager(
     new WorldState(settlements))

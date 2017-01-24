@@ -8,7 +8,7 @@ import org.anacletogames.entities._
 import org.anacletogames.gui.{BattleMapGUIControl, WithBattleMapGUI}
 import org.anacletogames.maps.MapGenerator
 import render.{MaleAnimatedTexture, RestAnimation}
-
+import org.anacletogames.maps._
 import scala.collection.JavaConversions._
 
 /**
@@ -23,7 +23,7 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
   override lazy val tiledMap =
     MapGenerator.generateDebugMap(mapWidth, mapHeight)
   var gameGrid: GameGrid =
-    GameGrid.empty(mapWidth, mapHeight)
+    GameGrid.empty(mapWidth, mapHeight, tiledMap.getImpassableTiles.keySet)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse battleMapGUIKeyprocessor
 
   override def renderContent(): Unit = {
