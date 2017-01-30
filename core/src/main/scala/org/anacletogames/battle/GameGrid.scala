@@ -7,7 +7,7 @@ import org.anacletogames.actions.GridMovement
 import org.anacletogames.behaviour.PathFinding
 import org.anacletogames.entities.{Entity, GameEvent, MovementEvent}
 
-import scala.collection.{Map, breakOut, mutable}
+import scala.collection.{Map, breakOut}
 case class GameGrid(gridWidth: Int,
                     gridHeight: Int,
                     positionToEntities: Map[GridPoint2, Seq[Entity]] = Map(),
@@ -54,7 +54,8 @@ case class GameGrid(gridWidth: Int,
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p)) && !impassableCells.contains(p)
+    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p)) && !impassableCells
+      .contains(p)
   }
   def isContentAccessible(content: Seq[Entity]) =
     !content.exists(e => e.stackable)
@@ -71,7 +72,7 @@ case class GameGrid(gridWidth: Int,
   }
 
   def doStep(events: Seq[GameEvent]): (GameGrid, Seq[GameEvent]) = {
-    val entitiesToEvents = events.groupBy(_.target)
+    val entitiesToEvents = events.groupBy(_.targetId)
 
     val newEntitiesWithEventsAndPositions: Map[Entity,
                                                (GridPoint2, Seq[GameEvent])] =
@@ -79,22 +80,15 @@ case class GameGrid(gridWidth: Int,
         (pos, entities) <- positionToEntities
         entity <- entities
         (newEntity, events) = entity.doStep(
-          entitiesToEvents.getOrElse(entity, Seq()),
+          entitiesToEvents.getOrElse(entity.id, Seq()),
           this)
       } yield newEntity -> (pos, events))(breakOut)
     val newEvents = newEntitiesWithEventsAndPositions.flatMap(_._2._2).toList
-    val newPosToEntities: Map[Entity, GridPoint2] =
-      newEntitiesWithEventsAndPositions.map {
-        case (e, (p, _)) => e -> p
-      }
-    val gridWithUpdatedEntities = this.updateEntities(newPosToEntities)
 
-    val movementEvents = newEvents.flatMap { case x: MovementEvent => Some(x) }
-    val newGrid =
-      movementEvents.foldLeft(gridWithUpdatedEntities)((grid, event) =>
-        grid.moveEntity(event.target, event.destination))
+    val gridWithUpdatedEntities =
+      this.updateEntitiesPosition(newEntitiesWithEventsAndPositions.keys)
 
-    (newGrid, newEvents.diff(movementEvents))
+    (gridWithUpdatedEntities, newEvents)
   }
 
   def moveEntity(e: Entity, movement: GridMovement): GameGrid = {
@@ -110,9 +104,12 @@ case class GameGrid(gridWidth: Int,
       this
   }
 
-  def updateEntities(entitiesToPos: Map[Entity, GridPoint2]): GameGrid = {
+  def updateEntitiesPosition(entities: Iterable[Entity]): GameGrid = {
+    val newPosToEntities: Map[Entity, GridPoint2] =
+      entities.map(entity => entity -> entity.position.get)(breakOut)
+
     val posToEntities =
-      entitiesToPos.toList.groupBy(_._2).map {
+      newPosToEntities.toList.groupBy(_._2).map {
         case (k, v) => k -> v.map(_._1)
       }
     this.copy(positionToEntities = posToEntities)
@@ -120,6 +117,6 @@ case class GameGrid(gridWidth: Int,
 }
 
 object GameGrid {
-  def empty(width: Int, height: Int, impassableCells:Set[GridPoint2]) =
-    GameGrid(width, height,impassableCells = impassableCells)
+  def empty(width: Int, height: Int, impassableCells: Set[GridPoint2]) =
+    GameGrid(width, height, impassableCells = impassableCells)
 }

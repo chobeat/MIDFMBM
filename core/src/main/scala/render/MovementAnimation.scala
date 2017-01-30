@@ -10,16 +10,14 @@ import org.anacletogames.entities.{Entity, EntityOrientation, EntityRenderer}
 case class MovementAnimation(animation: Animation[TextureRegion],
                              override val orientation: EntityOrientation,
                              startingPosition: GridPoint2,
-                             destination: GridPoint2)
-    extends EntityAnimation(animation, orientation) {
-
+                             destination: GridPoint2,
+                             override val previousStatetime: Float)
+    extends EntityAnimation(animation, orientation, previousStatetime) {
   override def draw(batch: Batch,
                     renderer: EntityRenderer,
-                    entity: Entity): Unit = {
+                    entity: Entity): MovementAnimation = {
 
     if (alpha < 1.0) {
-
-      updateStateTime()
 
       val startVector = new Vector2(startingPosition.x, startingPosition.y)
       val destVector = new Vector2(destination.x, destination.y)
@@ -31,9 +29,10 @@ case class MovementAnimation(animation: Animation[TextureRegion],
     } else {
       val endMovementAnimation =
         renderer.getRestingAnimation(this.orientation)
-      renderer.copy(animation = endMovementAnimation)
-      endMovementAnimation.draw(batch, renderer, entity)
+      val newRenderer=renderer.copy(animation = endMovementAnimation)
+      endMovementAnimation.draw(batch, newRenderer, entity)
     }
+    this.copy(previousStatetime = statetime)
   }
 
 }

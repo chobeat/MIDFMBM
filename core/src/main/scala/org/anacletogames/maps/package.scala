@@ -1,10 +1,15 @@
 package org.anacletogames
 
 import com.badlogic.gdx.maps.MapObject
-import com.badlogic.gdx.maps.objects.{CircleMapObject, PolylineMapObject, RectangleMapObject}
+import com.badlogic.gdx.maps.objects.{
+  CircleMapObject,
+  PolylineMapObject,
+  RectangleMapObject
+}
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
 import com.badlogic.gdx.math.{GridPoint2, Shape2D}
+import org.anacletogames.actions.GridMovement
 import org.anacletogames.maps._
 
 import scala.collection.JavaConversions._
@@ -27,6 +32,9 @@ package object maps {
 class GridPoint2Rich(p: GridPoint2) {
   def dst(other: GridPoint2): Double =
     Math.sqrt(Math.pow(p.x - other.x, 2) + Math.pow(p.y - other.y, 2))
+
+  def gridDst(other: GridPoint2) =
+    GridMovement(other.x - p.x, other.y - p.y)
 }
 class MapObjectWithExtractor(m: MapObject) {
   def getShape: Shape2D = m match {

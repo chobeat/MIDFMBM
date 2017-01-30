@@ -23,7 +23,6 @@ class WorldSimulationManager(var worldState: WorldState) {
 
     if (movedCountToday >= Constants.tileMovementsToDay) {
       worldState = Await.result(nextWorldState, 5 seconds)
-      println("pre")
       val c=worldState.settlements.flatMap(_.population.map(x=>x.count))
       println(c.max,c.min)
     }

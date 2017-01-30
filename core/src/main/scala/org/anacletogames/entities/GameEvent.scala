@@ -7,16 +7,14 @@ import org.anacletogames.actions.GridMovement
   * Created by simone on 21.01.17.
   */
 sealed trait GameEvent {
-  val target:Entity
+  val targetId: String
+  def applyToEntity(e: Entity): Entity
 }
 
-case class MovementEvent(target:Entity,destination:GridMovement) extends GameEvent
+case class MovementEvent(targetId: String, destination: GridPoint2)
+    extends GameEvent {
 
-
-object MovementEvent{
-  def apply(target:Entity,destination:GridPoint2):MovementEvent={
-    val x=destination.x - target.position.get.x
-    val y=destination.y - target.position.get.y
-    MovementEvent(target,GridMovement(x,y))
+  def applyToEntity(e: Entity): Entity = {
+    e.copy(position = Some(destination))
   }
 }

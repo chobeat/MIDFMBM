@@ -8,20 +8,20 @@ import org.anacletogames.entities._
 /**
   * Created by simone on 26.12.16.
   */
-abstract class EntityAnimation(
-    animation: Animation[TextureRegion],
-    val orientation: EntityOrientation = NoOrientation) {
+abstract class EntityAnimation(animation: Animation[TextureRegion],
+                               val orientation: EntityOrientation =
+                                 NoOrientation,
+                               val previousStatetime: Float) {
 
+  lazy val statetime = {
+    previousStatetime + Gdx.graphics.getDeltaTime
+  }
   def draw(batch: Batch,
            renderer: EntityRenderer,
-           entity: Entity): Unit
+           entity: Entity): EntityAnimation
 
   def alpha = Constants.moveToCellTime * statetime
 
-  var statetime: Float = 0
-  def updateStateTime(): Unit = {
-    statetime += Gdx.graphics.getDeltaTime
-  }
   def drawAtPosition(batch: Batch, x: Float, y: Float) = {
     val currentFrame =
       animation.getKeyFrame(statetime)

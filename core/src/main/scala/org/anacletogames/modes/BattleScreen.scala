@@ -30,7 +30,9 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
     updateDelta()
     if (isTimeToAct && !isPaused) {
 
-      gameGrid = gameGrid.doStep(eventsFromLastFrame)._1
+      val (newGameGrid, newEvents) = gameGrid.doStep(eventsFromLastFrame)
+      gameGrid = newGameGrid
+      eventsFromLastFrame = newEvents
       accumulatedRender = 0
     }
 
@@ -39,15 +41,12 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
       //to draw actors ordered by position
       val actorsToPosition =
         gameGrid.getReversedIndex
-
       stage.clear()
       val actors =
         actorsToPosition.toList
           .sortBy(_._2.y)(Ordering[Int])
           .reverse
-          .map(x =>
-            (x._1.copy(renderer = x._1.renderer.copy(gameGrid = gameGrid)),
-             x._2))
+
 
       actors.map(_._1).foreach(stage.addActor)
 
@@ -60,8 +59,7 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
     val renderer = EntityRenderer(
       RestAnimation(MaleBaseCharacterTexture.upStandingBase, LookingUp),
       this,
-      MaleBaseCharacterTexture,
-      gameGrid
+      MaleBaseCharacterTexture
     )
     val myChar =
       Entity(None,

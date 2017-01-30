@@ -17,18 +17,14 @@ import scala.util.{Failure, Success, Try}
 case class ReachPointBehaviour(destination: GridPoint2,
                                decidedPath: Option[Seq[GridPoint2]])
     extends EntityBehaviour {
-  override def doStep(subject: Entity,
-                      context: GameGrid): (Entity, Seq[GameEvent]) = {
+  override def doStep(subject: Entity, context: GameGrid): Seq[GameEvent] = {
     val destination = decidedPath.getOrElse(List()).headOption
-    val nextBehaviour = decideNextBehaviour(subject, context)
-    val newEntity =
-      nextBehaviour.map(b => subject.copy(behaviour = b)).getOrElse(subject)
     val events = destination match {
       case None => Seq()
       case Some(d) =>
-        List(MovementEvent(newEntity, d))
+        List(MovementEvent(subject.id, d))
     }
-    (newEntity, events)
+    events
   }
 
   override def decideNextBehaviour(subject: Entity,
