@@ -2,7 +2,7 @@ package org.anacletogames.actions
 
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.GameGrid
-import org.anacletogames.entities.{Entity, WithEntityMovement}
+import org.anacletogames.entities.Entity
 
 case class GridMovement(x: Int, y: Int) {
   def calculateDestination(currentPosition: GridPoint2) =

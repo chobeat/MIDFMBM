@@ -17,28 +17,32 @@ case class GameGrid(gridWidth: Int,
   def getEntitiesAtPosition(p: GridPoint2): Seq[Entity] =
     positionToEntities.getOrElse(p, Seq())
 
-  private def addEntityToTileContent(entity: Entity,
-                                     tileContent: Seq[Entity]): Seq[Entity] = {
+  private def addEntityToTileContent(
+      entity: Entity,
+      tileContent: Seq[Entity]): Option[Seq[Entity]] = {
     if (!entity.stackable && tileContent.nonEmpty)
-      tileContent
+      None
     else if (!isContentAccessible(tileContent))
-      tileContent
+      None
     else
-      tileContent :+ entity
+      Some(tileContent :+ entity)
   }
 
   def isInsideGrid(position: GridPoint2) =
     position.x >= 0 && position.x <= gridWidth && position.y >= 0 && position.y <= gridHeight
 
-  def placeEntity(entity: Entity, position: GridPoint2): Option[GameGrid] = {
+  def placeEntity(entity: Entity): Option[GameGrid] = {
+    val position = entity.position.get
     if (!isInsideGrid(position))
       None
     else {
       val content = getEntitiesAtPosition(position)
       val positionedEntity = entity.copy(position = Some(position))
-      val newContent = addEntityToTileContent(positionedEntity, content)
-      val result = positionToEntities + (position -> newContent)
-      Some(this.copy(positionToEntities = result))
+      val newContentOpt = addEntityToTileContent(positionedEntity, content)
+      newContentOpt.map(content => {
+        val result = positionToEntities + (position -> content)
+        this.copy(positionToEntities = result)
+      })
     }
 
   }
@@ -74,28 +78,29 @@ case class GameGrid(gridWidth: Int,
   def doStep(events: Seq[GameEvent]): (GameGrid, Seq[GameEvent]) = {
     val entitiesToEvents = events.groupBy(_.targetId)
 
-    val newEntitiesWithEventsAndPositions: Map[Entity,
-                                               (GridPoint2, Seq[GameEvent])] =
-      (for {
-        (pos, entities) <- positionToEntities
-        entity <- entities
-        (newEntity, events) = entity.doStep(
-          entitiesToEvents.getOrElse(entity.id, Seq()),
-          this)
-      } yield newEntity -> (pos, events))(breakOut)
-    val newEvents = newEntitiesWithEventsAndPositions.flatMap(_._2._2).toList
+    val entities = positionToEntities.values.flatten
+    val entitiesWithEvents = entities.map(entity =>
+      entity -> entitiesToEvents.getOrElse(entity.id, Seq()))
 
-    val gridWithUpdatedEntities =
-      this.updateEntitiesPosition(newEntitiesWithEventsAndPositions.keys)
+    entitiesWithEvents.foldLeft((this, List.empty[GameEvent])) {
+      case ((grid, accumulatedEvents), (entity, eventList)) =>
+        val (newEntity, newEvents) = entity.doStep(eventList, grid)
+        val updatedGridOpt=grid.updateEntityPosition(newEntity)
+        val newGrid=updatedGridOpt match{
+          case Some(updatedGrid)=>updatedGrid
+          case None=> grid
+        }
+        (newGrid, accumulatedEvents ++ newEvents)
 
-    (gridWithUpdatedEntities, newEvents)
+    }
+
   }
 
   def moveEntity(e: Entity, movement: GridMovement): GameGrid = {
     val newPosition = movement.calculateDestination(e.position.get)
     if (e.canIMoveThere(this, newPosition)) {
       val afterRemove = this.removeEntity(e)
-      val placed = afterRemove.placeEntity(e, newPosition)
+      val placed = afterRemove.placeEntity(e)
       placed match {
         case Some(g) => g
         case None => this
@@ -113,6 +118,11 @@ case class GameGrid(gridWidth: Int,
         case (k, v) => k -> v.map(_._1)
       }
     this.copy(positionToEntities = posToEntities)
+  }
+
+  def updateEntityPosition(entity: Entity): Option[GameGrid] = {
+
+    this.removeEntity(entity).placeEntity(entity)
   }
 }
 

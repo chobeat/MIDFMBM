@@ -1,13 +1,10 @@
 package org.anacletogames.behaviour
 
+import javax.security.auth.Subject
+
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.GameGrid
-import org.anacletogames.entities.{
-  Entity,
-  GameEvent,
-  MovementEvent,
-  WithEntityMovement
-}
+import org.anacletogames.entities.{Entity, GameEvent, MovementEvent}
 
 import scala.util.{Failure, Success, Try}
 
@@ -17,28 +14,51 @@ import scala.util.{Failure, Success, Try}
 case class ReachPointBehaviour(destination: GridPoint2,
                                decidedPath: Option[Seq[GridPoint2]])
     extends EntityBehaviour {
-  override def doStep(subject: Entity, context: GameGrid): Seq[GameEvent] = {
-    val destination = decidedPath.getOrElse(List()).headOption
-    val events = destination match {
-      case None => Seq()
-      case Some(d) =>
-        List(MovementEvent(subject.id, d))
+  override def doStep(subject: Entity,
+                      context: GameGrid): (EntityBehaviour, Seq[GameEvent]) = {
+    val nextDestination = decidedPath.getOrElse(List()).headOption
+    if (nextDestination.isEmpty)
+      (this.setPath(findPath(subject, destination, context)), Seq())
+    else {
+      val decidedBehaviour = decideNextBehaviour(subject, context)
+      val nextBehaviour = decidedBehaviour match {
+        case Success(b) => b
+        case Failure(_) => DoNothingBehaviour
+      }
+
+      val destination=if(subject.canIMoveThere(context,nextDestination.get))
+        {
+        nextDestination.get}
+      else {
+        decidedBehaviour.get.asInstanceOf[ReachPointBehaviour].decidedPath.get.head
+      }
+      (nextBehaviour, List(MovementEvent(subject.id,destination )))
     }
-    events
+
+
+  }
+
+  def findPath(subject: Entity, destination: GridPoint2, context: GameGrid) =
+    context.findPath(subject, destination)
+
+  def setPath(path: Seq[GridPoint2]): EntityBehaviour = {
+
+    if (path.isEmpty)
+      DoNothingBehaviour
+    else
+      this.copy(decidedPath = Some(path))
   }
 
   override def decideNextBehaviour(subject: Entity,
                                    context: GameGrid): Try[EntityBehaviour] = {
     val newPath = decidedPath match {
       case None =>
-        context.findPath(subject, destination)
+        this.findPath(subject, destination, context)
 
-      case Some(head :: tail) => tail
+      case Some(head :: tail) =>
+        if (subject.canIMoveThere(context, head)) tail else decidedPath.get
       case Some(Nil) => Seq()
     }
-    if (newPath.isEmpty) {
-      Success(DoNothingBehaviour)
-    } else
-      Success(this.copy(decidedPath = Some(newPath)))
+    Success(this.setPath(newPath))
   }
 }

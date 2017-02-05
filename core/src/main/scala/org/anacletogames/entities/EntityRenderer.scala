@@ -23,9 +23,7 @@ case class EntityRenderer(animation: EntityAnimation,
 
   def getMovementAnimation(startingPosition: GridPoint2,
                            destination: GridPoint2): MovementAnimation = {
-
     val gridMovement = startingPosition.gridDst(destination)
-
     val (animation, orientation) = gridMovement match {
       case GridMovement(0, 1) =>
         (MaleBaseCharacterTexture.upWalkingBase, LookingUp)

@@ -47,7 +47,6 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
           .sortBy(_._2.y)(Ordering[Int])
           .reverse
 
-
       actors.map(_._1).foreach(stage.addActor)
 
       stage.draw()
@@ -62,19 +61,19 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
       MaleBaseCharacterTexture
     )
     val myChar =
-      Entity(None,
+      Entity(Some(new GridPoint2(x, x)),
              1,
              Some("Entity " + x),
              false,
              renderer,
-             ReachPointBehaviour(new GridPoint2(3, 22), None))
-    gameGrid = gameGrid.placeEntity(myChar, new GridPoint2(x, x)).get
+             ReachPointBehaviour(new GridPoint2(4, 4), None))
+    gameGrid = gameGrid.placeEntity(myChar).get
     stage.addActor(myChar)
   }
 
   initGUI()
 
-  (3 until 4).foreach(x => createDummy(x))
+  (2 until 5).foreach(x => createDummy(x))
 
   def initGUI(): Unit = {
     guiStage.addActor(battleMapGUIBar)

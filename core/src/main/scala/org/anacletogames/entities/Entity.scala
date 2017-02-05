@@ -26,21 +26,15 @@ case class Entity(position: Option[GridPoint2],
   def doStep(events: Seq[GameEvent],
              gameGrid: GameGrid): (Entity, Seq[GameEvent]) = {
 
-
     val animatedEntity = this.resolveMovementAnimation(events)
 
     val newEntity =
-      events.foldLeft(animatedEntity)((entity, event) => event.applyToEntity(entity))
+      events.foldLeft(animatedEntity)((entity, event) =>
+        event.applyToEntity(entity))
 
+    val (nextBehaviour, newEvents) = behaviour.doStep(newEntity, gameGrid)
+    val entityWithBehaviour = newEntity.copy(behaviour = nextBehaviour)
 
-
-
-    val newEvents = behaviour.doStep(newEntity, gameGrid)
-    val entityWithBehaviour =
-      behaviour.decideNextBehaviour(newEntity, gameGrid) match {
-        case Success(b) => newEntity.copy(behaviour = b)
-        case _ => newEntity
-      }
     (entityWithBehaviour, newEvents)
   }
 
@@ -50,6 +44,7 @@ case class Entity(position: Option[GridPoint2],
     }
     movementOpt match {
       case Some(MovementEvent(entity, destination)) =>
+
         val movementAnimation =
           renderer.getMovementAnimation(this.position.get, destination)
 
@@ -68,7 +63,6 @@ case class Entity(position: Option[GridPoint2],
   override def draw(batch: Batch, parentAlpha: Float): Unit = {
 
     renderer = renderer.draw(batch, parentAlpha, this)
-    println(renderer.animation.previousStatetime)
   }
 
   def setAnimation(animation: EntityAnimation): Entity = {
