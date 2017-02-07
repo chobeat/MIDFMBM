@@ -30,7 +30,7 @@ case class Entity(position: Option[GridPoint2],
 
     val newEntity =
       events.foldLeft(animatedEntity)((entity, event) =>
-        event.applyToEntity(entity))
+        event.applyToEntity(entity,gameGrid))
 
     val (nextBehaviour, newEvents) = behaviour.doStep(newEntity, gameGrid)
     val entityWithBehaviour = newEntity.copy(behaviour = nextBehaviour)
@@ -58,7 +58,7 @@ case class Entity(position: Option[GridPoint2],
   def setBehaviour(b: EntityBehaviour) = this.copy(behaviour = b)
 
   def canIMoveThere(gameGrid: GameGrid, destination: GridPoint2) =
-    gameGrid.isTileAccessible(destination)
+    gameGrid.isTileAccessibleByEntity(destination,this)
 
   override def draw(batch: Batch, parentAlpha: Float): Unit = {
 

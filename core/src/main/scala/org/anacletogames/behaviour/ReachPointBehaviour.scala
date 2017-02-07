@@ -16,25 +16,17 @@ case class ReachPointBehaviour(destination: GridPoint2,
     extends EntityBehaviour {
   override def doStep(subject: Entity,
                       context: GameGrid): (EntityBehaviour, Seq[GameEvent]) = {
-    val nextDestination = decidedPath.getOrElse(List()).headOption
-    if (nextDestination.isEmpty)
-      (this.setPath(findPath(subject, destination, context)), Seq())
-    else {
-      val decidedBehaviour = decideNextBehaviour(subject, context)
-      val nextBehaviour = decidedBehaviour match {
-        case Success(b) => b
-        case Failure(_) => DoNothingBehaviour
-      }
+    val path = decidedPath.getOrElse(findPath(subject, destination, context))
 
-      val destination=if(subject.canIMoveThere(context,nextDestination.get))
-        {
-        nextDestination.get}
-      else {
-        decidedBehaviour.get.asInstanceOf[ReachPointBehaviour].decidedPath.get.head
-      }
-      (nextBehaviour, List(MovementEvent(subject.id,destination )))
+    val nextStep = getNextValidStep(path, subject, context)
+    val nextBehaviour =
+      decideNextBehaviour(subject, context).getOrElse(DoNothingBehaviour)
+    nextStep match {
+      case None => (nextBehaviour, List())
+      case Some(step) =>
+        (nextBehaviour, List(MovementEvent(subject.id, step)))
+
     }
-
 
   }
 
@@ -60,5 +52,21 @@ case class ReachPointBehaviour(destination: GridPoint2,
       case Some(Nil) => Seq()
     }
     Success(this.setPath(newPath))
+  }
+
+  def getNextValidStep(path: Seq[GridPoint2],
+                       subject: Entity,
+                       context: GameGrid): Option[GridPoint2] = {
+    val candidateNextStep = path match {
+      case head :: Nil
+          if head == destination || head == subject.position.get =>
+        None
+      case head :: Nil => Some(head)
+      case Nil => None
+      case head :: tail if head == subject.position.get => Some(tail.head)
+      case head :: tail => Some(head)
+    }
+    candidateNextStep.flatMap(ns =>
+      if (subject.canIMoveThere(context, ns)) Some(ns) else None)
   }
 }

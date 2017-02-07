@@ -58,11 +58,26 @@ case class GameGrid(gridWidth: Int,
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    isInsideGrid(p) && isContentAccessible(getEntitiesAtPosition(p)) && !impassableCells
+    val content=getEntitiesAtPosition(p)
+    val res=isInsideGrid(p) && isContentAccessible(content) && !impassableCells
       .contains(p)
+    res
   }
-  def isContentAccessible(content: Seq[Entity]) =
-    !content.exists(e => e.stackable)
+
+  def isTileAccessibleByEntity(p:GridPoint2,entity: Entity):Boolean= {
+    val content=getEntitiesAtPosition(p)
+    val contentWithoutEntity=content.filter(_.id!=entity.id)
+    val canEnter= !(!entity.stackable && contentWithoutEntity.nonEmpty)
+    isInsideGrid(p) && canEnter && !impassableCells.contains(p)
+
+  }
+
+  def isContentAccessible(content: Seq[Entity]) = {
+    val nonStackableExist=content.exists(e => !e.stackable)
+    val res= !nonStackableExist || content.isEmpty
+    res
+
+  }
 
   def getAllEntities: Seq[Entity] = positionToEntities.values.flatten.toList
 
@@ -90,6 +105,7 @@ case class GameGrid(gridWidth: Int,
           case Some(updatedGrid)=>updatedGrid
           case None=> grid
         }
+
         (newGrid, accumulatedEvents ++ newEvents)
 
     }

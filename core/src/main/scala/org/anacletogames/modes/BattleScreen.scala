@@ -66,7 +66,7 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
              Some("Entity " + x),
              false,
              renderer,
-             ReachPointBehaviour(new GridPoint2(4, 4), None))
+             ReachPointBehaviour(new GridPoint2(5, 5), None),id = x.toString)
     gameGrid = gameGrid.placeEntity(myChar).get
     stage.addActor(myChar)
   }

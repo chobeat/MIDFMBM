@@ -31,9 +31,10 @@ trait PathFinding { this: GameGrid =>
   def findPath(subject: Entity, destination: GridPoint2): Seq[GridPoint2] = {
 
     val pos = subject.position.get
+    navGrid.setCell(pos.x,pos.y,new GridCell(pos.x,pos.y,true))
     val resultPath =
       pathFinder.findPath(pos.x, pos.y, destination.x, destination.y, navGrid)
-
+    val gridWithFreeStartingPosition= navGrid.setCell(pos.x,pos.y,new GridCell(pos.x,pos.y,isTileAccessible(pos)))
     if (resultPath != null)
       resultPath.map(p => new GridPoint2(p.x, p.y)).toList
     else
