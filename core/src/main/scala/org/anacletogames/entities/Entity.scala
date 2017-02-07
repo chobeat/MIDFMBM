@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.GridPoint2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.battle.GameGrid
 import org.anacletogames.behaviour.{DoNothingBehaviour, EntityBehaviour}
+import org.anacletogames.events.{GameEvent, MovementEvent}
 import render.EntityAnimation
 
 import scala.util.Success

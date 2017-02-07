@@ -1,17 +1,12 @@
-package org.anacletogames.entities
+package org.anacletogames.events
 
 import com.badlogic.gdx.math.GridPoint2
-import org.anacletogames.actions.GridMovement
 import org.anacletogames.battle.GameGrid
+import org.anacletogames.entities.Entity
 
 /**
-  * Created by simone on 21.01.17.
+  * Created by simone on 07.02.17.
   */
-sealed trait GameEvent {
-  val targetId: String
-  def applyToEntity(e: Entity, context: GameGrid): Entity
-}
-
 case class MovementEvent(targetId: String, destination: GridPoint2)
     extends GameEvent {
 

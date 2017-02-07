@@ -1,11 +1,10 @@
 package org.anacletogames.battle
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.actions.GridMovement
 import org.anacletogames.behaviour.PathFinding
-import org.anacletogames.entities.{Entity, GameEvent, MovementEvent}
+import org.anacletogames.entities.Entity
+import org.anacletogames.events.GameEvent
 
 import scala.collection.{Map, breakOut}
 case class GameGrid(gridWidth: Int,
@@ -20,9 +19,8 @@ case class GameGrid(gridWidth: Int,
   private def addEntityToTileContent(
       entity: Entity,
       tileContent: Seq[Entity]): Option[Seq[Entity]] = {
-    if (!entity.stackable && tileContent.nonEmpty)
-      None
-    else if (!isContentAccessible(tileContent))
+    if (!entity.stackable && tileContent.nonEmpty || !isContentAccessible(
+          tileContent))
       None
     else
       Some(tileContent :+ entity)
@@ -58,23 +56,24 @@ case class GameGrid(gridWidth: Int,
   }
 
   def isTileAccessible(p: GridPoint2) = {
-    val content=getEntitiesAtPosition(p)
-    val res=isInsideGrid(p) && isContentAccessible(content) && !impassableCells
-      .contains(p)
+    val content = getEntitiesAtPosition(p)
+    val res = isInsideGrid(p) && isContentAccessible(content) && !impassableCells
+        .contains(p)
     res
   }
 
-  def isTileAccessibleByEntity(p:GridPoint2,entity: Entity):Boolean= {
-    val content=getEntitiesAtPosition(p)
-    val contentWithoutEntity=content.filter(_.id!=entity.id)
-    val canEnter= !(!entity.stackable && contentWithoutEntity.nonEmpty)
+  def isTileAccessibleByEntity(p: GridPoint2, entity: Entity): Boolean = {
+    //TODO: can be refactored for SRP
+    val content = getEntitiesAtPosition(p)
+    val contentWithoutEntity = content.filter(_.id != entity.id)
+    val canEnter = !(!entity.stackable && contentWithoutEntity.nonEmpty)
     isInsideGrid(p) && canEnter && !impassableCells.contains(p)
 
   }
 
   def isContentAccessible(content: Seq[Entity]) = {
-    val nonStackableExist=content.exists(e => !e.stackable)
-    val res= !nonStackableExist || content.isEmpty
+    val nonStackableExist = content.exists(e => !e.stackable)
+    val res = !nonStackableExist || content.isEmpty
     res
 
   }
@@ -100,10 +99,10 @@ case class GameGrid(gridWidth: Int,
     entitiesWithEvents.foldLeft((this, List.empty[GameEvent])) {
       case ((grid, accumulatedEvents), (entity, eventList)) =>
         val (newEntity, newEvents) = entity.doStep(eventList, grid)
-        val updatedGridOpt=grid.updateEntityPosition(newEntity)
-        val newGrid=updatedGridOpt match{
-          case Some(updatedGrid)=>updatedGrid
-          case None=> grid
+        val updatedGridOpt = grid.updateEntityPosition(newEntity)
+        val newGrid = updatedGridOpt match {
+          case Some(updatedGrid) => updatedGrid
+          case None => grid
         }
 
         (newGrid, accumulatedEvents ++ newEvents)

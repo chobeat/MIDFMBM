@@ -4,13 +4,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.GameGrid
 import org.anacletogames.entities._
+import org.anacletogames.events.GameEvent
 import org.anacletogames.game.skills.SkillSet
-import org.anacletogames.game.world.{
-  CharacterProfile,
-  Inhabitant,
-  Party,
-  Settlement
-}
+import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Party, Settlement}
 import org.anacletogames.maps.world.WithWorldMap
 
 import scala.collection.JavaConversions._

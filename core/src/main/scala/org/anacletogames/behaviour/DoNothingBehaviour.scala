@@ -1,6 +1,7 @@
 package org.anacletogames.behaviour
 import org.anacletogames.battle.GameGrid
-import org.anacletogames.entities.{Entity, GameEvent}
+import org.anacletogames.entities.Entity
+import org.anacletogames.events.GameEvent
 
 import scala.util.{Success, Try}
 

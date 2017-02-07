@@ -4,7 +4,8 @@ import javax.security.auth.Subject
 
 import com.badlogic.gdx.math.GridPoint2
 import org.anacletogames.battle.GameGrid
-import org.anacletogames.entities.{Entity, GameEvent, MovementEvent}
+import org.anacletogames.entities.Entity
+import org.anacletogames.events.{GameEvent, MovementEvent}
 
 import scala.util.{Failure, Success, Try}
 
