@@ -29,7 +29,7 @@ case class MovementAnimation(animation: Animation[TextureRegion],
     } else {
       val endMovementAnimation =
         renderer.getRestingAnimation(this.orientation)
-      val newRenderer=renderer.copy(animation = endMovementAnimation)
+      val newRenderer=renderer.copy(animationOpt = Some(endMovementAnimation))
       endMovementAnimation.draw(batch, newRenderer, entity)
     }
     this.copy(previousStatetime = statetime)

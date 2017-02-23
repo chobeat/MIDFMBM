@@ -8,8 +8,8 @@ import org.anacletogames.actions.GridMovement
 import org.anacletogames.battle.GameGrid
 import org.anacletogames.behaviour.{DoNothingBehaviour, EntityBehaviour}
 import org.anacletogames.entities.assets.{
-MaleBaseCharacterTexture,
-MovementAnimatedTexture
+  MaleBaseCharacterTexture,
+  MovementAnimatedTexture
 }
 import render.{EntityAnimation, MovementAnimation, RestAnimation, WithDelta}
 import org.anacletogames.maps._
@@ -17,9 +17,12 @@ import org.anacletogames.maps._
 /**
   * Created by simone on 14.01.17.
   */
-case class EntityRenderer(animation: EntityAnimation,
-                          renderingContext: WithDelta,
-                          entityTextures: MovementAnimatedTexture) {
+case class EntityRenderer(renderingContext: WithDelta,
+                          entityTextures: MovementAnimatedTexture,
+                          animationOpt: Option[EntityAnimation] = None) {
+
+  val animation = animationOpt.getOrElse(
+    RestAnimation(entityTextures.upStandingBase, LookingUp, 0))
 
   def getMovementAnimation(startingPosition: GridPoint2,
                            destination: GridPoint2): MovementAnimation = {
@@ -35,7 +38,11 @@ case class EntityRenderer(animation: EntityAnimation,
         (MaleBaseCharacterTexture.downWalkingBase, LookingDown)
 
     }
-    MovementAnimation(animation, orientation, startingPosition, destination,previousStatetime = 0)
+    MovementAnimation(animation,
+                      orientation,
+                      startingPosition,
+                      destination,
+                      previousStatetime = 0)
   }
 
   def defaultAnimation =
@@ -44,7 +51,7 @@ case class EntityRenderer(animation: EntityAnimation,
   def draw(batch: Batch, alpha: Float, entity: Entity): EntityRenderer = {
     val newAnimation = animation.draw(batch, this, entity)
 
-    this.copy(animation = newAnimation)
+    this.copy(animationOpt = Some(newAnimation))
   }
 
   def getRestingAnimation(direction: EntityOrientation): RestAnimation = {

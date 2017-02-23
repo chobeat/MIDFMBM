@@ -3,7 +3,8 @@ package org.anacletogames.modes
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import org.anacletogames.actions.GridMovement
-import org.anacletogames.entities.PartyEntity
+import org.anacletogames.entities.{Entity, PartyEntity}
+import org.anacletogames.events.{GameEvent, MoveByEvent, MovementEvent}
 
 /**
   * Created by simone on 05.11.16.
@@ -20,15 +21,15 @@ trait MovementControllers { this: WithStage =>
 
   }
 
-  def entityControl(partyEntity: PartyEntity): InputProcessor = {
+  def entityControl(partyEntity: Entity, userGeneratedEventsQueue: scala.collection.mutable.Queue[GameEvent]): InputProcessor = {
     case Input.Keys.W =>
-      partyEntity.enqueueMovement(GridMovement(0, partyEntity.entity.speed))
+      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(partyEntity.speed, 0)))
     case Input.Keys.A =>
-      partyEntity.enqueueMovement(GridMovement(-partyEntity.entity.speed, 0))
+      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(-partyEntity.speed, 0)))
     case Input.Keys.D =>
-      partyEntity.enqueueMovement(GridMovement(partyEntity.entity.speed, 0))
+      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(partyEntity.speed, 0)))
     case Input.Keys.S =>
-      partyEntity.enqueueMovement(GridMovement(0, -partyEntity.entity.speed))
+      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(0, -partyEntity.speed)))
   }
 
   def zoom: InputProcessor = {

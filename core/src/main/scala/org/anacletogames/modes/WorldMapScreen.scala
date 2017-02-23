@@ -28,7 +28,7 @@ class WorldGrid(gridWidth: Int,
   val simulationManager = new WorldSimulationManager(
     new WorldState(settlements))
 
-  def addEntity(e: Entity, position: GridPoint2) = ???
+  def addEntity(e: Entity, position: GridPoint2) = {}
 
   def doImmutableStep(movedCountToday: Int) = {
 
@@ -36,10 +36,7 @@ class WorldGrid(gridWidth: Int,
   }
 }
 
-trait GameLoopCommons {
 
-  var eventsFromLastFrame: Seq[GameEvent] = Seq()
-}
 
 class WorldMapScreen(val party: Party, var worldState: WorldState)
     extends BaseScreen
@@ -47,9 +44,11 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
     with MovementControllers
     with GameLoopCommons {
 
-  lazy val worldGrid = new WorldGrid(mapWidth, mapHeight, tiledMap, mlist)
+  var worldGrid = new GameGrid(mapWidth, mapHeight,impassableCells = Set())
+  val userGeneratedEvents= new mutable.Queue[GameEvent]()
+
   def createDummySettlement(x: Int, pos: GridPoint2) = {
-    val inhab = (0 until 5000).map(y =>
+    val inhab = (0 until 10).map(y =>
       Inhabitant(CharacterProfile(s"$x-$y", 0, Nil, new SkillSet()), Nil, 0))
 
     Settlement("abacuc", pos, inhab.toList, Nil)
@@ -61,36 +60,42 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
       .map(x => createDummySettlement(x, new GridPoint2(x, x + 3)))
       .foreach(x => mlist += x)
 
-  val partyEntity = new PartyEntity(party, this.worldGrid, this)
+  val partyEntity = PartyEntity.createParty(new GridPoint2(1,1),this)
 
-  // worldGrid.addEntity(partyEntity, new GridPoint2(1, 1))
-  // stage.addActor(partyEntity)
+   worldGrid.placeEntity(partyEntity)
+  stage.addActor(partyEntity)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
-      partyEntity)
+      partyEntity, userGeneratedEvents)
 
   var lastMovedCount = 0
   override def renderContent(): Unit = {
-    val entities = worldGrid.getAllEntities
-    if (isTimeToAct && partyEntity.isMovingAnimationCompleted()) {}
+    updateDelta()
+    if (isTimeToAct && !isPaused) {
 
-    if (partyEntity.hasEverMoved && lastMovedCount != partyEntity.getMovedCountToday) {
-      worldGrid.doImmutableStep(partyEntity.getMovedCountToday)
-      lastMovedCount = partyEntity.getMovedCountToday
+      val (newWorldGrid, newEvents) = worldGrid.doStep(eventsFromLastFrame)
+      worldGrid = newWorldGrid
+      eventsFromLastFrame = newEvents ++ userGeneratedEvents
+      accumulatedRender = 0
     }
 
     if (isTimeToRender) {
-
       accumulatedRender += 1
       //to draw actors ordered by position
-      val actors =
-        stage.getActors.toList.sortBy(_.getY)(Ordering[Float].reverse)
+      val actorsToPosition =
+      worldGrid.getReversedIndex
       stage.clear()
-      actors.foreach(stage.addActor)
+      val actors =
+        actorsToPosition.toList
+          .sortBy(_._2.y)(Ordering[Int])
+          .reverse
+
+      actors.map(_._1).foreach(stage.addActor)
 
       stage.draw()
     }
 
   }
+
 
   initGUI()
   def initGUI(): Unit = {}
@@ -98,7 +103,7 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
   def addSettlement(s: Settlement) = {
     val settlementEntity = new SettlementEntity(s, worldGrid, this)
 
-    worldGrid.addEntity(settlementEntity, s.position)
+    worldGrid.placeEntity(settlementEntity)
   }
 
   def initWorldMap() = {}
@@ -118,4 +123,5 @@ object WorldMapScreen {
     new WorldMapScreen(Party("test party", Seq()),
                        new WorldState(mutable.MutableList()))
   }
+
 }

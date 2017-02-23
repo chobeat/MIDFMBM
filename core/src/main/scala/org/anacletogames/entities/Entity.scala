@@ -67,7 +67,7 @@ case class Entity(position: Option[GridPoint2],
   }
 
   def setAnimation(animation: EntityAnimation): Entity = {
-    val newRenderer = renderer.copy(animation = animation)
+    val newRenderer = renderer.copy(animationOpt = Some(animation))
     this.copy(renderer = newRenderer)
   }
 

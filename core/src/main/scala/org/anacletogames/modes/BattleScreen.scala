@@ -56,7 +56,6 @@ class BattleScreen(mapWidth: Int = 32, mapHeight: Int = 32)
 
   def createDummy(x: Int) = {
     val renderer = EntityRenderer(
-      RestAnimation(MaleBaseCharacterTexture.upStandingBase, LookingUp),
       this,
       MaleBaseCharacterTexture
     )
