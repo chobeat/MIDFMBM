@@ -6,7 +6,12 @@ import org.anacletogames.battle.GameGrid
 import org.anacletogames.entities._
 import org.anacletogames.events.GameEvent
 import org.anacletogames.game.skills.SkillSet
-import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Party, Settlement}
+import org.anacletogames.game.world.{
+  CharacterProfile,
+  Inhabitant,
+  Party,
+  Settlement
+}
 import org.anacletogames.maps.world.WithWorldMap
 
 import scala.collection.JavaConversions._
@@ -36,16 +41,14 @@ class WorldGrid(gridWidth: Int,
   }
 }
 
-
-
 class WorldMapScreen(val party: Party, var worldState: WorldState)
     extends BaseScreen
     with WithWorldMap
     with MovementControllers
     with GameLoopCommons {
 
-  var worldGrid = new GameGrid(mapWidth, mapHeight,impassableCells = Set())
-  val userGeneratedEvents= new mutable.Queue[GameEvent]()
+  var worldGrid = new GameGrid(mapWidth, mapHeight, impassableCells = Set())
+  val userGeneratedEvents = new mutable.Queue[GameEvent]()
 
   def createDummySettlement(x: Int, pos: GridPoint2) = {
     val inhab = (0 until 10).map(y =>
@@ -60,12 +63,13 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
       .map(x => createDummySettlement(x, new GridPoint2(x, x + 3)))
       .foreach(x => mlist += x)
 
-  val partyEntity = PartyEntity.createParty(new GridPoint2(1,1),this)
+  val partyEntity = PartyEntity.createParty(new GridPoint2(1, 1), this)
 
-   worldGrid.placeEntity(partyEntity)
+  worldGrid=worldGrid.placeEntity(partyEntity).get
   stage.addActor(partyEntity)
   override val inputProcessor = zoom orElse arrowMovMap(64) orElse entityControl(
-      partyEntity, userGeneratedEvents)
+      partyEntity,
+      userGeneratedEvents)
 
   var lastMovedCount = 0
   override def renderContent(): Unit = {
@@ -74,15 +78,17 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
 
       val (newWorldGrid, newEvents) = worldGrid.doStep(eventsFromLastFrame)
       worldGrid = newWorldGrid
-      eventsFromLastFrame = newEvents ++ userGeneratedEvents
+
+      val userGeneratedEvent= if (userGeneratedEvents.nonEmpty) Seq(userGeneratedEvents.dequeue()) else Seq()
+      eventsFromLastFrame =   userGeneratedEvent ++ newEvents
       accumulatedRender = 0
     }
 
     if (isTimeToRender) {
+
       accumulatedRender += 1
       //to draw actors ordered by position
-      val actorsToPosition =
-      worldGrid.getReversedIndex
+      val actorsToPosition = worldGrid.getReversedIndex
       stage.clear()
       val actors =
         actorsToPosition.toList
@@ -95,7 +101,6 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
     }
 
   }
-
 
   initGUI()
   def initGUI(): Unit = {}
