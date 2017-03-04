@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.GridPoint2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import org.anacletogames.battle.GameGrid
 import org.anacletogames.behaviour.{DoNothingBehaviour, EntityBehaviour}
-import org.anacletogames.events.{GameEvent, MovementEvent}
+import org.anacletogames.events.{GameEvent, MoveByEvent, MovementEvent}
 import render.EntityAnimation
 
 import scala.util.Success
@@ -31,7 +31,7 @@ case class Entity(position: Option[GridPoint2],
 
     val newEntity =
       events.foldLeft(animatedEntity)((entity, event) =>
-        event.applyToEntity(entity,gameGrid))
+        event.applyToEntity(entity, gameGrid))
 
     val (nextBehaviour, newEvents) = behaviour.doStep(newEntity, gameGrid)
     val entityWithBehaviour = newEntity.copy(behaviour = nextBehaviour)
@@ -40,12 +40,15 @@ case class Entity(position: Option[GridPoint2],
   }
 
   def resolveMovementAnimation(oldEvents: Seq[GameEvent]): Entity = {
-    val movementOpt = oldEvents.collectFirst {
-      case x: MovementEvent => x
-    }
-    movementOpt match {
-      case Some(MovementEvent(entity, destination)) =>
+    val destinationOpt = oldEvents.collectFirst {
 
+      case MovementEvent(e, d) => d
+      case MoveByEvent(e, gridMovement) =>
+        gridMovement.calculateDestination(this.position.get)
+    }
+
+    destinationOpt match {
+      case Some(destination) =>
         val movementAnimation =
           renderer.getMovementAnimation(this.position.get, destination)
 
@@ -59,7 +62,7 @@ case class Entity(position: Option[GridPoint2],
   def setBehaviour(b: EntityBehaviour) = this.copy(behaviour = b)
 
   def canIMoveThere(gameGrid: GameGrid, destination: GridPoint2) =
-    gameGrid.isTileAccessibleByEntity(destination,this)
+    gameGrid.isTileAccessibleByEntity(destination, this)
 
   override def draw(batch: Batch, parentAlpha: Float): Unit = {
 
