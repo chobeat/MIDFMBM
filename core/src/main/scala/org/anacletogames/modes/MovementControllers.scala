@@ -21,15 +21,22 @@ trait MovementControllers { this: WithStage =>
 
   }
 
-  def entityControl(partyEntity: Entity, userGeneratedEventsQueue: scala.collection.mutable.Queue[GameEvent]): InputProcessor = {
+  def entityControl(
+      partyEntity: Entity,
+      userGeneratedEventsQueue: scala.collection.mutable.Queue[GameEvent])
+    : InputProcessor = {
     case Input.Keys.W =>
-      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(partyEntity.speed, 0)))
+      userGeneratedEventsQueue.enqueue(
+        MoveByEvent(partyEntity.id, GridMovement(0, partyEntity.speed)))
     case Input.Keys.A =>
-      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(-partyEntity.speed, 0)))
+      userGeneratedEventsQueue.enqueue(
+        MoveByEvent(partyEntity.id, GridMovement(-partyEntity.speed, 0)))
     case Input.Keys.D =>
-      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(partyEntity.speed, 0)))
+      userGeneratedEventsQueue.enqueue(
+        MoveByEvent(partyEntity.id, GridMovement(partyEntity.speed, 0)))
     case Input.Keys.S =>
-      userGeneratedEventsQueue.enqueue(MoveByEvent(partyEntity.id,GridMovement(0, -partyEntity.speed)))
+      userGeneratedEventsQueue.enqueue(
+        MoveByEvent(partyEntity.id, GridMovement(0, -partyEntity.speed)))
   }
 
   def zoom: InputProcessor = {
