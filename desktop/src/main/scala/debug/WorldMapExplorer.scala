@@ -3,6 +3,7 @@ package debug
 import actors.{CreateGame, GameActor}
 import akka.actor.{ActorSystem, Props}
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
+import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper.ThreadController
 import com.typesafe.config.{Config, ConfigFactory}
 import org.anacletogames.modes.{BattleScreen, WorldMapScreen}
 

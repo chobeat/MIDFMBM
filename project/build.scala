@@ -16,7 +16,9 @@ object Settings {
         "com.badlogicgames.gdx" % "gdx" % libgdxVersion.value,
         "com.badlogicgames.gdx" % "gdx-box2d" % libgdxVersion.value,
         "com.github.xaguzman" % "pathfinding" % "0.2.6",
-        "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.5"
+        "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.5",
+          "com.typesafe.akka" %% "akka-actor" % "2.4.0",
+        "com.typesafe.akka" %% "akka-testkit" % "2.4.0"
       ),
       javacOptions ++= Seq(
         "-Xlint",
