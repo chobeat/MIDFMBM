@@ -1,6 +1,6 @@
 package actors
 
-import akka.actor.{Actor, Props}
+import akka.actor.{Actor, ActorSystem, Props}
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
 import debug.WorldMapRenderer
@@ -14,7 +14,7 @@ class GameActor extends Actor{
   override def receive={
     case CreateGame(cfg)=>{
 
-      new LwjglApplication(new WorldMapRenderer(self), cfg)
+      new LwjglApplication(new WorldMapRenderer()(context.system), cfg)
     }
 
   }

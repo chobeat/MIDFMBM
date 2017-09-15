@@ -1,23 +1,21 @@
 package org.anacletogames.modes
 
+import akka.actor.{ActorRef, ActorSystem, Props}
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.GridPoint2
+import org.anacletogames.actors.{AddSettlement, UpdateCompleted, UpdateSimulation, WorldSimulationActor}
 import org.anacletogames.battle.GameGrid
 import org.anacletogames.entities._
 import org.anacletogames.events.GameEvent
 import org.anacletogames.game.skills.SkillSet
-import org.anacletogames.game.world.{
-  CharacterProfile,
-  Inhabitant,
-  Party,
-  Settlement
-}
+import org.anacletogames.game.world.{CharacterProfile, Inhabitant, Party, Settlement}
 import org.anacletogames.maps.world.WithWorldMap
-
-import scala.collection.JavaConversions._
+import akka.pattern._
+import akka.util.Timeout
 import scala.collection.mutable
 import scala.concurrent._
 import org.anacletogames.maps._
+import scala.concurrent.duration._
 
 /**
   * Created by simone on 05.11.16.
@@ -30,38 +28,29 @@ class WorldGrid(gridWidth: Int,
                      gridHeight,
                      impassableCells = tiledMap.getImpassableTiles.keySet) {
 
-  val simulationManager = new WorldSimulationManager(
-    new WorldState(settlements))
 
   def addEntity(e: Entity, position: GridPoint2) = {}
 
-  def doImmutableStep(movedCountToday: Int) = {
+  def doImmutableStep(movedCountToday: Int) = ???
 
-    simulationManager.doImmutableStep(this, movedCountToday)
-  }
+  override def equals(that: Any) = ???
 }
 
-class WorldMapScreen(val party: Party, var worldState: WorldState)
+class WorldMapScreen(val party: Party)(implicit actorSystem:ActorSystem)
     extends BaseScreen
     with WithWorldMap
     with MovementControllers
     with GameLoopCommons {
+  implicit val timeout = Timeout(1 second)
+  val worldSimulation = actorSystem.actorOf(Props[WorldSimulationActor])
 
   var worldGrid = new GameGrid(mapWidth, mapHeight, impassableCells = Set())
   val userGeneratedEvents = new mutable.Queue[GameEvent]()
-
-  def createDummySettlement(x: Int, pos: GridPoint2) = {
-    val inhab = (0 until 10).map(y =>
-      Inhabitant(CharacterProfile(s"$x-$y", 0, Nil, new SkillSet()), Nil, 0))
-
-    Settlement("abacuc", pos, inhab.toList, Nil)
+  (0 to 100000).foreach {i=>
+    worldSimulation ! AddSettlement(s"test$i")
   }
 
-  val mlist = mutable.MutableList[Settlement]()
-  val settlements =
-    (0 until 200)
-      .map(x => createDummySettlement(x, new GridPoint2(x, x + 3)))
-      .foreach(x => mlist += x)
+
 
   val partyEntity = PartyEntity.createParty(new GridPoint2(1, 1), this)
 
@@ -75,6 +64,8 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
   override def renderContent(): Unit = {
     updateDelta()
     if (isTimeToAct && !isPaused) {
+      val x = ask(worldSimulation,UpdateSimulation(worldGrid,0)).mapTo[UpdateCompleted.type]
+      val res=Await.result(x,Duration(1000,"seconds"))
 
       val (newWorldGrid, newEvents) = worldGrid.doStep(eventsFromLastFrame)
       worldGrid = newWorldGrid
@@ -105,11 +96,6 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
   initGUI()
   def initGUI(): Unit = {}
 
-  def addSettlement(s: Settlement) = {
-    val settlementEntity = new SettlementEntity(s, worldGrid, this)
-
-    worldGrid.placeEntity(settlementEntity)
-  }
 
   def initWorldMap() = {}
 
@@ -123,10 +109,9 @@ class WorldMapScreen(val party: Party, var worldState: WorldState)
 }
 
 object WorldMapScreen {
-  def debugWorldMapScreen = {
 
-    new WorldMapScreen(Party("test party", Seq()),
-                       new WorldState(mutable.MutableList()))
+  def debugWorldMapScreen()(implicit actorSystem:ActorSystem) = {
+    new WorldMapScreen(Party("test party", Seq()))
   }
 
 }

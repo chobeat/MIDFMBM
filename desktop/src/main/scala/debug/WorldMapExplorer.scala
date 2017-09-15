@@ -5,6 +5,7 @@ import akka.actor.{ActorSystem, Props}
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper.ThreadController
 import com.typesafe.config.{Config, ConfigFactory}
+import debug.WorldMapExplorer.systemConfig
 import org.anacletogames.modes.{BattleScreen, WorldMapScreen}
 
 /**
@@ -30,8 +31,12 @@ object WorldMapExplorer extends App {
  |  throughput = 1
  |}
     """.stripMargin)
-  val system = ActorSystem("Game",systemConfig)
-  val gameActor = system.actorOf(Props[GameActor].withDispatcher("single-thread-dispatcher"), "GameActor")
+  val gameActor = GameActorSystem.system.actorOf(Props[GameActor].withDispatcher("single-thread-dispatcher"), "GameActor")
 
   gameActor ! CreateGame(cfg)
+}
+
+object GameActorSystem{
+  val system = ActorSystem("Game",systemConfig)
+
 }

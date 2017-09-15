@@ -1,13 +1,13 @@
 package debug
 
-import akka.actor.ActorRef
+import akka.actor.{ActorRef, ActorSystem}
 import com.badlogic.gdx.{Game, Screen}
 import org.anacletogames.modes.WorldMapScreen
 
 /**
   * Created by simone on 09.01.17.
   */
-class WorldMapRenderer(gameActor: ActorRef) extends Game {
+class WorldMapRenderer(implicit system:ActorSystem) extends Game {
   override def create(): Unit = {
 
     this.setScreen(WorldMapScreen.debugWorldMapScreen)
