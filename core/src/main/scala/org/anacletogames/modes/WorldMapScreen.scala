@@ -46,7 +46,7 @@ class WorldMapScreen(val party: Party)(implicit actorSystem:ActorSystem)
 
   var worldGrid = new GameGrid(mapWidth, mapHeight, impassableCells = Set())
   val userGeneratedEvents = new mutable.Queue[GameEvent]()
-  (0 to 100000).foreach {i=>
+  (0 to 500).foreach {i=>
     worldSimulation ! AddSettlement(s"test$i")
   }
 

@@ -1,14 +1,23 @@
 package org.anacletogames.actors
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.event.LoggingReceive
 import org.anacletogames.battle.GameGrid
+import akka.pattern._
+import akka.util.Timeout
 
 import scala.collection.mutable
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.util.Random
 
 case object InitSimulation
 
-case class UpdateCompleted(int:Int) {
+case class SettlementStatus(name:String) {
+  override def equals(that: Any) = ???
+}
+
+case class UpdateCompleted(int: Int) {
 
   override def equals(that: Any) = ???
 }
@@ -22,7 +31,7 @@ case class UpdateSimulation(gameGrid: GameGrid, dayFraction: Int) {
 }
 
 class WorldSimulationActor extends Actor {
-  val worldState: ActorRef = context.actorOf(Props[WorldStateActor])
+  val worldState: ActorRef = context.actorOf(Props[WorldStateActor],"worldstate")
 
   override def receive = LoggingReceive {
     case m @ UpdateSimulation(g, df) => {
@@ -57,7 +66,7 @@ class WorldStateActor extends Actor {
 
   }
 
-  def waitForUpdateCompleted(childrenNum: Int, partialCount:Int=0): Receive = {
+  def waitForUpdateCompleted(childrenNum: Int, partialCount: Int = 0): Receive = {
     case UpdateCompleted(i) =>
       childrenNum match {
         case 1 => {
@@ -66,22 +75,53 @@ class WorldStateActor extends Actor {
           context.become(receive)
         }
         case n => {
-          context.become(waitForUpdateCompleted(n - 1,partialCount+i))
+          context.become(waitForUpdateCompleted(n - 1, partialCount + i))
         }
       }
 
   }
 }
 
-class SettlementActor extends Actor {
+class Inhabitant(){
+  var x:Int=0
 
-  override def receive: Receive = logic(0)
+  def updateX(v:Int):Int={
+    x=x+v+Random.nextInt(5)-2
+    x
+  }
+
+
+}
+
+class SettlementActor extends Actor {
+  val inhabitants:List[Inhabitant] = (0 to 2000).map(x=>new Inhabitant()).toList
+
+  override def receive: Receive =
+    logic(0)
 
   def logic(int: Int): Receive = {
     case UpdateSimulation(grid, df) =>
-      //logic
-      context.become(logic(int + 1))
-      sender ! UpdateCompleted(int)
+      //logice
+      println(self.path)
+      val sum=inhabitants.map(_.updateX(int)).sum
+      context.sender ! UpdateCompleted(sum)
+      context.become(logic(sum))
+  }
+
+
+}
+
+case class GetSettlementStatus(){
+  override def equals(that: Any) = ???
+}
+
+object Settlements{
+  implicit val timeout:Timeout=Duration(1000,"seconds")
+
+  def getSettlementStatus(id:String)(implicit system:ActorSystem): Future[SettlementStatus] ={
+    system.actorSelection("/Game/user/$a/worldstate/test"+id).ask(GetSettlementStatus()).mapTo[SettlementStatus]
+
+
   }
 
 }
